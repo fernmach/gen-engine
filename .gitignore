@@ -1,0 +1,35 @@
+  # SGDK / C Build artifacts
+out/
+res_comp/
+gen/
+*.o
+*.obj
+*.elf
+*.bin
+*.iso
+*.lst
+*.map
+*.sym
+*.dep
+*.mds
+*.cue
+
+# Common IDE files
+#.vscode/
+.idea/
+*.suo
+*.user
+*.sln.docstates
+
+# macOS specific
+.DS_Store
+._*
+
+# Windows specific
+Thumbs.db
+desktop.ini
+
+# Other temporary files
+*~
+*.bak
+*.tmp
