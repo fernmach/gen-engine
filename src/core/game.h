@@ -15,6 +15,10 @@
 // Forward declaration for SGDK types
 #include <genesis.h>
 
+// Game engine library imports
+#include "logger.h"
+#include "asserts.h"
+
 extern void Game_init();
 extern void Game_update(fix16 dt);
 extern void Game_draw();

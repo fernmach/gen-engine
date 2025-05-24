@@ -1,3 +1,5 @@
+#include <genesis.h> // for KDebug
+
 #include "core/game.h"
 
 // include our own resources
@@ -14,6 +16,8 @@ void Game_update(fix16 dt) {
     // Game specific logic that isn't part of a generic system.
     // For example, checking for win/loss conditions, spawning new enemies, etc.
     VDP_drawText("Game updating ", 1, 21);
+
+    ASSERT_MSG(1==0, "Assertion with message");
 }
 
 void Game_draw() {

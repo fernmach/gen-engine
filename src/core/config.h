@@ -4,7 +4,7 @@
  *  \author Fernando Machado
  *  \date 05/2025
  *
- * This unit is used to define some specific compilation option of the engine.
+ * Defines some specific compilation option of the engine.
  */
 
 #ifndef _ENGINE_CONFIG_H_
@@ -13,7 +13,7 @@
 /**
  *  \brief
  *      Set to 1 to turn all game engine logging enabled.
- *      Relies on KLog SGDK's KDebug logging (Gens KMod) module to operate properly (LIB_DEBUG = 1)
+ *      Relies on SGDK's Gens KMod logging module (LIB_DEBUG = 1)
  */
 // #if (DEBUG && LIB_DEBUG)    
 //     #define LOGGER_ENABLED 1
@@ -21,6 +21,19 @@
 //     #define LOGGER_ENABLED 1
 // #endif
 #define LOGGER_ENABLED 1
+
+/**
+ *  \brief
+ *      Set to 1 to turn all game engine assertions enabled.
+ *      Relies on SGDK's Gens KDebug module (LIB_DEBUG = 1)
+ */
+// #if (DEBUG && LIB_DEBUG)
+//     #define ASSERTIONS_ENABLED 1
+// #else
+//     #define ASSERTIONS_ENABLED 0
+// #endif
+#define ASSERTS_ENABLED 1
+
 
 // // FAT16 need EVERDRIVE
 // #if ((MODULE_EVERDRIVE == 0) && (MODULE_FAT16 != 0))

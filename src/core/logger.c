@@ -24,7 +24,7 @@ void Logger_init(LoggerLevel initial_level) {
 }
 
 // Core logging function (usually not called directly, use macros)
-void Logger_output(LoggerLevel level, const char *file, int line, const char *fmt, ...) {
+void Logger_output(LoggerLevel level, const char* message, ...) {
     if (!g_logger_enabled || level < g_logger_current_level) {
         return;
     }
@@ -33,26 +33,25 @@ void Logger_output(LoggerLevel level, const char *file, int line, const char *fm
     va_list args;
 
     // 1. Format the user's message
-    va_start(args, fmt);    
-    vsprintf(message_buffer, fmt, args);
+    va_start(args, message);    
+    vsprintf(message_buffer, message, args);
     va_end(args);
 
     // 2. Format the full log line (Prefix, File:Line, Message)
     // Extracting basename of file
-    const char *basename = file;
-    const char *p = file;
-    while (*p) {
-        if (*p == '/' || *p == '\\') {
-            basename = p + 1;
-        }
-        p++;
-    }
+    // const char *basename = file;
+    // const char *p = file;
+    // while (*p) {
+    //     if (*p == '/' || *p == '\\') {
+    //         basename = p + 1;
+    //     }
+    //     p++;
+    // }    
     
-    // Ensure KLog is running (it usually is by default in debug builds of SGDK)
-    // Output to KLog/KDebug (emulator console)    
-    sprintf(g_logger_buffer, "[%s] %s:%d: %s",
-            level_strings[level], basename, line, message_buffer);
+    sprintf(g_logger_buffer, "[%s] %s",
+            level_strings[level], message_buffer);
 
+    // Output to KLog/KDebug (emulator console)
     KLog(g_logger_buffer);
 }
 

@@ -15,6 +15,7 @@
     "files.associations": {
         "main.h": "c",
         "engine.h": "c",
-        "logger.h": "c"
+        "logger.h": "c",
+        "genesis.h": "c"
     },
 }

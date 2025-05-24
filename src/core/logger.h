@@ -13,7 +13,7 @@
 
 #include "config.h"
 
-#if (LOGGER_ENABLED == 1)
+#if LOGGER_ENABLED
 
 // Forward declaration for SGDK types
 #include <genesis.h>
@@ -36,7 +36,7 @@ typedef enum {
 void Logger_init(LoggerLevel initial_level);
 
 // Core logging function (usually not called directly, use macros)
-void Logger_output(LoggerLevel level, const char *file, int line, const char *fmt, ...);
+void Logger_output(LoggerLevel level, const char* message, ...);
 
 // Enable/disable all logging at runtime
 void Logger_setEnabled(bool enabled);
@@ -51,12 +51,12 @@ void Logger_shutdown();
 
 // --- Public API Macros ---
 // These macros will pass __FILE__ and __LINE__ automatically
-#define LOGGER_FATAL(fmt, ...)   Logger_output(LOGGER_LEVEL_FATAL,   __FILE__, __LINE__, fmt, ##__VA_ARGS__);
-#define LOGGER_ERROR(fmt, ...)   Logger_output(LOGGER_LEVEL_ERROR,   __FILE__, __LINE__, fmt, ##__VA_ARGS__);
-#define LOGGER_WARN(fmt, ...)    Logger_output(LOGGER_LEVEL_WARNING,  __FILE__, __LINE__, fmt, ##__VA_ARGS__);
-#define LOGGER_INFO(fmt, ...)    Logger_output(LOGGER_LEVEL_INFO,    __FILE__, __LINE__, fmt, ##__VA_ARGS__);
-#define LOGGER_DEBUG(fmt, ...)   Logger_output(LOGGER_LEVEL_DEBUG,   __FILE__, __LINE__, fmt, ##__VA_ARGS__);
-#define LOGGER_TRACE(fmt, ...)   Logger_output(LOGGER_LEVEL_TRACE,   __FILE__, __LINE__, fmt, ##__VA_ARGS__);
+#define LOGGER_FATAL(message, ...)   Logger_output(LOGGER_LEVEL_FATAL, message, ##__VA_ARGS__);
+#define LOGGER_ERROR(message, ...)   Logger_output(LOGGER_LEVEL_ERROR, message, ##__VA_ARGS__);
+#define LOGGER_WARN(message, ...)    Logger_output(LOGGER_LEVEL_WARNING, message, ##__VA_ARGS__);
+#define LOGGER_INFO(message, ...)    Logger_output(LOGGER_LEVEL_INFO, message, ##__VA_ARGS__);
+#define LOGGER_DEBUG(message, ...)   Logger_output(LOGGER_LEVEL_DEBUG, message, ##__VA_ARGS__);
+#define LOGGER_TRACE(message, ...)   Logger_output(LOGGER_LEVEL_TRACE, message, ##__VA_ARGS__);
 
 #else
 

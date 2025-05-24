@@ -16,6 +16,7 @@
 // game engine declarations
 #include "config.h"
 #include "logger.h"
+#include "asserts.h"
 #include "game.h"
 
 static inline void Engine_init() {
