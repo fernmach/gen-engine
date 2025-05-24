@@ -12,4 +12,9 @@
         "**/cmd_": true,
         "**/out.lst": true,
     },
+    "files.associations": {
+        "main.h": "c",
+        "engine.h": "c",
+        "logger.h": "c"
+    },
 }
