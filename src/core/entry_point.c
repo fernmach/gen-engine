@@ -1,3 +1,4 @@
+//SGDK header
 #include <genesis.h>
 
 // file headers

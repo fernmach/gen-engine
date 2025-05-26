@@ -17,7 +17,22 @@ void Game_update(fix16 dt) {
     // For example, checking for win/loss conditions, spawning new enemies, etc.
     VDP_drawText("Game updating ", 1, 21);
 
-    ASSERT_MSG(1==0, "Assertion with message");
+    // Logger test
+    // LOGGER_FATAL("FATAL log test");
+    // LOGGER_ERROR("ERROR log test");
+    // LOGGER_WARN("WARNING log test");
+    // LOGGER_INFO("INFO log test");
+    // LOGGER_DEBUG("DEBUG log test");
+    // LOGGER_TRACE("TRACE log test");
+
+    // Memory track test
+    MEMORY_ALLOC(1024, MEM_TAG_SYSTEM);
+    MEM_alloc(1024);
+
+    Memory_reportUsage();
+    //MEM_dump();
+
+    ASSERT_MSG(1==0, "ASSERT test with message");
 }
 
 void Game_draw() {

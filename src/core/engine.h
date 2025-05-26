@@ -17,11 +17,15 @@
 #include "config.h"
 #include "logger.h"
 #include "asserts.h"
+#include "memory.h"
 #include "game.h"
 
 static inline void Engine_init() {
     // Initialize game logger
     Logger_init(LOGGER_LEVEL_FATAL);
+
+    // Initialize memory tracking subsystem
+    Memory_init();
 
     // SGDK Hardware Initialization        
     // Disable interrupts during VDP initialization

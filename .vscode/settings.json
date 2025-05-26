@@ -16,6 +16,11 @@
         "main.h": "c",
         "engine.h": "c",
         "logger.h": "c",
-        "genesis.h": "c"
+        "genesis.h": "c",
+        "tab_cnv.h": "c",
+        "memory.h": "c",
+        "config.h": "c",
+        "asserts.h": "c",
+        "memory_types.h": "c"
     },
 }

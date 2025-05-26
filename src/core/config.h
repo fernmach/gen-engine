@@ -15,7 +15,7 @@
  *      Set to 1 to turn all game engine logging enabled.
  *      Relies on SGDK's Gens KMod logging module (LIB_DEBUG = 1)
  */
-// #if (DEBUG && LIB_DEBUG)    
+// #if (DEBUG && LIB_DEBUG)
 //     #define LOGGER_ENABLED 1
 // #else
 //     #define LOGGER_ENABLED 1
@@ -33,6 +33,17 @@
 //     #define ASSERTIONS_ENABLED 0
 // #endif
 #define ASSERTS_ENABLED 1
+
+/**
+ *  \brief
+ *      Set to 1 for memory debugging, 0 for production 
+ */
+// #if (DEBUG && LIB_DEBUG)
+//     #define MEM_DEBUG_ENABLED 1
+// #else
+//     #define MEM_DEBUG_ENABLED 0
+// #endif
+#define MEMORY_DEBUG_ENABLED 1
 
 
 // // FAT16 need EVERDRIVE
