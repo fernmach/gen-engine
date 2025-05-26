@@ -25,9 +25,10 @@ void Game_update(fix16 dt) {
     // LOGGER_DEBUG("DEBUG log test");
     // LOGGER_TRACE("TRACE log test");
 
-    // Memory track test
-    MEMORY_ALLOC(1024, MEM_TAG_SYSTEM);
-    MEM_alloc(1024);
+    // Memory track test    
+    void* memory = MEMORY_ALLOC(1024, MEM_TAG_SYSTEM);
+    MEMORY_FREE(memory, 1024, MEM_TAG_SYSTEM);
+    //MEM_alloc(1024);
 
     Memory_reportUsage();
     //MEM_dump();

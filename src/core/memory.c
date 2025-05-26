@@ -44,8 +44,20 @@ void* Memory_alloc(u32 size, MemoryTag tag, const char* file, int line) {
     //ASSERT_MSG(block, "MEM_ALLOC: Failed to allocate %d, bytes @ %s: %d", size, file, line);
     ASSERT_MSG(block, "Memory allocation failled");
     
-    //MEM_free(block);
+    
     return block;
+}
+
+void Memory_free(void* block, u32 size, MemoryTag tag, const char* file, int line) {
+    if (!block) {
+        LOGGER_WARN("Attempt to free untracked or already free pointer 0x%u from file %s, line: %d", (u32)block, file, line);
+        return;
+    }
+
+    g_total_allocated_bytes -= size;
+    g_allocation_table[tag] -= size;
+
+    MEM_free(block);
 }
 
 void Memory_track(u32 size, MemoryTag tag) {

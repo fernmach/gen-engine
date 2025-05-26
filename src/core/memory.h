@@ -45,6 +45,7 @@ typedef unsigned short u16;
 
     // Prototypes for your custom tracking functions
     void* Memory_alloc(u32 size, MemoryTag tag, const char* file, int line);
+    void Memory_free(void* block, u32 size, MemoryTag tag, const char* file, int line);
 
     // Just add an allocation, or meme set call to the tracker
     void Memory_track(u32 size, MemoryTag tag);
@@ -56,6 +57,7 @@ typedef unsigned short u16;
 
     // Wrapper Macros - these will pass file and line info automatically
     #define MEMORY_ALLOC(size, tag) Memory_alloc(size, tag, __FILE__, __LINE__)
+    #define MEMORY_FREE(block, size, tag) Memory_free(block, size, tag, __FILE__, __LINE__)
     #define MEMORY_TRACK(size, tag) Memory_track(size, tag)
 
     // Optional: Override SGDK's macros/functions if you want a drop-in replacement
