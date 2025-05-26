@@ -73,9 +73,10 @@ void Memory_reportUsage() {
     //LOGGER_INFO ("Current total allocated: %lu bytes", g_total_allocated_bytes);
     //LOGGER_INFO ("    Current total allocated: %lu bytes", MEM_getAllocated());    
     //LOGGER_INFO ("    Current free memory: %lu bytes", MEM_getFree());
-
-    kprintf("    Current total allocated: %d bytes", MEM_getAllocated());
-    kprintf("    Current free memory: %d bytes", MEM_getFree());
+    
+    kprintf("    Current total allocated (SGDK): %d bytes", MEM_getAllocated());
+    kprintf("    Current free memory (SGDK): %d bytes", MEM_getFree());
+    kprintf("    Engine total allocated %lu bytes", g_total_allocated_bytes);
     
     KLog("Usage by tags:");
     for (MemoryTag tag = 0; tag < MEM_TAG_COUNT; ++tag) {        

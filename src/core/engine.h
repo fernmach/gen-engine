@@ -69,10 +69,12 @@ static inline void Engine_update(fix16 delta_time) {
 
     // 3.1 Optionl display debug features 
     // Show on screen CUP load if configured
-    VDP_showCPULoad(1, 0);
+    VDP_drawText("CPU:", 1, 0);
+    VDP_showCPULoad(5, 0);
 
     // Show FPS count on screen if configured
-    VDP_showFPS(false, 1,1);
+    VDP_drawText("FPS:", 1, 1);
+    VDP_showFPS(false, 5, 1);
     
     // 4. SGDK Specific Updates
     SPR_update();            // Send sprite list to VDP
