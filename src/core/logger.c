@@ -10,7 +10,7 @@
 
     // --- Helper: Get Log Level Prefix ---
     static const char* level_strings[] = {
-    "FTL", "ERR", "WRN", "INF", "DBG", "TRC"
+        "FTL", "ERR", "WRN", "INF", "DBG", "TRC"
     }; 
 
     // --- Public API Functions ---
@@ -58,7 +58,6 @@
     // Finalize the logging system. Call once at engine shutdown.
     void Logger_shutdown() {
         // TODO: Cleanup loggin/write queued entries    
-
         LOGGER_INFO("Shutting down logger subsystem");
     }
 

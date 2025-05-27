@@ -28,7 +28,7 @@ const char* memory_tag_strings[MEM_TAG_COUNT] = {
 
 void Memory_init(void) {    
     g_total_allocated_bytes = 0;    
-    memset(g_allocation_table, 0, sizeof(g_allocation_table));    
+    memset(g_allocation_table, 0, sizeof(g_allocation_table));
     
     LOGGER_INFO("Memory tracker subsystem initialized.");
 }
@@ -42,8 +42,7 @@ void* Memory_alloc(u32 size, MemoryTag tag, const char* file, int line) {
 
     // TODO: Add memory allocation verification
     //ASSERT_MSG(block, "MEM_ALLOC: Failed to allocate %d, bytes @ %s: %d", size, file, line);
-    ASSERT_MSG(block, "Memory allocation failled");
-    
+    ASSERT_MSG(block, "Memory allocation failled");   
     
     return block;
 }

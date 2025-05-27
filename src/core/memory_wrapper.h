@@ -2,11 +2,18 @@
 // #ifndef _MEMORY_WRAPPER_H_
 // #define _MEMORY_WRAPPER_H_
 
-// // SGDK includes
-// #include <types.h>
-// #include <sys.h>
+// SGDK includes
+//#include <types.h>
+//#include <sys.h>
+// #include_next <memory.h>
 
-// // Engine includes
+// #define MEM_alloc(size) \
+// ( \
+//     KLog('Allocating memory'); \
+//     MEM_alloc(size); \
+// )
+
+// Engine includes
 // #include "memory_types.h"
 
 // // USED definition (from SGDK)
@@ -22,4 +29,6 @@
 
 // void* __custom_MEM_alloc(u16 size);
 
-// #endif // _MEMORY_WRAPPER_H_
+
+
+#endif // _MEMORY_WRAPPER_H_

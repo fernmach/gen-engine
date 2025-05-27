@@ -45,6 +45,12 @@
 // #endif
 #define MEMORY_DEBUG_ENABLED 1
 
+/**
+ *  \brief
+ *      Maximum number of listeners that can subscribe to a single event type.
+ *      Adjust based on your game's needs and available RAM.
+ */
+#define EVENT_MAX_LISTENERS_PER_EVENT_TYPE 8
 
 // // FAT16 need EVERDRIVE
 // #if ((MODULE_EVERDRIVE == 0) && (MODULE_FAT16 != 0))

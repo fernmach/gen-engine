@@ -19,6 +19,7 @@
 #include "logger.h"
 #include "asserts.h"
 #include "memory.h"
+#include "event.h"
 
 extern void Game_init();
 extern void Game_update(fix16 dt);

@@ -21,6 +21,8 @@
         "memory.h": "c",
         "config.h": "c",
         "asserts.h": "c",
-        "memory_types.h": "c"
+        "memory_types.h": "c",
+        "event.h": "c",
+        "game.h": "c"
     },
 }

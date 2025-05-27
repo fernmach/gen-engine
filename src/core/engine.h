@@ -18,6 +18,7 @@
 #include "logger.h"
 #include "asserts.h"
 #include "memory.h"
+#include "event.h"
 #include "game.h"
 
 static inline void Engine_init() {
@@ -26,6 +27,9 @@ static inline void Engine_init() {
 
     // Initialize memory tracking subsystem
     Memory_init();
+
+    // Initialize event subsystem
+    Event_init();
 
     // SGDK Hardware Initialization        
     // Disable interrupts during VDP initialization
@@ -86,6 +90,9 @@ static inline void Engine_shutdown() {
     // Clean up any subsystem memory        
 
     // Shutting down logger sub system;
+    Event_shutdown();
+    //TODO: Create memory shutdown call
+    //Memory_shutdown();
     Logger_shutdown();
 
     LOGGER_INFO("Shutting down engine");

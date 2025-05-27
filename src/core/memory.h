@@ -63,7 +63,7 @@ typedef unsigned short u16;
     // Optional: Override SGDK's macros/functions if you want a drop-in replacement
     // Be cautious with this, especially if SGDK internal files use them directly
     // without including your header. It's often safer to use your MY_MEM_* macros explicitly.    
-    #define MEM_alloc(size) Memory_alloc(size, MEM_TAG_UNKNOWN, __FILE__, __LINE__)    
+    //#define MEM_alloc(size) Memory_alloc(size, MEM_TAG_UNKNOWN, __FILE__, __LINE__)    
 #else
 
     // Use SGDK's functions directly
