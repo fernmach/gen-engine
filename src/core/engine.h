@@ -19,6 +19,7 @@
 #include "asserts.h"
 #include "memory.h"
 #include "event.h"
+#include "input.h"
 #include "game.h"
 
 static inline void Engine_init() {
@@ -35,8 +36,11 @@ static inline void Engine_init() {
     // Disable interrupts during VDP initialization
     SYS_disableInts();
 
-    SPR_init(); // Initialize sprite engine (adjust as needed based on your game)
-    JOY_init(); // Initialize joypad system
+    SPR_init(); // Initialize sprite engine (adjust as needed based on your game)        
+
+    // Initialize engine input sybsystem.
+    //JOY_init();
+    Input_init(); //SGDK joypad system is initialized inside
 
     // Initialize the Video Display Processor (VDP)
     VDP_init();
@@ -58,7 +62,7 @@ static inline void Engine_init() {
 
 static inline void Engine_update(fix16 delta_time) {
     // 1. Hadle Input update
-    // Input_update();
+    Input_update();
 
     // 2. Update Game Logic (Systems)    
     // MovementSystem_update(delta_time);
@@ -89,8 +93,8 @@ static inline void Engine_update(fix16 delta_time) {
 static inline void Engine_shutdown() {
     // Clean up any subsystem memory        
 
-    // Shutting down logger sub system;
-    Event_shutdown();
+    Input_shutdown();
+    Event_shutdown();    
     //TODO: Create memory shutdown call
     //Memory_shutdown();
     Logger_shutdown();

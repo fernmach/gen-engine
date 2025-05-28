@@ -52,6 +52,12 @@
  */
 #define EVENT_MAX_LISTENERS_PER_EVENT_TYPE 8
 
+/**
+ *  \brief
+ *      Identify if the joypad 2 will be used in the game
+ */
+#define INPUT_JOYPAD_2_ENABLED  1
+
 // // FAT16 need EVERDRIVE
 // #if ((MODULE_EVERDRIVE == 0) && (MODULE_FAT16 != 0))
 // #error "Cannot enable FAT16 module without EVERDRIVE module"

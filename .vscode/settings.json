@@ -23,6 +23,7 @@
         "asserts.h": "c",
         "memory_types.h": "c",
         "event.h": "c",
-        "game.h": "c"
+        "game.h": "c",
+        "types.h": "c"
     },
 }

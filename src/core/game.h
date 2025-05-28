@@ -20,6 +20,7 @@
 #include "asserts.h"
 #include "memory.h"
 #include "event.h"
+#include "input.h"
 
 extern void Game_init();
 extern void Game_update(fix16 dt);
