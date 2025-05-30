@@ -45,9 +45,9 @@ bool onCustomEvent(const Event* event, void* contextData) {
 void Game_init() {
 
     // Subscribe to a test event    
-    Event_subscribe(EVT_GAME_PAUSED, &onGamePaused, "Pausing the game()");    
-    Event_subscribe(EVT_GAME_RESUMED, &onGameResume, "Resuming the game()");
-    Event_subscribe(EVT_CUSTOM, &onCustomEvent, (fix16*)FIX16(75.2));
+    // Event_subscribe(EVT_GAME_PAUSED, &onGamePaused, "Pausing the game()");    
+    // Event_subscribe(EVT_GAME_RESUMED, &onGameResume, "Resuming the game()");
+    // Event_subscribe(EVT_CUSTOM, &onCustomEvent, (fix16*)FIX16(75.2));
 
     // Game specific initialization logic that isn't part of a generic system.
     // For example, global objects, or entities
@@ -58,7 +58,7 @@ void Game_update(fix16 dt) {
     // Game specific logic that isn't part of a generic system.
     // For example, checking for win/loss conditions, spawning new enemies, etc.
 
-    if( Input_isPressed(BUTTON_A) ){
+    if( Input_isPressed(JOY_1, BUTTON_A) ){
         VDP_drawText("A pressed", 1, 19);    
     }
 

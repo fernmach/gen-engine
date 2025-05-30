@@ -1,4 +1,5 @@
 #include "logger.h"
+#include "asserts.h"
 #include "input.h"
 #include <genesis.h>
 
@@ -6,7 +7,7 @@
 
 JoypadState g_joypad1;
 
-#if INPUT_JOYPAD_2_ENABLED
+#if INPUT_MAX_JOYPADS == 2
     JoypadState g_joypad2;
 #endif
 
@@ -30,7 +31,7 @@ void Input_init() {
     g_joypad1.previous = 0;    
     // JOY_setEventHandler( myJoyHandler ); // Optional: for interrupt-driven input
 
-    #if INPUT_JOYPAD_2_ENABLED
+    #if INPUT_MAX_JOYPADS == 2
         LOGGER_INFO("Input: Joypad 2 enabled.");
         g_joypad2.current = 0;
         g_joypad2.previous = 0;    
@@ -45,7 +46,7 @@ void Input_update() {
     g_joypad1.current = JOY_readJoypad(JOY_1);
 
     // For player 2
-    #if INPUT_JOYPAD_2_ENABLED
+    #if INPUT_MAX_JOYPADS == 2
         g_joypad2.previous = g_joypad2.current;
         g_joypad2.current = JOY_readJoypad(JOY_2);
     #endif
@@ -56,14 +57,59 @@ void Input_shutdown() {
 }
 
 // TODO: Include methods for other joypads
-bool Input_isPressed(u16 button_mask) {    
-    return (g_joypad1.current & button_mask);
+bool Input_isPressed(u8 joyId, u16 button_mask) {    
+    ASSERT_MSG(joyId<=INPUT_MAX_JOYPADS, "Invalid joypad id on Input_isPressed");
+
+    switch (joyId)
+    {
+        case JOY_1:
+            return (g_joypad1.current & button_mask);    
+            break;
+
+        #if INPUT_MAX_JOYPADS == 2
+        case JOY_2:
+            return (g_joypad2.current & button_mask);    
+            break;
+        #endif
+    }
+
+    return FALSE;    
 }
 
-bool Input_isJustPressed(u16 button_mask) {
-    return (g_joypad1.current & button_mask) && !(g_joypad1.previous & button_mask);
+bool Input_isJustPressed(u8 joyId, u16 button_mask) {
+    ASSERT_MSG(joyId<=INPUT_MAX_JOYPADS, "Invalid joypad id on Input_isJustPressed");
+    
+    switch (joyId)
+    {
+        case JOY_1:
+            return (g_joypad1.current & button_mask) && !(g_joypad1.previous & button_mask);
+            break;
+
+        #if INPUT_MAX_JOYPADS == 2
+        case JOY_2:
+            return (g_joypad2.current & button_mask) && !(g_joypad2.previous & button_mask); 
+            break;
+        #endif
+    }
+
+    return FALSE;    
 }
 
-bool Input_isReleased(u16 button_mask) {
-    return !(g_joypad1.current & button_mask) && (g_joypad1.previous & button_mask);
+bool Input_isReleased(u8 joyId, u16 button_mask) {
+    ASSERT_MSG(joyId<=INPUT_MAX_JOYPADS, "Invalid joypad id on Input_isReleased");
+    
+    switch (joyId)
+    {
+        case JOY_1:
+            return !(g_joypad1.current & button_mask) && (g_joypad1.previous & button_mask);
+            break;
+
+        #if INPUT_MAX_JOYPADS == 2
+        case JOY_2:
+            return !(g_joypad1.current & button_mask) && (g_joypad1.previous & button_mask);
+            break;
+        #endif
+    }
+
+    return FALSE;
 }

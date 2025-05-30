@@ -54,9 +54,19 @@
 
 /**
  *  \brief
- *      Identify if the joypad 2 will be used in the game
+ *      Identify if the joypad 2, 3, 4... will be used in the game
  */
-#define INPUT_JOYPAD_2_ENABLED  1
+// #define 	JOY_1   0x0000 
+// #define 	JOY_2   0x0001 
+// #define 	JOY_3   0x0002 
+// #define 	JOY_4   0x0003 
+// #define 	JOY_5   0x0004 
+// #define 	JOY_6   0x0005 
+// #define 	JOY_7   0x0006 
+// #define 	JOY_8   0x0007 
+// #define 	JOY_NUM   0x0008 
+// #define 	JOY_ALL   0xFFFF
+#define INPUT_MAX_JOYPADS JOY_1
 
 // // FAT16 need EVERDRIVE
 // #if ((MODULE_EVERDRIVE == 0) && (MODULE_FAT16 != 0))

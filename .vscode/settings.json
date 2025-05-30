@@ -24,6 +24,7 @@
         "memory_types.h": "c",
         "event.h": "c",
         "game.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "input_handler.h": "c"
     },
 }

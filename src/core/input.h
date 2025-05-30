@@ -28,8 +28,8 @@ void Input_shutdown();
 void Input_joyEventCallback(u16 joy, u16 changed, u16 state);
 
 // Helper functions
-bool Input_isPressed(u16 button_mask);      // Button is currently down
-bool Input_isJustPressed(u16 button_mask);  // Button was just pressed this frame
-bool Input_isReleased(u16 button_mask);     // Button was just released this frame
+bool Input_isPressed(u8 joyId, u16 button_mask);      // Button is currently down
+bool Input_isJustPressed(u8 joyId, u16 button_mask);  // Button was just pressed this frame
+bool Input_isReleased(u8 joyId, u16 button_mask);     // Button was just released this frame
 
 #endif // _INPUT_H
