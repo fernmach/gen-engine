@@ -30,9 +30,9 @@ typedef struct {
    PFN_onDraw draw;
 } GameEvents;
 
-void Game_init();
-void Game_update(fix16 dt);
-void Game_draw();
+extern void Game_init();
+extern void Game_update(fix16 dt);
+extern void Game_draw();
 
 extern GameEvents Game;
 
