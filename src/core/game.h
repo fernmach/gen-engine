@@ -16,7 +16,7 @@
 #include <genesis.h>
 
 // Game engine library imports
-#include "../core/types.h"
+#include "types.h"
 #include "logger.h"
 #include "asserts.h"
 #include "memory.h"
@@ -34,10 +34,6 @@ void Game_init();
 void Game_update(fix16 dt);
 void Game_draw();
 
-GameEvents Game = {
-    .init = Game_init,
-    .update = Game_update,
-    .draw = Game_draw
-};
+extern GameEvents Game;
 
 #endif // _ENG_GAME_H_

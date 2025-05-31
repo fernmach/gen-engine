@@ -6,41 +6,12 @@
 //#include "res_gfx.h"
 //#include "res_snd.h"
 
-// Specific Entity Collision Handler (e.g., for a player object)
-bool onGamePaused(const Event* event, void* contextData) {
-    LOGGER_INFO("Event fired. Type: %u (%s), values: %d, %d, context data: %s", 
-        event->type,
-        Event_getDescription(event->type),
-        event->data.u8_val[0],
-        event->data.u8_val[1],
-        (const char*)contextData
-    );
-    return TRUE;
-}
-
-// Specific Entity Collision Handler (e.g., for a player object)
-bool onGameResume(const Event* event, void* contextData) {
-    LOGGER_INFO("Event fired. Type: %u (%s), values: %d, %d, context data: %s", 
-        event->type,
-        Event_getDescription(event->type),
-        event->data.u8_val[0],
-        event->data.u8_val[1],
-        (const char*)contextData
-    );
-    return TRUE;
-}
-
-// Specific Entity Collision Handler (e.g., for a player object)
-bool onCustomEvent(const Event* event, void* contextData) {
-    LOGGER_INFO("Event fired. Type: %u (%s), values: %d, %d, context data: %s", 
-        event->type,
-        Event_getDescription(event->type),
-        event->data.fix16_val[0],
-        event->data.fix16_val[1],
-        (fix16*)contextData
-    );
-    return TRUE;
-}
+// Main game events initialization
+GameEvents Game = {
+    .init = Game_init,
+    .update = Game_update,
+    .draw = Game_draw
+};
 
 void Game_init() {
 
@@ -146,3 +117,40 @@ void Game_draw() {
     // e.g., VDP_drawText for score, UI elements, background layer scrolling.
     VDP_drawText("Game drawing ", 1, 22);
 }
+
+
+// // Specific Entity Collision Handler (e.g., for a player object)
+// bool onGamePaused(const Event* event, void* contextData) {
+//     LOGGER_INFO("Event fired. Type: %u (%s), values: %d, %d, context data: %s", 
+//         event->type,
+//         Event_getDescription(event->type),
+//         event->data.u8_val[0],
+//         event->data.u8_val[1],
+//         (const char*)contextData
+//     );
+//     return TRUE;
+// }
+
+// // Specific Entity Collision Handler (e.g., for a player object)
+// bool onGameResume(const Event* event, void* contextData) {
+//     LOGGER_INFO("Event fired. Type: %u (%s), values: %d, %d, context data: %s", 
+//         event->type,
+//         Event_getDescription(event->type),
+//         event->data.u8_val[0],
+//         event->data.u8_val[1],
+//         (const char*)contextData
+//     );
+//     return TRUE;
+// }
+
+// // Specific Entity Collision Handler (e.g., for a player object)
+// bool onCustomEvent(const Event* event, void* contextData) {
+//     LOGGER_INFO("Event fired. Type: %u (%s), values: %d, %d, context data: %s", 
+//         event->type,
+//         Event_getDescription(event->type),
+//         event->data.fix16_val[0],
+//         event->data.fix16_val[1],
+//         (fix16*)contextData
+//     );
+//     return TRUE;
+// }

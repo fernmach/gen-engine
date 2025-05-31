@@ -15,6 +15,7 @@
 
 // game engine declarations
 #include "config.h"
+#include "types.h"
 #include "logger.h"
 #include "asserts.h"
 #include "memory.h"
@@ -58,7 +59,8 @@ static inline void Engine_init() {
     LOGGER_INFO("SGDK hardware initialized");
 
     // Initialize Game Specifics    
-    Game_init(); // Create initial entities, load resources etc.
+    //Game_init(); // Create initial entities, load resources etc.
+    Game.init();
     LOGGER_INFO("Game initialized");
 }
 
@@ -70,12 +72,14 @@ static inline void Engine_update(fix16 delta_time) {
     // MovementSystem_update(delta_time);
     // PlayerControlSystem_update();
     // Game-specific updates not covered by generic systems
-    Game_update(delta_time);
+    //Game_update();
+    Game.update(delta_time);    
 
     // 3. Draw/Render
     // SGDK handles sprite list updates, but you might have 
     // VDP background updates etc.    
-    Game_draw(); 
+    //Game_draw(); 
+    Game.draw();
 
     // 3.1 Optionl display debug features 
     // Show on screen CUP load if configured
