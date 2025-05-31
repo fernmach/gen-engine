@@ -29,9 +29,6 @@ static inline void Engine_init() {
     // Initialize memory tracking subsystem
     Memory_init();
 
-    // Initialize event subsystem
-    Event_init();
-
     // SGDK Hardware Initialization        
     // Disable interrupts during VDP initialization
     SYS_disableInts();
@@ -39,8 +36,7 @@ static inline void Engine_init() {
     SPR_init(); // Initialize sprite engine (adjust as needed based on your game)        
 
     // Initialize engine input sybsystem.
-    //JOY_init();
-    Input_init(); //SGDK joypad system is initialized inside
+    JOY_init();    
 
     // Initialize the Video Display Processor (VDP)
     VDP_init();
@@ -51,6 +47,12 @@ static inline void Engine_init() {
 
     // Enable interrupts again
     SYS_enableInts();
+
+     //Input subsystem initialization
+    Input_init();
+
+    // Initialize event subsystem
+    Event_init();
 
     // KLog is often initialized by SGDK itself, but good to be aware    
     LOGGER_INFO("SGDK hardware initialized");

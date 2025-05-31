@@ -13,19 +13,21 @@ JoypadState g_joypad1;
 
 // SGDK joy event callback. Registered on input init.
 // TODO: Is it better to use this event to get all button states in one go?
-void Input_joyEventCallback(u16 joy, u16 changed, u16 state) {
-    LOGGER_DEBUG("Input: Joy %d event fired", joy);    
-}
+// void Input_joyEventCallback(u16 joy, u16 changed, u16 state) {
+//     LOGGER_DEBUG("Input: Joy %d event fired", joy);    
+// }
 
 void Input_init() {
 
     // Initialize SGDK joy sybsystem
-    JOY_init();
-    LOGGER_INFO("Input: Initializing SGDK joy subsystem: JOY_Init().");
+    // This part of the code is only needed if the eventhandler is set here.
+    // Otherwise the engine will take care of the initialization
+    // JOY_init();
+    // LOGGER_INFO("Input: Initializing SGDK joy subsystem: JOY_Init().");
 
     // Register sgdk's vblank event handler
-    JOY_setEventHandler( &Input_joyEventCallback );
-    LOGGER_INFO("Input: Registering SGDK joy event handler.");
+    //JOY_setEventHandler( &Input_joyEventCallback );
+    //LOGGER_INFO("Input: Registering SGDK joy event handler.");
 
     g_joypad1.current = 0;
     g_joypad1.previous = 0;    
