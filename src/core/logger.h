@@ -8,8 +8,8 @@
  * (Uses Gens KMod logging methods)
  */
 
-#ifndef _LOGGER_H_
-#define _LOGGER_H_
+#ifndef _ENG_LOGGER_H_
+#define _ENG_LOGGER_H_
 
 #include "config.h"
 
@@ -77,4 +77,4 @@
 
 #endif // LOGGER_ENABLED
 
-#endif // _LOGGER_H_
+#endif // _ENG_LOGGER_H_

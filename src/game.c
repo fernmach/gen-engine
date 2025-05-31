@@ -146,4 +146,3 @@ void Game_draw() {
     // e.g., VDP_drawText for score, UI elements, background layer scrolling.
     VDP_drawText("Game drawing ", 1, 22);
 }
-

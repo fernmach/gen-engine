@@ -7,8 +7,8 @@
  * Provides wrappers for engine/game asserts (Uses Gens kDebug methods)
  */
 
-#ifndef _ASSERTS_H_
-#define _ASSERTS_H_
+#ifndef _ENG_ASSERTS_H_
+#define _ENG_ASSERTS_H_
 
 #include "config.h"
 
@@ -46,4 +46,4 @@
 
 #endif // ASSERTS_ENABLED
 
-#endif // _ASSERTS_H_
+#endif // _ENG_ASSERTS_H_

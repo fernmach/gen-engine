@@ -7,8 +7,8 @@
  * Provides the game engine main events and engine entry point
  */
 
-#ifndef _ENGINE_H_
-#define _ENGINE_H_
+#ifndef _ENG_MAIN_H_
+#define _ENG_MAIN_H_
 
 // Forward declaration for SGDK types
 #include <genesis.h>
@@ -132,4 +132,4 @@ static inline int Engine_run() {
     return 0;    
 }
 
-#endif // _GEN_ENGINE_H_
+#endif // _ENG_MAIN_H_

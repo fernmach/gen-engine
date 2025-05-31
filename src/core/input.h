@@ -1,6 +1,6 @@
 // input.h
-#ifndef _INPUT_H
-#define _INPUT_H
+#ifndef _ENG_INPUT_H_
+#define _ENG_INPUT_H_
 
 #include "config.h"
 //#include <genesis.h>
@@ -32,4 +32,4 @@ bool Input_isPressed(u8 joyId, u16 button_mask);      // Button is currently dow
 bool Input_isJustPressed(u8 joyId, u16 button_mask);  // Button was just pressed this frame
 bool Input_isReleased(u8 joyId, u16 button_mask);     // Button was just released this frame
 
-#endif // _INPUT_H
+#endif // _ENG_INPUT_H_

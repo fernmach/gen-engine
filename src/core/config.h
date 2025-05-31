@@ -7,8 +7,8 @@
  * Defines some specific compilation option of the engine.
  */
 
-#ifndef _ENGINE_CONFIG_H_
-#define _ENGINE_CONFIG_H_
+#ifndef _ENG_CONFIG_H_
+#define _ENG_CONFIG_H_
 
 /**
  *  \brief
@@ -74,5 +74,4 @@
 // #endif
 
 
-#endif // _ENGINE_CONFIG_H_
-
+#endif // _ENG_CONFIG_H_

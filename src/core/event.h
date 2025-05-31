@@ -1,5 +1,5 @@
-#ifndef _EVENT_H_
-#define _EVENT_H_
+#ifndef _ENG_EVENT_H_
+#define _ENG_EVENT_H_
 
 #include "config.h"
 
@@ -80,4 +80,4 @@ char* Event_getDescription(const EventType type);
 // Helper to quickly publish an event with no specific data
 // void EventBus_PublishType(EventType type);
 
-#endif //_EVENT_H_
+#endif //_ENG_EVENT_H_
