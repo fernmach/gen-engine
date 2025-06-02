@@ -15,20 +15,34 @@ GameEvents Game = {
 
 void Game_init() {
 
-    EntityId ball = Entity_create();
-    PositionComponent position = {100, 100};
+    // EntityId ball = Entity_create();
+    // PositionComponent position = {150, 150};
 
-    char message[40];
-    sprintf(message, "Entity id: %d", ball);
-    VDP_drawText(message, 1, 19);
-    VDP_drawText("Game initialized", 1, 20);
+    // char message[40];
+    // sprintf(message, "Entity id: %d", ball);
+    // VDP_drawText(message, 1, 19);
+    // VDP_drawText("Game initialized", 1, 20);
 
-    Entity_addComponent(ball, COMPONENT_POSITION, &position);
-    //Entity_setComponentValue(ball, COMPONENT_POSITION, &position);
+    // Entity_addComponent(ball, COMPONENT_POSITION, NULL);
+    // Entity_setComponentValue(ball, COMPONENT_POSITION, &position);    
     
-    
-    PositionComponent* anotherPos = (PositionComponent*)Entity_getComponent(ball, COMPONENT_POSITION);
-    LOGGER_DEBUG("position x %d, y %d", anotherPos->x, anotherPos->y);
+    // LOGGER_DEBUG("first call to get component");
+    // PositionComponent* anotherPos = (PositionComponent*)Entity_getComponent(ball, COMPONENT_POSITION);
+    // LOGGER_DEBUG("position x %d, y %d", anotherPos->x, anotherPos->y);
+
+    // Entity_removeComponent(ball, COMPONENT_POSITION);
+
+    // //if (Entity_hasComponent(ball, COMPONENT_POSITION)) {
+    // PositionComponent* anotherPos2 = (PositionComponent*)Entity_getComponent(ball, COMPONENT_POSITION);    
+    // if (anotherPos2 != NULL) {
+    //     LOGGER_DEBUG("position x %d, y %d", anotherPos2->x, anotherPos2->y);
+    // } else {
+    //     LOGGER_DEBUG("Removed position from ball");
+    // }
+
+    // Entity_destroy(ball);
+
+    // Entity_addComponent(ball, COMPONENT_VELOCITY, NULL);
 
     // Entity_addVelocityComponent(ball, 0, 0);
     // Entity_addSpriteComponent(ball, &spr_donut, PAL0);

@@ -5,18 +5,23 @@
 #include "components.h"
 
 #define ASSERT_MAX_ENTITY(method) \
+    LOGGER_DEBUG("ECS: %s. Entity: %d, Max: %u", #method, id, ECS_MAX_ENTITIES); \
     ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at " #method);
 
 #define ASSERT_INACTIVE_ENTITY(method) \
+    LOGGER_DEBUG("ECS: %s. Entity: %d, Active: %u", #method, id, g_entity_active[id]); \
     ASSERT_MSG(g_entity_active[id], "ECS: Inactive entity id provided at " #method);
 
 #define ASSERT_COMPONENT_TYPE(method) \
+    LOGGER_DEBUG("ECS: %s. Entity: %d, type: %u", #method, id, type); \
     ASSERT_MSG(type > 0 && type < ECS_MAX_COMPONENTS, "ECS: Inactive entity id provided at" #method);
 
 #define ASSERT_ALL(method) \
     ASSERT_MAX_ENTITY (method) \
     ASSERT_INACTIVE_ENTITY (method) \
     ASSERT_COMPONENT_TYPE (method) \
+
+//LOGGER_FATAL("ECS: Error while removing component value. Entity: %d, Component: %u", id, type);
 
 // --- Global component array definitions ---
 PositionComponent       g_positions[ECS_MAX_ENTITIES];
@@ -49,12 +54,11 @@ void ECS_init() {
 }
 
 EntityId Entity_create() {
-
     // Loop way
     for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
         if (!g_entity_active[i]) {
             g_entity_active[i] = TRUE;
-            g_entity_component_masks[i] = COMPONENT_NONE; // Reset mask for the new entity
+            g_entity_component_masks[i] = COMPONENT_NONE;
             // Optional: Clear component data for this entity
             return i;
         }
@@ -73,20 +77,19 @@ EntityId Entity_create() {
 }
 
 void Entity_destroy(EntityId id) {   
-    ASSERT_MAX_ENTITY("Entity_destroy")
-    ASSERT_INACTIVE_ENTITY("Entity_destroy")    
+    ASSERT_MAX_ENTITY("Entity_destroy");
+    ASSERT_INACTIVE_ENTITY("Entity_destroy");
 
-    //if (id < ECS_MAX_ENTITIES && g_entity_active[id]) {
-        g_entity_active[id] = FALSE;
-        g_entity_component_masks[id] = COMPONENT_NONE; // Clear the mask
+    g_entity_active[id] = FALSE;
+    g_entity_component_masks[id] = COMPONENT_NONE; // Clear the mask
 
-        /*if (g_sprites[id].sgdk_sprite != NULL) { // Example of component-specific cleanup
-            SPR_releaseSprite(g_sprites[id].sgdk_sprite);
-            g_sprites[id].sgdk_sprite = NULL;
-        }*/
-        // Note: The actual data in g_positions[id], g_velocities[id] etc.
-        // is still there but considered "garbage" because the mask says
-        // the entity no longer "has" those components.
+    /*if (g_sprites[id].sgdk_sprite != NULL) { // Example of component-specific cleanup
+        SPR_releaseSprite(g_sprites[id].sgdk_sprite);
+        g_sprites[id].sgdk_sprite = NULL;
+    }*/
+    // Note: The actual data in g_positions[id], g_velocities[id] etc.
+    // is still there but considered "garbage" because the mask says
+    // the entity no longer "has" those components.
     //}        
     
     // -- POOL WAY --
@@ -108,8 +111,8 @@ void Entity_destroy(EntityId id) {
 }
 
 void Entity_setComponentValue(EntityId id, ComponentType type, void* values) {
-    ASSERT_ALL("Entity_setComponentValue")
-    ASSERT_MSG(values != NULL, "ECS: Parameter 'values' required")
+    ASSERT_ALL("Entity_setComponentValue");
+    ASSERT_MSG(values != NULL, "ECS: Parameter 'values' required");
 
     if(type == COMPONENT_POSITION) {
         // Cast 'values' to a PositionComponent pointer and dereference it
@@ -126,69 +129,60 @@ void Entity_setComponentValue(EntityId id, ComponentType type, void* values) {
 }
 
 void* Entity_getComponent(EntityId id, ComponentType type) {
-    ASSERT_ALL("Entity_getComponent")    
+    ASSERT_ALL("Entity_getComponent");
+    //ASSERT_MSG(Entity_hasComponent(id, type),
+    //    "ECS: Component not found in entity");
 
-    if(type == COMPONENT_POSITION) {            
-        return &g_positions[id];
-    }
+    // Is the component attached to the entity (Entity_hasComponent)
+    if ((g_entity_component_masks[id] & type) != 0) {
+        if(type == COMPONENT_POSITION) {        
+            return &g_positions[id]  ;
+        }
 
-    if(type == COMPONENT_VELOCITY) {
-        return &g_velocities[id];
+        if(type == COMPONENT_VELOCITY) {
+            return &g_velocities[id];
+        }
     }
 
     return NULL;
 }
 
 void Entity_addComponent(EntityId id, ComponentType type, void* value) {
-    ASSERT_ALL("Entity_addComponent")
+    ASSERT_ALL("Entity_addComponent");
 
     //if (id < ECS_MAX_ENTITIES && g_entity_active[id]) {
     g_entity_component_masks[id] |= type;
 
     if (value != NULL) {
-        Entity_setComponentValue(id, type, &value);
+        Entity_setComponentValue(id, type, value);
     }
-        //return;
-        // Note: You might want to initialize the component data here
-        // e.g., if (component_mask == COMPONENT_POSITION) { memset(&g_positions[id], 0, sizeof(PositionComponent)); }
-        // Or, more typically, the code that calls addComponent is responsible for also setting the data.
-    //}
-    //LOGGER_FATAL("ECS: Error while adding component value. Entity: %d, Component: %u", id, type);
+
+    // Note: You might want to initialize the component data here
+    // e.g., if (component_mask == COMPONENT_POSITION) { memset(&g_positions[id], 0, sizeof(PositionComponent)); }
+    // Or, more typically, the code that calls addComponent is responsible for also setting the data.    
 }
 
 void Entity_removeComponent(EntityId id, ComponentType type) {
-    ASSERT_ALL("Entity_removeComponent")
+    ASSERT_ALL("Entity_removeComponent");
 
-    //if (id < ECS_MAX_ENTITIES && g_entity_active[id]) {
-        g_entity_component_masks[id] &= ~type;
-      //  return;
-        // Optional: Zero out component data (g_positions[id] = {0,0};)
-        // This helps if you're worried about stale data, but the mask prevents its use.
-    //}
-    //LOGGER_FATAL("ECS: Error while removing component value. Entity: %d, Component: %u", id, type);
+    g_entity_component_masks[id] &= ~type;
+    // Optional: Zero out component data (g_positions[id] = {0,0};)
+    // This helps if you're worried about stale data, but the mask prevents its use.
 }
 
 // Checks if an entity has AT LEAST ONE of the flags in 'component_mask_query'
 // (Usually you want to check for a single specific flag)
 bool Entity_hasComponent(EntityId id, ComponentType type_query) {    
-    ASSERT_MAX_ENTITY("Entity_hasComponent")
-    ASSERT_INACTIVE_ENTITY("Entity_hasComponent")
-        
-    //if (id < ECS_MAX_ENTITIES && g_entity_active[id]) {
-        return (g_entity_component_masks[id] & type_query) != 0;
-        // To check for a single specific flag strictly:
-        // return (g_entity_component_masks[id] & component_mask_query) == component_mask_query;
-    //}
-    //return FALSE;
+    ASSERT_MAX_ENTITY("Entity_hasComponent");
+    ASSERT_INACTIVE_ENTITY("Entity_hasComponent");
+
+    return (g_entity_component_masks[id] & type_query) != 0;
 }
 
 // Checks if an entity has ALL the component flags set in 'required_mask'
 bool Entity_hasAllComponents(EntityId id, ComponentMask required_mask) {
-    ASSERT_MAX_ENTITY("Entity_hasAllComponents")
-    ASSERT_INACTIVE_ENTITY("Entity_hasAllComponents")
+    ASSERT_MAX_ENTITY("Entity_hasAllComponents");
+    ASSERT_INACTIVE_ENTITY("Entity_hasAllComponents");
         
-    //if (id < ECS_MAX_ENTITIES && g_entity_active[id]) {
-        return (g_entity_component_masks[id] & required_mask) == required_mask;
-    //}
-    //return FALSE;
+    return (g_entity_component_masks[id] & required_mask) == required_mask;    
 }
