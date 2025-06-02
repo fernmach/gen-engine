@@ -30,4 +30,15 @@ void Entity_removeComponent(EntityId id, ComponentType type);
 bool Entity_hasComponent(EntityId id, ComponentType type); // Checks for a single component
 bool Entity_hasAllComponents(EntityId id, ComponentMask types); // Checks for a set of components
 
+// Add a position component to the specified entity
+static inline void Entity_addSpriteComponent(EntityId entityId, const SpriteDefinition *spriteDef, u8 palette) {
+    Entity_addComponent(entityId, COMPONENT_SPRITE, NULL);
+    g_sprites[entityId].sgdkSprite = SPR_addSprite(
+                             spriteDef,
+                             0,                                     
+                             0,                                     
+                             TILE_ATTR(palette, TRUE, FALSE, FALSE) 
+                         ); // Palette, priority, flip        
+}
+
 #endif // _ENG_ECS_H_

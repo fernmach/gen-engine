@@ -15,19 +15,39 @@ GameEvents Game = {
 
 void Game_init() {
 
-    // EntityId ball = Entity_create();
-    // PositionComponent position = {150, 150};
+    EntityId ball = Entity_create();
+    PositionComponent position = {150, 150};
 
-    // char message[40];
-    // sprintf(message, "Entity id: %d", ball);
-    // VDP_drawText(message, 1, 19);
-    // VDP_drawText("Game initialized", 1, 20);
+    char message[40];
+    sprintf(message, "Entity id: %d", ball);
+    VDP_drawText(message, 1, 19);
+    VDP_drawText("Game initialized", 1, 20);
 
-    // Entity_addComponent(ball, COMPONENT_POSITION, NULL);
-    // Entity_setComponentValue(ball, COMPONENT_POSITION, &position);    
+    // Sprite* ballSprite =  SPR_addSprite(                
+    //                         &spr_donut,
+    //                         0,                                     
+    //                         0,                                     
+    //                         TILE_ATTR(PAL0, TRUE, FALSE, FALSE)
+    //                     ); // Palette, priority, flip
+
+    Entity_addComponent(ball, COMPONENT_POSITION, &position);
+    //Entity_addComponent(ball, COMPONENT_SPRITE, &ballSprite);
+
+    Entity_addSpriteComponent(ball, &spr_donut, PAL0);
+    //Entity_setComponentValue(ball, COMPONENT_POSITION, );
     
     // LOGGER_DEBUG("first call to get component");
     // PositionComponent* anotherPos = (PositionComponent*)Entity_getComponent(ball, COMPONENT_POSITION);
+    // LOGGER_DEBUG("position x %d, y %d", anotherPos->x, anotherPos->y);
+
+    
+    SpriteComponent* ballSprite = (SpriteComponent*)Entity_getComponent(ball, COMPONENT_SPRITE);
+    ballSprite->sgdkSprite->x = position.x;
+
+    LOGGER_DEBUG("first call to get component %u, %d", ballSprite, ballSprite->sgdkSprite->x);
+    //ballSprite->x = 250;
+    //ballSprite->y = 250;
+
     // LOGGER_DEBUG("position x %d, y %d", anotherPos->x, anotherPos->y);
 
     // Entity_removeComponent(ball, COMPONENT_POSITION);

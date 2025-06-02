@@ -125,6 +125,11 @@ void Entity_setComponentValue(EntityId id, ComponentType type, void* values) {
     if(type == COMPONENT_VELOCITY) {            
         g_velocities[id] = *(VelocityComponent*)values;
         return;
+    }
+
+    if(type == COMPONENT_SPRITE) {
+        g_sprites[id] = *(SpriteComponent*)values;
+        return;
     }    
 }
 
@@ -136,11 +141,15 @@ void* Entity_getComponent(EntityId id, ComponentType type) {
     // Is the component attached to the entity (Entity_hasComponent)
     if ((g_entity_component_masks[id] & type) != 0) {
         if(type == COMPONENT_POSITION) {        
-            return &g_positions[id]  ;
+            return (void*)&g_positions[id];
         }
 
         if(type == COMPONENT_VELOCITY) {
-            return &g_velocities[id];
+            return (void*)&g_velocities[id];
+        }
+
+        if(type == COMPONENT_SPRITE) {
+            return (void*)&g_sprites[id];
         }
     }
 
@@ -166,8 +175,22 @@ void Entity_removeComponent(EntityId id, ComponentType type) {
     ASSERT_ALL("Entity_removeComponent");
 
     g_entity_component_masks[id] &= ~type;
+
     // Optional: Zero out component data (g_positions[id] = {0,0};)
     // This helps if you're worried about stale data, but the mask prevents its use.
+    // Is the component attached to the entity (Entity_hasComponent)    
+    if(type == COMPONENT_POSITION) {        
+        g_positions[id] = (PositionComponent){0, 0};
+    }
+
+    if(type == COMPONENT_VELOCITY) {
+        g_velocities[id] = (VelocityComponent){0, 0};
+    }
+
+    if(type == COMPONENT_SPRITE) {            
+        SPR_releaseSprite(g_sprites[id].sgdkSprite);
+        g_sprites[id].sgdkSprite = NULL;
+    }    
 }
 
 // Checks if an entity has AT LEAST ONE of the flags in 'component_mask_query'

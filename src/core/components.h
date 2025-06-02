@@ -51,12 +51,12 @@ typedef struct {
 } VelocityComponent;
 
 // Sprite component
-// typedef struct {
-//     Sprite* sgdk_sprite;    // Pointer to the SGDK sprite object
-//                             // Added For collision or other logic    
-//                             // Add animation data, palette, etc. here if needed
-// } SpriteComponent;
-typedef Sprite* SpriteComponent;
+typedef struct {
+    Sprite* sgdkSprite;         // Pointer to the SGDK sprite object
+                            // Added For collision or other logic    
+                            // Add animation data, palette, etc. here if needed
+} SpriteComponent;
+//typedef Sprite* SpriteComponent;
 
 // --- Global Component Arrays ---
 // These arrays store the actual component data, indexed by EntityID
