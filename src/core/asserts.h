@@ -29,13 +29,13 @@
             KDebug_Halt();                                         \
         }                                                          
 
-    #define ASSERT_MSG(expr, message, ...)                             \
+    #define ASSERT_MSG(expr, message)                                  \
         if(expr) {                                                     \
         } else {                                                       \
             Assert_reportFailure(#expr, message, __FILE__, __LINE__);  \
             VDP_drawText("ASSERTION FAILED (KDebug halt)", 1, 24);     \
             KDebug_Halt();                                             \
-        }                                                                   
+        }
 
 #else
 

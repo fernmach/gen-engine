@@ -22,6 +22,8 @@
 #include "memory.h"
 #include "event.h"
 #include "input.h"
+#include "components.h"
+#include "ecs.h"
 
 // Main game event definition
 typedef struct {   

@@ -3,8 +3,8 @@
 #include "core/game.h"
 
 // include our own resources
-//#include "res_gfx.h"
-//#include "res_snd.h"
+#include "res_gfx.h"
+#include "res_snd.h"
 
 // Main game events initialization
 GameEvents Game = {
@@ -14,6 +14,24 @@ GameEvents Game = {
 };
 
 void Game_init() {
+
+    EntityId ball = Entity_create();
+    PositionComponent position = {100, 100};
+
+    char message[40];
+    sprintf(message, "Entity id: %d", ball);
+    VDP_drawText(message, 1, 19);
+    VDP_drawText("Game initialized", 1, 20);
+
+    Entity_addComponent(ball, COMPONENT_POSITION, &position);
+    //Entity_setComponentValue(ball, COMPONENT_POSITION, &position);
+    
+    
+    PositionComponent* anotherPos = (PositionComponent*)Entity_getComponent(ball, COMPONENT_POSITION);
+    LOGGER_DEBUG("position x %d, y %d", anotherPos->x, anotherPos->y);
+
+    // Entity_addVelocityComponent(ball, 0, 0);
+    // Entity_addSpriteComponent(ball, &spr_donut, PAL0);
 
     // Subscribe to a test event    
     // Event_subscribe(EVT_GAME_PAUSED, &onGamePaused, "Pausing the game()");    

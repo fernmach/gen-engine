@@ -68,6 +68,20 @@
 // #define 	JOY_ALL   0xFFFF
 #define INPUT_MAX_JOYPADS JOY_1
 
+/**
+ *  \brief
+ *      Adjusts the maximum number of entities that can exists in memory.
+ *      Adjust based on your game's needs and available RAM. 
+ */
+#define ECS_MAX_ENTITIES 64
+
+/**
+ *  \brief
+ *      Adjusts the maximum number of components that can exists in memory.
+ *      Adjust based on your game's needs and available RAM. 
+ */
+#define ECS_MAX_COMPONENTS 32
+
 // // FAT16 need EVERDRIVE
 // #if ((MODULE_EVERDRIVE == 0) && (MODULE_FAT16 != 0))
 // #error "Cannot enable FAT16 module without EVERDRIVE module"

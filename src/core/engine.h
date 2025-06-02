@@ -49,14 +49,16 @@ static inline void Engine_init() {
     // Enable interrupts again
     SYS_enableInts();
 
+    LOGGER_INFO("SGDK hardware initialized");
+
      //Input subsystem initialization
     Input_init();
 
     // Initialize event subsystem
     Event_init();
 
-    // KLog is often initialized by SGDK itself, but good to be aware    
-    LOGGER_INFO("SGDK hardware initialized");
+    // Initialize Entity subsystems
+    ECS_init();    
 
     // Initialize Game Specifics    
     //Game_init(); // Create initial entities, load resources etc.
