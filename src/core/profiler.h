@@ -11,31 +11,37 @@
     #define PROFILER_NAME_MAX_LEN 14 // Max length for profiler entry names (for display)
     #define PROFILER_AVERAGE_FRAMES 60 // Number of frames to average results over
 
+    // Helper for converting subticks to microseconds for calculations/display
+    // 1 sub-tick = 1/76800 s.
+    // So, to get microseconds: (subticks * 1,000,000) / 76800
+    // Simplify: (subticks * 1000000 / 100) / (76800 / 100) = (subticks * 10000) / 768
+    // Further simplify by dividing by 64 (GCD of 10000 and 768 is tricky, let's use a known factor):
+    // (subticks * 10000/64) / (768/64) = (subticks * 156.25) / 12 -- still involves float
+    // Let's use (subticks * 125) / 96  (multiplying by 1M/76800 = 1M/ (768*100) = 10000/768 = 125/9.6 -- bad)
+    // Exact: 1,000,000 / 76,800 = 10000 / 768 = 2500 / 192 = 625 / 48
+    #define PROFILER_SUBTICKS_TO_US(subticks) (((u32)(subticks) * 625) / 48)
+    // For display, we might need to scale to avoid overflow if u64 isn't fully supported by sprintf in SGDK's newlib nano.
+    // If values get too large for sprintf's %lu, we might need to show Kilo-uS or ms.
+
     typedef struct {
         char name[PROFILER_NAME_MAX_LEN + 1];
+        u32 startTimeSubTicks;
 
-        u32 HBlankStartTime; // Temporary storage for current call
-
-        // Stats for the current frame
-        u32 totalHBlanksThisFrame;
+        u32 totalSubTicksThisFrame;
         u32 callCountThisFrame;
-        u32 minHBlanksPerCallThisFrame;
-        u32 maxHBlanksPerCallThisFrame;
+        u32 minSubTicksPerCallThisFrame;
+        u32 maxSubTicksPerCallThisFrame;
 
-        // Accumulated stats for averaging
-        u32 accumulatedTotalHBlanks;
+        u32 accumulatedTotalSubTicks; // Use u64 for accumulator to prevent overflow over many frames
         u32 accumulatedCallCount;
-        // Note: Averaging min/max over frames is tricky. Simpler to show current frame's min/max
-        // or overall min/max since reset. Let's stick to overall for simplicity.
-        u32 overallMinHBlanks;
-        u32 overallMaxHBlanks;
+        u32 overallMinSubTicks;
+        u32 overallMaxSubTicks;
 
-        // Calculated averaged stats
-        u32 avgHBlanksPerCall;      // accumulatedTotalHBlanks / accumulatedCallCount
-        u32 avgHBlanksPerFrame;     // accumulatedTotalHBlanks / PROFILER_AVERAGE_FRAMES
-        u16 avgCallsPerFrame;       // accumulatedCallCount / PROFILER_AVERAGE_FRAMES
+        u32 avgSubTicksPerCall; // Will be calculated as accumulatedTotalSubTicks / accumulatedCallCount
+        u32 avgSubTicksPerFrame; // Will be calculated as accumulatedTotalSubTicks / PROFILER_FINE_AVERAGE_FRAMES
 
-        bool active; // Is this entry in use?
+        u16 avgCallsPerFrame;
+        bool active;
     } ProfilerEntry;
 
     void Profiler_Init(void);
@@ -81,6 +87,7 @@
     //#define PROFILE_SCOPE(id_var, name_str) static s16 id_var = -1; /* Keep compiler happy */
     #define PROFILE_SCOPE(id_var, name_str)
     #define PROFILE_END_SCOPE(id_var)
+    #define PROFILER_SUBTICKS_TO_US(subticks)
 
 #endif //PROFILER_ENABLED
 

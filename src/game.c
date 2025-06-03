@@ -31,7 +31,7 @@ VelocityComponent getRandomVelocity() {
 
 void createBall() {
 
-    if (ballsCount >= 10)
+    if (ballsCount >= 1)
         return;
 
     EntityId ball = Entity_create();    
