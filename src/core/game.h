@@ -20,6 +20,7 @@
 #include "utils.h"
 #include "logger.h"
 #include "asserts.h"
+#include "profiler.h"
 #include "memory.h"
 #include "event.h"
 #include "input.h"

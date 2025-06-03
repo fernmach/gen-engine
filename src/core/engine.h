@@ -18,6 +18,7 @@
 #include "types.h"
 #include "logger.h"
 #include "asserts.h"
+#include "profiler.h"
 #include "memory.h"
 #include "event.h"
 #include "input.h"
@@ -29,6 +30,9 @@
 static inline void Engine_init() {
     // Initialize game logger
     Logger_init(LOGGER_LEVEL_FATAL);
+
+    // Initialize profiler
+    Profiler_Init();
 
     // Initialize memory tracking subsystem
     Memory_init();
@@ -70,33 +74,60 @@ static inline void Engine_init() {
 }
 
 static inline void Engine_update(fix16 delta_time) {
-    // 1. Hadle Input update
-    Input_update();
 
-    // 2. Update Game Logic (Systems)    
+    Profiler_StartFrame(); // START PROFILING FOR THIS FRAME
+    
+    // 1. Hadle Input update
+    PROFILE_SCOPE(inpt_upda_id, "InputSys");
+    Input_update();
+    PROFILE_END_SCOPE(inpt_upda_id);
+
+    // 2. Update Game Logic (Systems)
+    PROFILE_SCOPE(move_upda_id, "MoveSys");
     MovementSystem_update(delta_time);
+    PROFILE_END_SCOPE(move_upda_id);
+
+    PROFILE_SCOPE(screen_upda_id, "ScreenSys");
     ScreenConstraintSystem_update();
+    PROFILE_END_SCOPE(screen_upda_id);
+
     // PlayerControlSystem_update();
     
     // Game-specific updates not covered by generic systems
     //Game_update();
+    PROFILE_SCOPE(game_upda_id, "GameUpdate");
     Game.update(delta_time);    
+    PROFILE_END_SCOPE(game_upda_id);
 
     // 3. Draw/Render
     // SGDK handles sprite list updates, but you might have 
     // VDP background updates etc.
+    PROFILE_SCOPE(render_upda_id, "RenderSys");
     RenderSystem_update();
+    PROFILE_END_SCOPE(render_upda_id);
+
     //Game_draw(); 
+    PROFILE_SCOPE(game_draw_id, "GameDraw");
     Game.draw();
+    PROFILE_END_SCOPE(game_draw_id);
 
     // 3.1 Optionl display debug features 
     // Show on screen CUP load if configured
     VDP_drawText("CPU:", 1, 0);
     VDP_showCPULoad(5, 0);
 
-    // Show FPS count on screen if configured
+    // // Show FPS count on screen if configured
     VDP_drawText("FPS:", 1, 1);
     VDP_showFPS(false, 5, 1);
+
+    // Finish profiling for the frame
+    Profiler_EndFrame();
+
+    // Draw profiler stats (usually at the end, overlayed)
+    // You might want a button to toggle this
+    // if (showProfiler) { // showProfiler is a bool you control via input
+    Profiler_DrawStats(1, 3);
+    // }
     
     // 4. SGDK Specific Updates
     SPR_update();            // Send sprite list to VDP

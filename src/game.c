@@ -58,13 +58,14 @@ void Game_init() {
     // Game specific initialization logic that isn't part of a generic system.
     // For example, global objects, or entities
     VDP_drawText("Game initialized", 1, 20);
+    
 }
 
 void Game_update(fix16 dt) {
     // Game specific logic that isn't part of a generic system.
     // For example, checking for win/loss conditions, spawning new enemies, etc.
-
-    if( Input_isPressed(JOY_1, BUTTON_A) ){
+    
+    if( Input_isPressed(JOY_1, BUTTON_A) ) {
         VDP_drawText("A pressed", 1, 19);
         //Memory_reportUsage();
     }
@@ -147,7 +148,7 @@ void Game_update(fix16 dt) {
     //     Event_unsubscribe(EVT_GAME_RESUMED, &onGameResume, "Resuming the game()");
     //     Event_unsubscribe(EVT_CUSTOM, &onCustomEvent, (fix16*)FIX16(75.2));
     //     stopEvents = TRUE;
-    // }
+    // }    
 }
 
 void Game_draw() {

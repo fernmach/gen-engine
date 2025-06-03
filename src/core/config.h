@@ -82,6 +82,12 @@
  */
 #define ECS_MAX_COMPONENTS 32
 
+/**
+ *  \brief
+ *      Set to 1 to turn game engine profiler. 
+ */
+#define PROFILER_ENABLED 1
+
 // // FAT16 need EVERDRIVE
 // #if ((MODULE_EVERDRIVE == 0) && (MODULE_FAT16 != 0))
 // #error "Cannot enable FAT16 module without EVERDRIVE module"
