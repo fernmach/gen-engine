@@ -28,6 +28,7 @@ typedef unsigned short u16;
     typedef enum {
         MEM_TAG_UNKNOWN = 0,
         MEM_TAG_LOGGER,
+        MEM_TAG_EVENT,
         MEM_TAG_SYSTEM,
         MEM_TAG_GAME_STATE,
         MEM_TAG_LEVEL_DATA,

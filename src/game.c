@@ -13,59 +13,42 @@ GameEvents Game = {
     .draw = Game_draw
 };
 
-void Game_init() {
+static EntityId ballsCount = 0;
 
-    EntityId ball = Entity_create();
-    PositionComponent position = {150, 150};
+PositionComponent getRandomPosition() {    
+    return (PositionComponent){
+        FIX16( getRandomNumberInRange(1, 200) ), 
+        FIX16( getRandomNumberInRange(1, 200) )
+    };
+}
 
-    char message[40];
-    sprintf(message, "Entity id: %d", ball);
-    VDP_drawText(message, 1, 19);
-    VDP_drawText("Game initialized", 1, 20);
+VelocityComponent getRandomVelocity() {    
+    return (VelocityComponent){
+        FIX16( getRandomNumberInRange(1, 100) ), 
+        FIX16( getRandomNumberInRange(1, 100) )
+    };
+}
 
-    // Sprite* ballSprite =  SPR_addSprite(                
-    //                         &spr_donut,
-    //                         0,                                     
-    //                         0,                                     
-    //                         TILE_ATTR(PAL0, TRUE, FALSE, FALSE)
-    //                     ); // Palette, priority, flip
+void createBall() {
+
+    if (ballsCount >= 10)
+        return;
+
+    EntityId ball = Entity_create();    
+    ScreenConstraintComponent contraint = {true, true};
+
+    PositionComponent position = getRandomPosition();
+    VelocityComponent velocity = getRandomVelocity();
 
     Entity_addComponent(ball, COMPONENT_POSITION, &position);
-    //Entity_addComponent(ball, COMPONENT_SPRITE, &ballSprite);
-
+    Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
+    Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &contraint);
     Entity_addSpriteComponent(ball, &spr_donut, PAL0);
-    //Entity_setComponentValue(ball, COMPONENT_POSITION, );
-    
-    // LOGGER_DEBUG("first call to get component");
-    // PositionComponent* anotherPos = (PositionComponent*)Entity_getComponent(ball, COMPONENT_POSITION);
-    // LOGGER_DEBUG("position x %d, y %d", anotherPos->x, anotherPos->y);
 
-    
-    SpriteComponent* ballSprite = (SpriteComponent*)Entity_getComponent(ball, COMPONENT_SPRITE);
-    ballSprite->sgdkSprite->x = position.x;
+    ballsCount++;
+}
 
-    LOGGER_DEBUG("first call to get component %u, %d", ballSprite, ballSprite->sgdkSprite->x);
-    //ballSprite->x = 250;
-    //ballSprite->y = 250;
-
-    // LOGGER_DEBUG("position x %d, y %d", anotherPos->x, anotherPos->y);
-
-    // Entity_removeComponent(ball, COMPONENT_POSITION);
-
-    // //if (Entity_hasComponent(ball, COMPONENT_POSITION)) {
-    // PositionComponent* anotherPos2 = (PositionComponent*)Entity_getComponent(ball, COMPONENT_POSITION);    
-    // if (anotherPos2 != NULL) {
-    //     LOGGER_DEBUG("position x %d, y %d", anotherPos2->x, anotherPos2->y);
-    // } else {
-    //     LOGGER_DEBUG("Removed position from ball");
-    // }
-
-    // Entity_destroy(ball);
-
-    // Entity_addComponent(ball, COMPONENT_VELOCITY, NULL);
-
-    // Entity_addVelocityComponent(ball, 0, 0);
-    // Entity_addSpriteComponent(ball, &spr_donut, PAL0);
+void Game_init() {
 
     // Subscribe to a test event    
     // Event_subscribe(EVT_GAME_PAUSED, &onGamePaused, "Pausing the game()");    
@@ -82,8 +65,11 @@ void Game_update(fix16 dt) {
     // For example, checking for win/loss conditions, spawning new enemies, etc.
 
     if( Input_isPressed(JOY_1, BUTTON_A) ){
-        VDP_drawText("A pressed", 1, 19);    
+        VDP_drawText("A pressed", 1, 19);
+        //Memory_reportUsage();
     }
+    
+    createBall();
 
     VDP_drawText("Game updating ", 1, 21);
 

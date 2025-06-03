@@ -1,4 +1,5 @@
 #include "logger.h"
+#include "memory.h"
 #include "event.h"
 
 // Listener structure
@@ -20,7 +21,9 @@ static EventListener g_event_listeners[EVT_MAX_EVENT_TYPES][EVENT_MAX_LISTENERS_
 // u8 is fine if EVENT_MAX_LISTENERS_PER_EVENT_TYPE <= 255
 static u8 g_event_listener_counts[EVT_MAX_EVENT_TYPES];// --- Implementation ---
 
-void Event_init(void) {    
+void Event_init(void) {
+    //void* listenersBlock = MEMORY_ALLOC(sizeof(g_event_listener_counts), MEM_TAG_EVENT);
+    //memset(listenersBlock, 0, sizeof(g_event_listener_counts));
     memset(g_event_listener_counts, 0, sizeof(g_event_listener_counts));
     memset(g_event_listeners, 0, sizeof(g_event_listeners));
     

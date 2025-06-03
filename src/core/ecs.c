@@ -5,15 +5,15 @@
 #include "components.h"
 
 #define ASSERT_MAX_ENTITY(method) \
-    LOGGER_DEBUG("ECS: %s. Entity: %d, Max: %u", #method, id, ECS_MAX_ENTITIES); \
+    /*LOGGER_DEBUG("ECS: %s. Entity: %d, Max: %u", #method, id, ECS_MAX_ENTITIES);*/ \
     ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at " #method);
 
 #define ASSERT_INACTIVE_ENTITY(method) \
-    LOGGER_DEBUG("ECS: %s. Entity: %d, Active: %u", #method, id, g_entity_active[id]); \
+    /*LOGGER_DEBUG("ECS: %s. Entity: %d, Active: %u", #method, id, g_entity_active[id]);*/ \
     ASSERT_MSG(g_entity_active[id], "ECS: Inactive entity id provided at " #method);
 
 #define ASSERT_COMPONENT_TYPE(method) \
-    LOGGER_DEBUG("ECS: %s. Entity: %d, type: %u", #method, id, type); \
+    /*LOGGER_DEBUG("ECS: %s. Entity: %d, type: %u", #method, id, type);*/ \
     ASSERT_MSG(type > 0 && type < ECS_MAX_COMPONENTS, "ECS: Inactive entity id provided at" #method);
 
 #define ASSERT_ALL(method) \
@@ -24,9 +24,10 @@
 //LOGGER_FATAL("ECS: Error while removing component value. Entity: %d, Component: %u", id, type);
 
 // --- Global component array definitions ---
-PositionComponent       g_positions[ECS_MAX_ENTITIES];
-VelocityComponent       g_velocities[ECS_MAX_ENTITIES];
-SpriteComponent         g_sprites[ECS_MAX_ENTITIES];
+PositionComponent           g_positions[ECS_MAX_ENTITIES];
+VelocityComponent           g_velocities[ECS_MAX_ENTITIES];
+SpriteComponent             g_sprites[ECS_MAX_ENTITIES];
+ScreenConstraintComponent   g_screen[ECS_MAX_ENTITIES];
 
 // --- Global entity tracking array definitions  ---
 bool g_entity_active[ECS_MAX_ENTITIES];
@@ -40,6 +41,7 @@ void ECS_init() {
     memset(g_positions, 0, sizeof(g_positions));
     memset(g_velocities, 0, sizeof(g_velocities));
     memset(g_sprites, 0, sizeof(g_sprites));
+    memset(g_screen, 0, sizeof(g_screen));
 
     memset(g_entity_active, FALSE, sizeof(g_entity_active));
 
@@ -118,6 +120,8 @@ void Entity_setComponentValue(EntityId id, ComponentType type, void* values) {
         // Cast 'values' to a PositionComponent pointer and dereference it
         // This copies the *contents* of the PositionComponent struct
         // pointed to by 'values' into g_positions[id].
+        //LOGGER_DEBUG("INSIDE component %d", ((PositionComponent*)values)->x);
+        //ASSERT_EXP(1!=0) ;
         g_positions[id] = *(PositionComponent*)values;
         return;
     }
@@ -129,6 +133,11 @@ void Entity_setComponentValue(EntityId id, ComponentType type, void* values) {
 
     if(type == COMPONENT_SPRITE) {
         g_sprites[id] = *(SpriteComponent*)values;
+        return;
+    }    
+
+    if(type == COMPONENT_SCREEN_CONSTRAINT) {
+        g_screen[id] = *(ScreenConstraintComponent*)values;
         return;
     }    
 }
@@ -150,6 +159,10 @@ void* Entity_getComponent(EntityId id, ComponentType type) {
 
         if(type == COMPONENT_SPRITE) {
             return (void*)&g_sprites[id];
+        }
+
+        if(type == COMPONENT_SCREEN_CONSTRAINT) {
+            return (void*)&g_screen[id];
         }
     }
 
@@ -181,16 +194,24 @@ void Entity_removeComponent(EntityId id, ComponentType type) {
     // Is the component attached to the entity (Entity_hasComponent)    
     if(type == COMPONENT_POSITION) {        
         g_positions[id] = (PositionComponent){0, 0};
+        return;
     }
 
     if(type == COMPONENT_VELOCITY) {
         g_velocities[id] = (VelocityComponent){0, 0};
+        return;
     }
 
     if(type == COMPONENT_SPRITE) {            
         SPR_releaseSprite(g_sprites[id].sgdkSprite);
         g_sprites[id].sgdkSprite = NULL;
-    }    
+        return;
+    }
+
+    if(type == COMPONENT_SCREEN_CONSTRAINT) {
+        g_screen[id] = (ScreenConstraintComponent){FALSE,FALSE};
+        return;
+    }
 }
 
 // Checks if an entity has AT LEAST ONE of the flags in 'component_mask_query'

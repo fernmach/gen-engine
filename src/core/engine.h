@@ -21,6 +21,9 @@
 #include "memory.h"
 #include "event.h"
 #include "input.h"
+#include "components.h"
+#include "ecs.h"
+#include "systems.h"
 #include "game.h"
 
 static inline void Engine_init() {
@@ -71,15 +74,18 @@ static inline void Engine_update(fix16 delta_time) {
     Input_update();
 
     // 2. Update Game Logic (Systems)    
-    // MovementSystem_update(delta_time);
+    MovementSystem_update(delta_time);
+    ScreenConstraintSystem_update();
     // PlayerControlSystem_update();
+    
     // Game-specific updates not covered by generic systems
     //Game_update();
     Game.update(delta_time);    
 
     // 3. Draw/Render
     // SGDK handles sprite list updates, but you might have 
-    // VDP background updates etc.    
+    // VDP background updates etc.
+    RenderSystem_update();
     //Game_draw(); 
     Game.draw();
 
