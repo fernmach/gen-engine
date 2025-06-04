@@ -26,6 +26,7 @@
 #include "input.h"
 #include "components.h"
 #include "ecs.h"
+#include "scene.h"
 
 // Main game event definition
 typedef struct {   
@@ -39,5 +40,6 @@ extern void Game_update(fix16 dt);
 extern void Game_draw();
 
 extern GameEvents Game;
+
 
 #endif // _ENG_GAME_H_

@@ -86,7 +86,7 @@
  *  \brief
  *      Set to 1 to turn game engine profiler. 
  */
-#define PROFILER_ENABLED 1
+#define PROFILER_ENABLED 0
 
 /**
  *  \brief

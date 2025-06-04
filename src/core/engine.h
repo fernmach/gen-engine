@@ -26,6 +26,7 @@
 #include "components.h"
 #include "ecs.h"
 #include "systems.h"
+#include "scene.h"
 #include "game.h"
 
 static inline void Engine_init() {
@@ -65,8 +66,11 @@ static inline void Engine_init() {
     // Initialize event subsystem
     Event_init();
 
-    // Initialize Entity subsystems
-    ECS_init();    
+    // Initialize entity subsystems
+    ECS_init();
+
+    // Initialize scene manager subsystem
+    SceneManager_init();
 
     // Initialize Game Specifics    
     //Game_init(); // Create initial entities, load resources etc.
@@ -97,7 +101,7 @@ static inline void Engine_update(fix16 delta_time) {
     // Game-specific updates not covered by generic systems
     //Game_update();
     PROFILE_SCOPE(game_upda_id, "GameUpdate");
-    Game.update(delta_time);    
+    Game.update(delta_time);
     PROFILE_END_SCOPE(game_upda_id);
 
     // 3. Draw/Render

@@ -19,6 +19,7 @@ extern ComponentMask g_entity_component_masks[ECS_MAX_ENTITIES]; // Stores the c
 
 // --- Entity Management ---
 void ECS_init();                    // Initialize all ECS data
+//void ECS_update();                // Updates all registered subsystems
 EntityId Entity_create();           // Get a new, active entity ID
 void Entity_destroy(EntityId id);   // Deactivate an entity and "free" its components
 

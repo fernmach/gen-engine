@@ -15,7 +15,9 @@ void Profiler_Init(void) {
         profilerEntries[i].active = FALSE;
         profilerEntries[i].overallMinSubTicks = MAX_U32; // Max u32
     }
-    profilerFrameCount = 0;    
+    profilerFrameCount = 0;
+
+    LOGGER_INFO("Initialized profiler subsystem");
 }
 
 s16 Profiler_Register(const char* name) {
