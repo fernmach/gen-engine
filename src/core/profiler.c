@@ -4,7 +4,7 @@
 #include "profiler.h"
 
 
-#ifdef PROFILER_ENABLED
+#if PROFILER_ENABLED
 
 ProfilerEntry profilerEntries[MAX_PROFILER_ENTRIES];
 u16 profilerFrameCount = 0; // For averaging
@@ -13,7 +13,7 @@ void Profiler_Init(void) {
     memset(profilerEntries, 0, sizeof(profilerEntries));
     for (int i = 0; i < MAX_PROFILER_ENTRIES; ++i) {
         profilerEntries[i].active = FALSE;
-        profilerEntries[i].overallMinSubTicks = 0xFFFFFFFF; // Max u32
+        profilerEntries[i].overallMinSubTicks = MAX_U32; // Max u32
     }
     profilerFrameCount = 0;    
 }
@@ -32,7 +32,7 @@ s16 Profiler_Register(const char* name) {
             strncpy(profilerEntries[i].name, name, PROFILER_NAME_MAX_LEN);
             profilerEntries[i].name[PROFILER_NAME_MAX_LEN] = '\0'; // Ensure null termination
             profilerEntries[i].active = TRUE;
-            profilerEntries[i].overallMinSubTicks = 0xFFFFFFFF;
+            profilerEntries[i].overallMinSubTicks = MAX_U32;
             LOGGER_DEBUG("Profiler: Registered '%s' to ID %d", name, i);
             return i;
         }
@@ -46,7 +46,7 @@ void Profiler_StartFrame(void) {
         if (profilerEntries[i].active) {
             profilerEntries[i].totalSubTicksThisFrame = 0;
             profilerEntries[i].callCountThisFrame = 0;
-            profilerEntries[i].minSubTicksPerCallThisFrame = 0xFFFFFFFF;
+            profilerEntries[i].minSubTicksPerCallThisFrame = MAX_U32;
             profilerEntries[i].maxSubTicksPerCallThisFrame = 0;
         }
     }
@@ -131,7 +131,7 @@ void Profiler_ResetAccumulatedStats(void) {
             profilerEntries[i].avgSubTicksPerCall = 0;
             profilerEntries[i].avgSubTicksPerFrame = 0;
             profilerEntries[i].avgCallsPerFrame = 0;
-            profilerEntries[i].overallMinSubTicks = 0xFFFFFFFF;
+            profilerEntries[i].overallMinSubTicks = MAX_U32;
             profilerEntries[i].overallMaxSubTicks = 0;
         }
     }
@@ -143,7 +143,9 @@ void Profiler_DrawStats(u16 x, u16 y) {
 
     sprintf(buffer, "Profiler(us) Avg/%df", PROFILER_AVERAGE_FRAMES);
     VDP_drawText(buffer, x, y++);
-    VDP_drawText("Name       TotFr Call MinC MaxC AvgC AvgFr", x, y++);
+    //VDP_drawText("Name         TotFr Call MinC MaxC AvgC AvgFr", x, y++);
+    // Col Widths:   12           6      3    4    4    4    5   = 38 + spaces
+    VDP_drawText("Name         TotFr MinC MaxC AvgC AvgFr", x, y++);
     // Col Widths:   12           6      3    4    4    4    5   = 38 + spaces
 
     for (int i = 0; i < MAX_PROFILER_ENTRIES; ++i) {
@@ -151,7 +153,7 @@ void Profiler_DrawStats(u16 x, u16 y) {
             ProfilerEntry* entry = &profilerEntries[i];
 
             u32 us_total_frame = PROFILER_SUBTICKS_TO_US(entry->totalSubTicksThisFrame);
-            u32 us_min_call_curr = (entry->minSubTicksPerCallThisFrame == 0xFFFFFFFF) ? 0 : PROFILER_SUBTICKS_TO_US(entry->minSubTicksPerCallThisFrame);
+            u32 us_min_call_curr = (entry->minSubTicksPerCallThisFrame == MAX_U32) ? 0 : PROFILER_SUBTICKS_TO_US(entry->minSubTicksPerCallThisFrame);
             u32 us_max_call_curr = PROFILER_SUBTICKS_TO_US(entry->maxSubTicksPerCallThisFrame);
             u32 us_avg_call = PROFILER_SUBTICKS_TO_US(entry->avgSubTicksPerCall);
             u32 us_avg_frame = PROFILER_SUBTICKS_TO_US(entry->avgSubTicksPerFrame);
@@ -161,10 +163,17 @@ void Profiler_DrawStats(u16 x, u16 y) {
             // %lu should be fine for u32. If us_total_frame > ~4.2M it overflows u32.
             // Max frame time in subticks: (1/60s) * 76800 subticks/s = 1280 subticks for NTSC.
             // Max us: 1280 * 625 / 48 = 16666 us. Fits u32.
-            sprintf(buffer, "%-*.*s %6lu %3lu %4lu %4lu %4lu %5lu",
-                    PROFILER_NAME_MAX_LEN, PROFILER_NAME_MAX_LEN, entry->name,
-                    us_total_frame,
-                    entry->callCountThisFrame,
+            // sprintf(buffer, "%-*.*s %6lu %3lu %4lu %4lu %4lu %5lu",
+            //         PROFILER_NAME_MAX_LEN, PROFILER_NAME_MAX_LEN, entry->name,
+            //         us_total_frame,
+            //         entry->callCountThisFrame,
+            //         us_min_call_curr,
+            //         us_max_call_curr,
+            //         us_avg_call,
+            //         us_avg_frame);
+            sprintf(buffer, "%-*.*s %5lu %4lu %4lu %4lu %5lu",
+                    PROFILER_NAME_MAX_LEN-3, PROFILER_NAME_MAX_LEN-3, entry->name,
+                    us_total_frame,                    
                     us_min_call_curr,
                     us_max_call_curr,
                     us_avg_call,

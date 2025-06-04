@@ -88,6 +88,12 @@
  */
 #define PROFILER_ENABLED 1
 
+/**
+ *  \brief
+ *      Set to 1 to turn game engine CPU load and FPS display. 
+ */
+#define PROFILER_FPS_CPU_ENABLED 1
+
 // // FAT16 need EVERDRIVE
 // #if ((MODULE_EVERDRIVE == 0) && (MODULE_FAT16 != 0))
 // #error "Cannot enable FAT16 module without EVERDRIVE module"

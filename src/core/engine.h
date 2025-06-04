@@ -16,6 +16,7 @@
 // game engine declarations
 #include "config.h"
 #include "types.h"
+#include "utils.h"
 #include "logger.h"
 #include "asserts.h"
 #include "profiler.h"
@@ -111,6 +112,7 @@ static inline void Engine_update(fix16 delta_time) {
     Game.draw();
     PROFILE_END_SCOPE(game_draw_id);
 
+    #if (PROFILER_FPS_CPU_ENABLED)
     // 3.1 Optionl display debug features 
     // Show on screen CUP load if configured
     VDP_drawText("CPU:", 1, 0);
@@ -119,6 +121,7 @@ static inline void Engine_update(fix16 delta_time) {
     // // Show FPS count on screen if configured
     VDP_drawText("FPS:", 1, 1);
     VDP_showFPS(false, 5, 1);
+    #endif
 
     // Finish profiling for the frame
     Profiler_EndFrame();

@@ -31,7 +31,7 @@ VelocityComponent getRandomVelocity() {
 
 void createBall() {
 
-    if (ballsCount >= 1)
+    if (ballsCount >= 10)
         return;
 
     EntityId ball = Entity_create();    
@@ -39,6 +39,7 @@ void createBall() {
 
     PositionComponent position = getRandomPosition();
     VelocityComponent velocity = getRandomVelocity();
+    //VelocityComponent velocity = (VelocityComponent){FIX16(-100),FIX16(0)};
 
     Entity_addComponent(ball, COMPONENT_POSITION, &position);
     Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);

@@ -24,7 +24,8 @@ void MovementSystem_update(fix16 dt) {
     for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
         if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {            
             g_positions[i].x += F16_mul(g_velocities[i].dx, dt);
-            g_positions[i].y += F16_mul(g_velocities[i].dy, dt);            
+            g_positions[i].y += F16_mul(g_velocities[i].dy, dt);
+            //LOGGER_DEBUG("Running %d %d", g_positions[i].x, g_positions[i].y);
         }
     }
 }
@@ -35,20 +36,26 @@ void ScreenConstraintSystem_update() {
 
     const u16 screen_width = VDP_getScreenWidth();
     const u16 screen_height = VDP_getScreenHeight();
+    //const u16 screen_width = 320;
+    //const u16 screen_height = 224;
+
+    //LOGGER_DEBUG("%d, %d", screen_width, screen_height);
 
     for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
         if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {
 
             // ... (screen bounds logic) ...
-            s16 screen_x = F16_toInt(g_positions[i].x);
-            s16 screen_y = F16_toInt(g_positions[i].y);
-
-            if (screen_x < 0) {                
+            //s16 screen_x = F16_toInt(g_positions[i].x);
+            //s16 screen_y = F16_toInt(g_positions[i].y);
+            
+            //screen x
+            if (F16_toInt(g_positions[i].x) < 0) {                
                 g_positions[i].x = FIX16(0);
                 g_velocities[i].dx = -g_velocities[i].dx;                
             }
-
-            if (screen_y < 0) {                
+            
+            //screen y
+            if (F16_toInt(g_positions[i].y) < 0) {                
                 g_positions[i].y = FIX16(0);
                 g_velocities[i].dy = -g_velocities[i].dy;
             }
@@ -62,32 +69,6 @@ void ScreenConstraintSystem_update() {
                 g_positions[i].y = FIX16(screen_height - g_sprites[i].sgdkSprite->definition->h);
                 g_velocities[i].dy = -g_velocities[i].dy;
             }
-            
-            // // If the sprite component is present needs to take it into consideration
-            // if ( Entity_hasComponent(i, COMPONENT_SPRITE) ) {
-
-                // if ((F16_toInt(g_positions[i].x) + g_sprites[i].sgdkSprite->definition->w) > screen_width) {                    
-                //     g_positions[i].x = FIX16(screen_width - g_sprites[i].sgdkSprite->definition->w);                    
-                //     g_velocities[i].dx = -g_velocities[i].dx;                    
-                // }
-
-                // if ((F16_toInt(g_positions[i].y) + g_sprites[i].sgdkSprite->definition->h) > screen_height) {
-                //     g_positions[i].y = FIX16(screen_height - g_sprites[i].sgdkSprite->definition->h);
-                //     g_velocities[i].dy = -g_velocities[i].dy;
-                // }
-
-            // } else {
-                              
-            //     if (screen_x > screen_width) {
-            //         g_positions[i].x = FIX16(screen_width);
-            //         g_velocities[i].dx = -g_velocities[i].dx;
-            //     }
-
-            //      if (screen_y > screen_height) {
-            //         g_positions[i].y = FIX16(screen_height);
-            //         g_velocities[i].dy = -g_velocities[i].dy;
-            //     }
-            // }
         }
     }
 }
