@@ -5,7 +5,7 @@
 static Scene* current_scene = NULL;
 static Scene* next_scene_request = NULL;
 
-void SceneManager_init(void) {
+void SceneManager_init() {
     current_scene = NULL;
     next_scene_request = NULL;
     // Any other global manager initialization if needed
@@ -17,11 +17,11 @@ void SceneManager_setNextScene(Scene* next_scene) {
     next_scene_request = next_scene;
 }
 
-Scene* SceneManager_getCurrentScene(void) {
+Scene* SceneManager_getCurrentScene() {
     return current_scene;
 }
 
-void SceneManager_Update(void) {
+void SceneManager_update(fix16 delta_time) {
     // Handle scene transition if requested
     if (next_scene_request != NULL) {
         if (current_scene != NULL && current_scene->destroy != NULL) {            
@@ -40,11 +40,11 @@ void SceneManager_Update(void) {
 
     // Update the current scene if it exists
     if (current_scene != NULL && current_scene->update != NULL) {
-        current_scene->update(current_scene);
+        current_scene->update(current_scene, delta_time);
     }
 }
 
-void SceneManager_Draw(void) {
+void SceneManager_draw() {
     // Draw the current scene if it exists
     if (current_scene != NULL && current_scene->draw != NULL) {
         current_scene->draw(current_scene);

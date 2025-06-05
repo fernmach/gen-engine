@@ -6,191 +6,134 @@
 #include "res_gfx.h"
 #include "res_snd.h"
 
-// Main game events initialization
-GameEvents Game = {
-    .init = Game_init,
-    .update = Game_update,
-    .draw = Game_draw
-};
+// Forward declare the scene instance 
+// so engine.h can see it via extern
+// do not remove or change this
+Scene main_game_scene;
 
-static EntityId ballsCount = 0;
+// --- Main Game Play Scene Specific Data (Optional) ---
+typedef struct {
+    EntityId ballsCount;
+    // Add other game-specific data that needs to persist for this scene
+} MainGameSceneData;
 
-PositionComponent getRandomPosition() {    
+// Static instance for this scene's data
+static MainGameSceneData main_scene_data_gameplay;
+
+// Helper initialization functions
+PositionComponent MainGameScene_getRandomPosition() {    
     return (PositionComponent){
         FIX16( getRandomNumberInRange(1, 200) ), 
         FIX16( getRandomNumberInRange(1, 200) )
     };
 }
 
-VelocityComponent getRandomVelocity() {    
+VelocityComponent MainGameScene_getRandomVelocity() {    
     return (VelocityComponent){
         FIX16( getRandomNumberInRange(1, 100) ), 
         FIX16( getRandomNumberInRange(1, 100) )
     };
 }
 
-void createBall() {
+void MainGameScene_createBall(MainGameSceneData* data) {
 
-    if (ballsCount >= 10)
+    if (data->ballsCount >= 10)
         return;
 
-    EntityId ball = Entity_create();    
-    ScreenConstraintComponent contraint = {true, true};
-
-    PositionComponent position = getRandomPosition();
-    VelocityComponent velocity = getRandomVelocity();
-    //VelocityComponent velocity = (VelocityComponent){FIX16(-100),FIX16(0)};
+    EntityId ball = Entity_create();
+    ScreenConstraintComponent constraint = {true, true}; // Corrected typo 'contraint'
+    PositionComponent position = MainGameScene_getRandomPosition();
+    VelocityComponent velocity = MainGameScene_getRandomVelocity();
 
     Entity_addComponent(ball, COMPONENT_POSITION, &position);
     Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
-    Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &contraint);
-    Entity_addSpriteComponent(ball, &spr_donut, PAL0);
+    Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
+    Entity_addSpriteComponent(ball, &spr_donut, PAL0); // Assuming COMPONENT_SPRITE exists
 
-    ballsCount++;
+    data->ballsCount++;
 }
 
-void Game_init() {
+// Main Scene initialization
+void MainGameScene_init(Scene* scene) {
 
-    // Subscribe to a test event    
-    // Event_subscribe(EVT_GAME_PAUSED, &onGamePaused, "Pausing the game()");    
-    // Event_subscribe(EVT_GAME_RESUMED, &onGameResume, "Resuming the game()");
-    // Event_subscribe(EVT_CUSTOM, &onCustomEvent, (fix16*)FIX16(75.2));
+    scene->data = &main_scene_data_gameplay; // Link scene's data pointer
+    MainGameSceneData* data = (MainGameSceneData*)scene->data;
+
+    data->ballsCount = 0; // Initialize scene-specific data
 
     // Game specific initialization logic that isn't part of a generic system.
-    // For example, global objects, or entities
-    VDP_drawText("Game initialized", 1, 20);
-    
+    // Load resources specific to this game scene
+    // e.g., PAL_setPalette(PAL0, spr_donut.palette->data, DMA);
+    // XGM_startPlay(my_game_music);
+
+    // Your existing Game_init logic:
+    VDP_drawText("MainGameScene: init", 1, 20); // For debugging
+
+    LOGGER_INFO("MainGameScene: Initialized");    
 }
 
-void Game_update(fix16 dt) {
-    // Game specific logic that isn't part of a generic system.
-    // For example, checking for win/loss conditions, spawning new enemies, etc.
-    
+void MainGameScene_update(Scene* scene, fix16 dt) {
+    MainGameSceneData* data = (MainGameSceneData*)scene->data;
+
+    // Your existing Game_update logic:
     if( Input_isPressed(JOY_1, BUTTON_A) ) {
-        VDP_drawText("A pressed", 1, 19);
+        VDP_drawText("A pressed in Game Scene", 1, 19);
         //Memory_reportUsage();
     }
-    
-    createBall();
 
-    VDP_drawText("Game updating ", 1, 21);
+    MainGameScene_createBall(data);
 
-    // Logger test
-    // LOGGER_FATAL("FATAL log test");
-    // LOGGER_ERROR("ERROR log test");
-    // LOGGER_WARN("WARNING log test");
-    // LOGGER_INFO("INFO log test");
-    // LOGGER_DEBUG("DEBUG log test");
-    // LOGGER_TRACE("TRACE log test");
-
-    // Memory track test    
-    //void* memory = MEMORY_ALLOC(1024, MEM_TAG_SYSTEM);
-    //MEMORY_FREE(memory, 1024, MEM_TAG_SYSTEM);
-    //MEM_alloc(1024);
-
-    //Memory_reportUsage();
-    //MEM_dump();
-
-    //ASSERT_MSG(1==0, "ASSERT test with message");
-
-    // // Simulate a collision for demonstration
-    // bool pauseDetected = FALSE; // set this to TRUE if a collision happens
-    // bool resumeDetected = FALSE; // set this to TRUE if a collision happens
-    // bool stopEvents = FALSE; // set this to TRUE if a collision happens
-    // static u16 frameCounter = 0;
-    // frameCounter++;
-
-    // if (frameCounter % 180 == 0) { // Every 3 seconds (at 60 FPS)
-    //     pauseDetected = TRUE;
+    // Example: Check for a condition to switch to a menu scene
+    // if (Input_isPressed(JOY_1, BUTTON_B)) {
+    //    SceneManager_SetNextScene(&main_menu_scene); // Assuming main_menu_scene exists
     // }
 
-    // if (frameCounter % 360 == 0) { // Every 3 seconds (at 60 FPS)
-    //     resumeDetected = TRUE;
-    // }
-
-    // if (pauseDetected && stopEvents == FALSE) {
-    //     Event pauseEvent;        
-    //     pauseEvent.type = EVT_GAME_PAUSED;
-    //     pauseEvent.data.u8_val[0] = 10;
-    //     pauseEvent.data.u8_val[1] = 20;
-
-    //     // collisionEvent.data.collision.entityA = entity1_id;
-    //     // collisionEvent.data.collision.entityB = entity2_id;
-    //     // KLog_S("Physics: Publishing collision event.");
-    //     Event_publish(&pauseEvent);
-    // }
-
-    //  if (resumeDetected && stopEvents == FALSE) {
-    //     Event resumeEvent;        
-    //     resumeEvent.type = EVT_GAME_RESUMED;
-    //     resumeEvent.data.u8_val[0] = 30;
-    //     resumeEvent.data.u8_val[1] = 40;
-
-    //     // collisionEvent.data.collision.entityA = entity1_id;
-    //     // collisionEvent.data.collision.entityB = entity2_id;
-    //     // KLog_S("Physics: Publishing collision event.");
-    //     Event_publish(&resumeEvent);
-    // }
-
-    // if (resumeDetected && stopEvents == FALSE) {
-    //     Event customEvent;        
-    //     customEvent.type = EVT_CUSTOM;
-    //     customEvent.data.fix16_val[0] = FIX16(10.5);
-    //     customEvent.data.fix16_val[1] = FIX16(60.5);
-
-    //     // collisionEvent.data.collision.entityA = entity1_id;
-    //     // collisionEvent.data.collision.entityB = entity2_id;
-    //     // KLog_S("Physics: Publishing collision event.");
-    //     Event_publish(&customEvent);
-    // }
-
-    // if (frameCounter % 720 == 0 && stopEvents == FALSE) { // Every 3 seconds (at 60 FPS)
-    //     Event_unsubscribe(EVT_GAME_PAUSED, &onGamePaused, "Pausing the game()");
-    //     Event_unsubscribe(EVT_GAME_RESUMED, &onGameResume, "Resuming the game()");
-    //     Event_unsubscribe(EVT_CUSTOM, &onCustomEvent, (fix16*)FIX16(75.2));
-    //     stopEvents = TRUE;
-    // }    
+    VDP_drawText("MainGameScene: updating", 1, 21);
 }
 
-void Game_draw() {
+void MainGameScene_draw(Scene* scene) {
+    // Your existing Game_draw logic:
     // Any game-specific drawing that isn't handled by RenderSystem.
     // e.g., VDP_drawText for score, UI elements, background layer scrolling.
-    VDP_drawText("Game drawing ", 1, 22);
+    // VDP_drawText("Game drawing ", 1, 22); // Original line
+
+    // Example: Draw ball count using scene data
+    MainGameSceneData* data = (MainGameSceneData*)scene->data;
+    char str_balls[16];
+    sprintf(str_balls, "Balls: %d", (int)data->ballsCount); // Convert EntityId to int for display
+    VDP_drawText(str_balls, 1, 2);
+
+    VDP_drawText("MainGameScene: drawing ", 1, 22);
 }
 
+void MainGameScene_destroy(Scene* scene) {
+    // MainGameSceneData* data = (MainGameSceneData*)scene->data;
+    LOGGER_INFO("MainGameScene: Destroying");
 
-// // Specific Entity Collision Handler (e.g., for a player object)
-// bool onGamePaused(const Event* event, void* contextData) {
-//     LOGGER_INFO("Event fired. Type: %u (%s), values: %d, %d, context data: %s", 
-//         event->type,
-//         Event_getDescription(event->type),
-//         event->data.u8_val[0],
-//         event->data.u8_val[1],
-//         (const char*)contextData
-//     );
-//     return TRUE;
-// }
+    // Clean up entities created by this scene
+    // This is CRUCIAL. You need a way to identify entities belonging to this scene.
+    // Option 1: Iterate all entities and destroy those with specific components.
+    // Option 2: Keep a list of entities created by this scene.
+    // Option 3: ECS_clearAllEntities(); // If appropriate for a full scene change
+    // For now, let's assume a simple clear might be needed for some entities or a tag.
+    // Example (pseudo-code):
+    // for each entity e created in this scene:
+    //     Entity_destroy(e);
+    // data->ballsCount = 0; // Reset scene data
 
-// // Specific Entity Collision Handler (e.g., for a player object)
-// bool onGameResume(const Event* event, void* contextData) {
-//     LOGGER_INFO("Event fired. Type: %u (%s), values: %d, %d, context data: %s", 
-//         event->type,
-//         Event_getDescription(event->type),
-//         event->data.u8_val[0],
-//         event->data.u8_val[1],
-//         (const char*)contextData
-//     );
-//     return TRUE;
-// }
+    // Unload resources specific to this scene
+    // e.g., SPR_reset(); // If sprites are only for this scene
+    // VDP_clearPlane(BG_A, TRUE); VDP_clearPlane(BG_B, TRUE);
+    // XGM_stopPlay();
+    // PAL_fadeOutAll(15, FALSE);
+}
 
-// // Specific Entity Collision Handler (e.g., for a player object)
-// bool onCustomEvent(const Event* event, void* contextData) {
-//     LOGGER_INFO("Event fired. Type: %u (%s), values: %d, %d, context data: %s", 
-//         event->type,
-//         Event_getDescription(event->type),
-//         event->data.fix16_val[0],
-//         event->data.fix16_val[1],
-//         (fix16*)contextData
-//     );
-//     return TRUE;
-// }
+// --- Scene Definition ---
+Scene main_game_scene = {
+    .init = MainGameScene_init,
+    .update = MainGameScene_update,
+    .draw = MainGameScene_draw,
+    .destroy = MainGameScene_destroy, // IMPORTANT to implement for resource cleanup
+    .data = NULL, // Will be set to &scene_data_gameplay in init
+    .name = "MainGameScene"
+};

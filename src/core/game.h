@@ -28,18 +28,11 @@
 #include "ecs.h"
 #include "scene.h"
 
-// Main game event definition
-typedef struct {   
-   PFN_onInit init;
-   PFN_onUpdate update;
-   PFN_onDraw draw;
-} GameEvents;
+void MainGameScene_init(Scene* scene);
+void MainGameScene_update(Scene* scene, fix16 dt);
+void MainGameScene_draw(Scene* scene);
 
-extern void Game_init();
-extern void Game_update(fix16 dt);
-extern void Game_draw();
-
-extern GameEvents Game;
-
+// Extern declaration of the main game scene
+//extern Scene GameScene;
 
 #endif // _ENG_GAME_H_

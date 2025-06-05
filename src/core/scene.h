@@ -7,10 +7,10 @@
 typedef struct Scene Scene;
 
 // --- Event Handler Function Pointer ---
-typedef void (*PFN_onSceneInit)(Scene* scene_self);      // Called when scene starts
-typedef void (*PFN_onSceneUpdate)(Scene* scene_self);    // Called every frame for logic
-typedef void (*PFN_onSceneDraw)(Scene* scene_self);      // Called every frame for drawing
-typedef void (*PFN_onSceneDestroy)(Scene* scene_self);   // Called when scene ends
+typedef void (*PFN_onSceneInit)(Scene* scene);      // Called when scene starts
+typedef void (*PFN_onSceneUpdate)(Scene* scene, fix16 delta_time);    // Called every frame for logic
+typedef void (*PFN_onSceneDraw)(Scene* scene);      // Called every frame for drawing
+typedef void (*PFN_onSceneDestroy)(Scene* scene);   // Called when scene ends
 
 // The Scene structure
 struct Scene {
@@ -33,7 +33,7 @@ void SceneManager_setNextScene(Scene* next_scene);
 
 // Call this once per frame in your main game loop
 // Handles scene transitions and calls the current scene's update
-void SceneManager_update(void);
+void SceneManager_update(fix16 delta_time);
 
 // Call this once per frame in your main game loop (usually after update)
 // Calls the current scene's draw

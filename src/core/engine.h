@@ -29,6 +29,9 @@
 #include "scene.h"
 #include "game.h"
 
+// Implemented in game.c
+extern Scene main_game_scene; 
+
 static inline void Engine_init() {
     // Initialize game logger
     Logger_init(LOGGER_LEVEL_FATAL);
@@ -72,10 +75,16 @@ static inline void Engine_init() {
     // Initialize scene manager subsystem
     SceneManager_init();
 
-    // Initialize Game Specifics    
-    //Game_init(); // Create initial entities, load resources etc.
-    Game.init();
-    LOGGER_INFO("Game initialized");
+    // Set the initial scene
+    // Note: The actual init of the scene will happen in 
+    // the first SceneManager_Update() call
+    SceneManager_setNextScene(&main_game_scene);
+    LOGGER_INFO("Game engine core initialized. Initial scene set.");
+
+    // Initialize Game Specifics
+    // Initialize Game Specifics - NOW HANDLED BY THE SCENE MANAGER      
+    // Game.init(); // <-- DEPRECATED
+    // LOGGER_INFO("Game initialized");
 }
 
 static inline void Engine_update(fix16 delta_time) {
@@ -87,7 +96,12 @@ static inline void Engine_update(fix16 delta_time) {
     Input_update();
     PROFILE_END_SCOPE(inpt_upda_id);
 
-    // 2. Update Game Logic (Systems)
+    // 2. Update Scene Manager (handles transitions & current scene's core update)
+    PROFILE_SCOPE(scn_upda_id, "SceneMgrUpd");
+    SceneManager_update(delta_time); // <--- CALL SCENE MANAGER UPDATE
+    PROFILE_END_SCOPE(scn_upda_id);
+
+    // 3. Update  global Game Logic (Systems)
     PROFILE_SCOPE(move_upda_id, "MoveSys");
     MovementSystem_update(delta_time);
     PROFILE_END_SCOPE(move_upda_id);
@@ -98,23 +112,29 @@ static inline void Engine_update(fix16 delta_time) {
 
     // PlayerControlSystem_update();
     
-    // Game-specific updates not covered by generic systems
-    //Game_update();
-    PROFILE_SCOPE(game_upda_id, "GameUpdate");
-    Game.update(delta_time);
-    PROFILE_END_SCOPE(game_upda_id);
+    // DEPRECATED
+    // Game-specific updates not covered by generic systems    
+    // PROFILE_SCOPE(game_upda_id, "GameUpdate");
+    // Game.update(delta_time); <--DEPRECATED
+    // PROFILE_END_SCOPE(game_upda_id);
 
-    // 3. Draw/Render
+    // 4. Draw Scene
+    PROFILE_SCOPE(scn_draw_id, "SceneMgrDraw");
+    SceneManager_draw(); // <--- CALL SCENE MANAGER DRAW
+    PROFILE_END_SCOPE(scn_draw_id);
+
+    // 5. Draw/Render
     // SGDK handles sprite list updates, but you might have 
     // VDP background updates etc.
     PROFILE_SCOPE(render_upda_id, "RenderSys");
     RenderSystem_update();
     PROFILE_END_SCOPE(render_upda_id);
-
-    //Game_draw(); 
-    PROFILE_SCOPE(game_draw_id, "GameDraw");
-    Game.draw();
-    PROFILE_END_SCOPE(game_draw_id);
+    
+    // DEPRECATED
+    // //Game_draw(); 
+    // PROFILE_SCOPE(game_draw_id, "GameDraw");
+    // Game.draw(); <-- DEPRECATED HANDLED BY SCENE MANAGER
+    // PROFILE_END_SCOPE(game_draw_id);
 
     #if (PROFILER_FPS_CPU_ENABLED)
     // 3.1 Optionl display debug features 
@@ -142,8 +162,12 @@ static inline void Engine_update(fix16 delta_time) {
 }
 
 // TODO: implement MEM_Free routines for sprites and backgrounds;
-static inline void Engine_shutdown() {
-    // Clean up any subsystem memory        
+static inline void Engine_shutdown() {    
+    // Potentially destroy current scene if one is active
+    Scene* current = SceneManager_getCurrentScene();
+    if (current != NULL && current->destroy != NULL) {
+        current->destroy(current);
+    }
 
     Input_shutdown();
     Event_shutdown();    
