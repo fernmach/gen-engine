@@ -28,6 +28,9 @@
 #include "ecs.h"
 #include "scene.h"
 
+// Implemented in game.c
+extern Scene main_game_scene; 
+
 void MainGameScene_init(Scene* scene);
 void MainGameScene_update(Scene* scene, fix16 dt);
 void MainGameScene_draw(Scene* scene);

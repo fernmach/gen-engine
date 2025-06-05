@@ -55,6 +55,14 @@ void ECS_init() {
     LOGGER_INFO("ECS subsystem initialized");
 }
 
+void ECS_clearAllEntities() {
+    for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
+        if (g_entity_active[i]) {
+           Entity_destroy(i);
+        }
+    }
+}
+
 EntityId Entity_create() {
     // Loop way
     for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {

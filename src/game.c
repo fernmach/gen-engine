@@ -2,6 +2,9 @@
 
 #include "core/game.h"
 
+// Game scenes
+#include "scene_menu.h"
+
 // include our own resources
 #include "res_gfx.h"
 #include "res_snd.h"
@@ -83,6 +86,11 @@ void MainGameScene_update(Scene* scene, fix16 dt) {
 
     MainGameScene_createBall(data);
 
+    if (Input_isJustPressed(JOY_1, BUTTON_B)) {
+        LOGGER_DEBUG("Menu Scene: B pressed, switching to Game Scene");
+        SceneManager_setNextScene(&menu_scene); // Switch to game scene
+    }
+
     // Example: Check for a condition to switch to a menu scene
     // if (Input_isPressed(JOY_1, BUTTON_B)) {
     //    SceneManager_SetNextScene(&main_menu_scene); // Assuming main_menu_scene exists
@@ -107,7 +115,21 @@ void MainGameScene_draw(Scene* scene) {
 }
 
 void MainGameScene_destroy(Scene* scene) {
-    // MainGameSceneData* data = (MainGameSceneData*)scene->data;
+    MainGameSceneData* data = (MainGameSceneData*)scene->data;
+
+    // Clear all entitities before leaving the scene
+    ECS_clearAllEntities();
+
+    // Resets the ball count to 0
+    data->ballsCount = 0; // Reset scene data
+
+    // Reset all sprites
+    SPR_reset();
+
+    // Clear planes before leave
+    VDP_clearPlane(BG_A, TRUE);
+    VDP_clearPlane(BG_B, TRUE);
+
     LOGGER_INFO("MainGameScene: Destroying");
 
     // Clean up entities created by this scene

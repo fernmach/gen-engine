@@ -25,7 +25,7 @@ void SceneManager_update(fix16 delta_time) {
     // Handle scene transition if requested
     if (next_scene_request != NULL) {
         if (current_scene != NULL && current_scene->destroy != NULL) {            
-            LOGGER_INFO("SceneManager: Destroying scene: ", current_scene->name);
+            LOGGER_INFO("SceneManager: Destroying scene: %s", current_scene->name);
             current_scene->destroy(current_scene);
         }
 
@@ -33,7 +33,7 @@ void SceneManager_update(fix16 delta_time) {
         next_scene_request = NULL; // Clear the request
 
         if (current_scene != NULL && current_scene->init != NULL) {
-            LOGGER_INFO("SceneManager: Initializing scene: ", current_scene->name);
+            LOGGER_INFO("SceneManager: Initializing scene: %s", current_scene->name);
             current_scene->init(current_scene);
         }
     }

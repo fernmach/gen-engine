@@ -29,9 +29,6 @@
 #include "scene.h"
 #include "game.h"
 
-// Implemented in game.c
-extern Scene main_game_scene; 
-
 static inline void Engine_init() {
     // Initialize game logger
     Logger_init(LOGGER_LEVEL_FATAL);
