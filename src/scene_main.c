@@ -30,10 +30,27 @@ void MainScene_init(Scene* scene) {
     // strncpy(data->sceneCustomData, "Custom Value", sizeof(data->sceneCustomData));
     // data->sceneCustomData[sizeof(data->sceneCustomData) - 1] = '\0';
 
+    // Creating a ball to run in the scene. And add components to it
+    EntityId ball = SceneManager_createEntity();
+
+    PositionComponent position = {FIX16(150), FIX16(150)};
+    Entity_addComponent(ball, COMPONENT_POSITION, &position);
+
+    VelocityComponent velocity = {FIX16(100), FIX16(100)};
+    Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
+
+    ScreenConstraintComponent constraint = {true, true}; // Corrected typo 'contraint'
+    Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
+
+    Entity_addSpriteComponent(ball, &spr_donut, PAL0);
+
     // Game specific initialization logic that isn't part of a generic system.
     // Load resources specific to this game scene
     // e.g., PAL_setPalette(PAL0, spr_donut.palette->data, DMA);
     // XGM_startPlay(my_game_music);
+
+    // Fade out scene
+    //PAL_fadeInAll(PAL0, 50, FALSE);
 
     // Your existing Game_init logic:
     VDP_drawText("MainScene: init", 1, 20); // For debugging
@@ -50,9 +67,14 @@ void MainScene_update(Scene* scene, fix16 dt) {
     }
 
     if (Input_isJustPressed(JOY_1, BUTTON_B)) {
-        LOGGER_DEBUG("Menu Scene: B pressed, switching to Game Scene");
-        VDP_drawText("B pressed in Main Game Scene", 1, 18);
+        LOGGER_DEBUG("Menu Scene: B pressed, switching to Menu Scene");
+        VDP_drawText("B pressed in Main Menu Scene", 1, 18);
         SceneManager_setNextScene(&menu_scene); // Switch to game scene
+    }
+
+    if (Input_isJustPressed(JOY_1, BUTTON_C)) {
+        LOGGER_DEBUG("Menu Scene: B pressed, switching direction");
+        VDP_drawText("C pressed in switching direction", 1, 18);
     }
 
     VDP_drawText("MainScene: updating", 1, 21);
@@ -84,6 +106,12 @@ void MainScene_destroy(Scene* scene) {
     // Resets the ball count to 0
     data->sceneId = 0; // Reset scene data    
     memset(data->sceneCustomData, 0, sizeof(data->sceneCustomData));
+
+    // Destroy entities attached to the scene
+    SceneManager_destroyAllEntities();
+
+    // Fade out scene
+    //PAL_fadeOutAll(50, FALSE);
 
     // Reset all sprites
     SPR_reset();

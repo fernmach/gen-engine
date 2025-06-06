@@ -25,6 +25,7 @@
         "event.h": "c",
         "game.h": "c",
         "types.h": "c",
-        "input_handler.h": "c"
+        "input_handler.h": "c",
+        "scene_main.h": "c"
     },
 }

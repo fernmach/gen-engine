@@ -56,8 +56,11 @@
     }
 
     // Finalize the logging system. Call once at engine shutdown.
-    void Logger_shutdown() {
-        // TODO: Cleanup loggin/write queued entries    
+    void Logger_shutdown() {        
+        g_logger_current_level = LOG_LEVEL_DISABLE;
+        g_logger_enabled = FALSE;
+        memset(g_logger_buffer, 0, sizeof(g_logger_buffer));
+        
         LOGGER_INFO("Shutting down logger subsystem");
     }
 

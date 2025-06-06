@@ -1,0 +1,52 @@
+### Engine core features implementation
+
+- [ ] Review all TODOS/FIXME
+- [x] Configuration header lib(config.h)
+- [x] Entry Point
+- [x] Main Loop
+- [ ] Memory
+    - [x] Memory taggin
+    - [ ] Hijack SGDK's memory allocation libraries to use a custom one
+- [ ] Input
+    - [x] Basic input handling(pooling)
+    - [ ] Implement other Joycons pooling
+    - [ ] Investigate is using the SGDK input event is better then pooling once per frame    
+- [ ] Command
+    - [ ] Input buffer (with configurable delay)
+    - [ ] Command event pattherns (qcf: Hadoken)    
+- [x] Logger
+- [ ] Asserts
+    - [x] Basic assert validation (with or without message)
+    - [ ] Implement an "fmt" parameter while setting asserts.
+- [x] Profiler
+- [ ] ECS
+    - [x] Basic ECS implementation
+    - [ ] Improve performance while adding removing components(MACRO BASED implementation?)
+    - [ ] Improve performance while addin and removing entities (Head/tail and component swap)    
+- [ ] Components
+    - [x] Position component
+    - [x] Velocity component
+    - [x] Sprite component
+    - [ ] Acceleration component
+    - [ ] Input component
+    - [ ] Collider component
+- [ ] System
+    - [ ] Acelleration system
+    - [x] Movement system
+    - [x] Rendering system
+    - [ ] Collision system
+    - [ ] Input system
+- [ ] Event
+    - [x] Basic event system implementation
+    - [ ] Implement delay event system(into a buffer). To avoid immediate call
+- [ ] Scene
+    - [x] Basic scene transition
+    - [ ] Attach scene to all entities created within it
+    - [ ] Scene transition effects
+- [ ] Physycs
+    - [ ] 2d colligin physycs (huge)
+    - [ ] 2d vector math library
+- [ ] Unit/regression tests
+- [ ] Installation
+- [ ] Finite state machine
+    - [ ] ECS/NON ECS VERSION

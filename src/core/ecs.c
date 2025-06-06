@@ -23,6 +23,8 @@
 
 //LOGGER_FATAL("ECS: Error while removing component value. Entity: %d, Component: %u", id, type);
 
+//TODO: Implement pooling mechanism
+
 // --- Global component array definitions ---
 PositionComponent           g_positions[ECS_MAX_ENTITIES];
 VelocityComponent           g_velocities[ECS_MAX_ENTITIES];
@@ -74,7 +76,7 @@ EntityId Entity_create() {
         }
     }
 
-    // -- POOL WAY --
+    // TODO: Implement ECS with ppling and memory grrouping
     // if (s_next_entity_id_pool <= ECS_MAX_ENTITIES) {
     //     g_entity_active[s_next_entity_id_pool] = TRUE;
     //     g_entity_component_masks[s_next_entity_id_pool] = COMPONENT_NONE;
@@ -102,7 +104,7 @@ void Entity_destroy(EntityId id) {
     // the entity no longer "has" those components.
     //}        
     
-    // -- POOL WAY --
+    // TODO: Implement ECS with ppling and memory grrouping
     // if (g_entity_active[id]) {
     //     // Finde the head of the entities array
     //     EntityId head_entity = s_next_entity_id_pool-1;

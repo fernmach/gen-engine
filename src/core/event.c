@@ -26,11 +26,30 @@ void Event_init(void) {
     //memset(listenersBlock, 0, sizeof(g_event_listener_counts));
     memset(g_event_listener_counts, 0, sizeof(g_event_listener_counts));
     memset(g_event_listeners, 0, sizeof(g_event_listeners));
-    
+
     LOGGER_INFO("Event subsystem initialized.");
 }
 
 void Event_shutdown() {
+    // Unsubscribe to all events
+    //TODO: Reevaluate the necessity of a caching
+    // Cache count in case a handler unsubscribes
+    // u8 currentListenerCount = g_event_listener_counts[event->type];
+    // for (u8 i = 0; i < currentListenerCount; ++i) {
+    //     if (g_event_listeners[event->type][i].handler != NULL) {
+    //         //TODO: Run unsubscribe here            
+    //         Event_unsubscribe(
+    //             event->type, 
+    //             g_event_listeners[event->type][i].handler,
+    //             g_event_listeners[event->type][i].contextData
+    //         )            
+    //     }
+    // }
+
+    //TODO: Clean up memory
+    //memset(g_event_listener_counts, 0, sizeof(g_event_listener_counts));
+    //memset(g_event_listeners, 0, sizeof(g_event_listeners));
+
     // TODO: Cleanup queued entries
     LOGGER_INFO("Shutting down event subsystem");
 }
