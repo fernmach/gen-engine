@@ -15,7 +15,6 @@
 
 // Game engine library imports
 #include "config.h"
-#include "types.h"
 #include "utils.h"
 #include "logger.h"
 #include "asserts.h"
