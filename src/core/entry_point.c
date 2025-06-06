@@ -3,7 +3,7 @@
 
 // file headers
 #include "main.h"
-#include "engine.h"
+#include "entry_point.h"
 
 // Game engine entry point
 int main(bool hardReset)
