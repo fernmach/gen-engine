@@ -1,11 +1,6 @@
-//#include "scene_menu.h" // If you have the .h
-#include "core/scene.h"
-#include "core/game.h"
+#include "scene_menu.h"
 
-#include <genesis.h>
-
-// If you need to access other scenes (e.g., to switch to game_scene)
-//#include "game.h" // Assuming you have a scene_game.h defining game_scene
+// If you need to access other scenes (e.g., to switch to scene_main)
 
 // Main game scene
 // Needed for transitioning
@@ -46,7 +41,7 @@ static void menu_update(Scene* scene_self, fix16 dt) {
     //MenuSceneData* data = (MenuSceneData*)scene_self->data;
     if (Input_isJustPressed(JOY_1, BUTTON_A)) {
         LOGGER_DEBUG("Menu Scene: Start pressed, switching to Game Scene");
-        SceneManager_setNextScene(&main_game_scene); // Switch to game scene
+        SceneManager_setNextScene(&main_scene); // Switch to game scene
     }
 
     if (Input_isJustPressed(JOY_1, BUTTON_B)) {

@@ -10,24 +10,7 @@
 #ifndef _ENG_MAIN_H_
 #define _ENG_MAIN_H_
 
-// Forward declaration for SGDK types
-#include <genesis.h>
-
-// game engine declarations
-#include "config.h"
-#include "types.h"
-#include "utils.h"
-#include "logger.h"
-#include "asserts.h"
-#include "profiler.h"
-#include "memory.h"
-#include "event.h"
-#include "input.h"
-#include "components.h"
-#include "ecs.h"
-#include "systems.h"
-#include "scene.h"
-#include "game.h"
+#include "genengine.h"
 
 static inline void Engine_init() {
     // Initialize game logger
@@ -75,7 +58,8 @@ static inline void Engine_init() {
     // Set the initial scene
     // Note: The actual init of the scene will happen in 
     // the first SceneManager_Update() call
-    SceneManager_setNextScene(&main_game_scene);
+    SceneManager_setNextScene(&main_scene);
+    //SceneManager_setNextScene(&ENGINE_MAIN_SCENE_VARIABLE);
     LOGGER_INFO("Game engine core initialized. Initial scene set.");
 
     // Initialize Game Specifics
@@ -152,7 +136,7 @@ static inline void Engine_update(fix16 delta_time) {
     // if (showProfiler) { // showProfiler is a bool you control via input
     Profiler_DrawStats(1, 3);
     // }
-    
+
     // 4. SGDK Specific Updates
     SPR_update();            // Send sprite list to VDP
     SYS_doVBlankProcess();   // Wait for VBlank, handle DMA, tasks
@@ -178,7 +162,7 @@ static inline void Engine_shutdown() {
 // Maing game engine loop
 static inline int Engine_run() {
     // engine inicialization
-    Engine_init();
+    Engine_init();    
 
     // For delta time calculation
     // Returns elapsed ticks from console reset (1/300 second based) (from SGDK)

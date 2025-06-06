@@ -94,6 +94,14 @@
  */
 #define PROFILER_FPS_CPU_ENABLED 1
 
+/**
+ *  \brief
+ *      Name of first scene to be loaded then the engine starts
+ *      If not set the scene_main will be consiered the main one
+ */
+//#define STRINGIFY(value) #value
+//#define ENGINE_MAIN_SCENE_VARIABLE STRINGIFY(main_scene)
+
 // // FAT16 need EVERDRIVE
 // #if ((MODULE_EVERDRIVE == 0) && (MODULE_FAT16 != 0))
 // #error "Cannot enable FAT16 module without EVERDRIVE module"
