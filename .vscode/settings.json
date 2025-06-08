@@ -26,6 +26,11 @@
         "game.h": "c",
         "types.h": "c",
         "input_handler.h": "c",
-        "scene_main.h": "c"
+        "scene_main.h": "c",
+        "vdp_tile.h": "c",
+        "dma.h": "c",
+        "bmp.h": "c",
+        "vdp.h": "c",
+        "font.h": "c"
     },
 }

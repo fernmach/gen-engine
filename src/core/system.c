@@ -4,6 +4,7 @@
 #include "event.h"
 #include "input.h"
 #include "components.h"
+#include "physics.h"
 #include "ecs.h"
 
 #include <genesis.h>
@@ -68,6 +69,71 @@ void ScreenConstraintSystem_update() {
             if ((F16_toInt(g_positions[i].y) + g_sprites[i].sgdkSprite->definition->h) > screen_height) {
                 g_positions[i].y = FIX16(screen_height - g_sprites[i].sgdkSprite->definition->h);
                 g_velocities[i].dy = -g_velocities[i].dy;
+            }
+        }
+    }
+}
+
+void CollisionSystem_update() {
+    // Define the components this system operates on
+    const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_RIGID_BODY;
+
+    for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
+        if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {
+
+            // Need to take into consideration the sprite position on the screen
+            AABBColliderShape a;
+            a.min.x = F16_toInt(g_positions[i].x);
+            a.min.y = F16_toInt(g_positions[i].y);
+            a.max.x = F16_toInt(g_positions[i].x) + g_rigid_bodies[i].shape.colliderShape.box.max.x;
+            a.max.y = F16_toInt(g_positions[i].y) + g_rigid_bodies[i].shape.colliderShape.box.max.y;
+            
+            // Check colligion agains all entityes 
+            for (EntityId j = i; j < ECS_MAX_ENTITIES; ++j) {
+                
+                if (i == j)
+                    continue;
+
+                if (g_entity_active[j] && Entity_hasAllComponents(j, required_mask)) {
+
+                    // // Function to check for collision between two entities (Axis-Aligned Bounding Box)
+                    // bool checkCollision(const Entity* entity1, const Entity* entity2) {
+                    //     return (entity1->position.x < entity2->position.x + entity2->size.width &&
+                    //             entity1->position.x + entity1->size.width > entity2->position.x &&
+                    //             entity1->position.y < entity2->position.y + entity2->size.height &&
+                    //             entity1->position.y + entity1->size.height > entity2->position.y);
+                    // }
+                    
+                    AABBColliderShape b;
+                    b.min.x = F16_toInt(g_positions[j].x);
+                    b.min.y = F16_toInt(g_positions[j].y);
+                    b.max.x = F16_toInt(g_positions[j].x) + g_rigid_bodies[j].shape.colliderShape.box.max.x;
+                    b.max.y = F16_toInt(g_positions[j].y) + g_rigid_bodies[j].shape.colliderShape.box.max.y;
+
+                    // LOGGER_DEBUG("Sprite width: A %d, %d", 
+                    //     F16_toInt(g_sprites[i].sgdkSprite->definition->w),
+                    //     F16_toInt(g_sprites[i].sgdkSprite->definition->h)
+                    // );
+
+                    // LOGGER_DEBUG("Position: A %d, %d -- B %d, %d", 
+                    //     F16_toInt(g_positions[i].x), F16_toInt(g_positions[i].y),
+                    //     F16_toInt(g_positions[j].x), F16_toInt(g_positions[j].y));
+
+                    // LOGGER_DEBUG("A -- Min %d, %d -- Max %d, %d", 
+                    //     a.min.x, a.min.y,
+                    //     a.max.x, a.max.y);
+
+                    // LOGGER_DEBUG("B -- Min %d, %d -- Max %d, %d", 
+                    //     b.min.x, b.min.y,
+                    //     b.max.x, b.max.y);
+
+                    //ASSERT_EXP(1==0);
+
+                    if ( AABBvsAABB( a, b ) ) {
+                        LOGGER_DEBUG("Collision detected: Entities %d, %d", i, j);
+                    }
+
+                }
             }
         }
     }

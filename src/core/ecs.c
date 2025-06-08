@@ -28,6 +28,7 @@
 // --- Global component array definitions ---
 PositionComponent           g_positions[ECS_MAX_ENTITIES];
 VelocityComponent           g_velocities[ECS_MAX_ENTITIES];
+RigidBodyComponent          g_rigid_bodies[ECS_MAX_ENTITIES];
 SpriteComponent             g_sprites[ECS_MAX_ENTITIES];
 ScreenConstraintComponent   g_screen[ECS_MAX_ENTITIES];
 
@@ -42,6 +43,7 @@ void ECS_init() {
     // Zero out all component data and entity states
     memset(g_positions, 0, sizeof(g_positions));
     memset(g_velocities, 0, sizeof(g_velocities));
+    memset(g_rigid_bodies, 0, sizeof(g_rigid_bodies));
     memset(g_sprites, 0, sizeof(g_sprites));
     memset(g_screen, 0, sizeof(g_screen));
 
@@ -141,6 +143,11 @@ void Entity_setComponentValue(EntityId id, ComponentType type, void* values) {
         return;
     }
 
+    if(type == COMPONENT_RIGID_BODY) {            
+        g_rigid_bodies[id] = *(RigidBodyComponent*)values;
+        return;
+    }
+
     if(type == COMPONENT_SPRITE) {
         g_sprites[id] = *(SpriteComponent*)values;
         return;
@@ -165,6 +172,10 @@ void* Entity_getComponent(EntityId id, ComponentType type) {
 
         if(type == COMPONENT_VELOCITY) {
             return (void*)&g_velocities[id];
+        }
+
+        if(type == COMPONENT_RIGID_BODY) {
+            return (void*)&g_rigid_bodies[id];
         }
 
         if(type == COMPONENT_SPRITE) {
@@ -209,6 +220,12 @@ void Entity_removeComponent(EntityId id, ComponentType type) {
 
     if(type == COMPONENT_VELOCITY) {
         g_velocities[id] = (VelocityComponent){0, 0};
+        return;
+    }
+
+    if(type == COMPONENT_RIGID_BODY) {
+        //g_rigid_bodies[id] = (RigidBodyComponent){0, 0};
+        memset(&g_rigid_bodies[id], 0, sizeof(RigidBodyComponent));
         return;
     }
 

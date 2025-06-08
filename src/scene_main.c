@@ -3,6 +3,9 @@
 // External scenes (for transitioning)
 #include "scene_menu.h"
 
+// Experimental ball creation for testing;
+#include "./experimental/balls.h"
+
 // include our own resources
 #include "res_gfx.h"
 #include "res_snd.h"
@@ -13,6 +16,7 @@
 // --- Main Game Play Scene Specific Data (Optional) ---
 typedef struct {
     u8 sceneId;
+    u8 ballsCount;        
     char sceneCustomData[15];
     // Add other game-specific data that needs to persist for this scene
 } MainSceneData;
@@ -27,22 +31,29 @@ void MainScene_init(Scene* scene) {
     MainSceneData* data = (MainSceneData*)scene->data;
 
     data->sceneId = 1;
-    // strncpy(data->sceneCustomData, "Custom Value", sizeof(data->sceneCustomData));
-    // data->sceneCustomData[sizeof(data->sceneCustomData) - 1] = '\0';
+    strncpy(data->sceneCustomData, "Custom Value", sizeof(data->sceneCustomData));
+    data->sceneCustomData[sizeof(data->sceneCustomData) - 1] = '\0';
+    data->ballsCount = 0;
 
-    // Creating a ball to run in the scene. And add components to it
-    EntityId ball = SceneManager_createEntity();
+    // // Creating a ball to run in the scene. And add components to it
+    // EntityId ball = SceneManager_createEntity();
 
-    PositionComponent position = {FIX16(150), FIX16(150)};
-    Entity_addComponent(ball, COMPONENT_POSITION, &position);
+    // PositionComponent position = {FIX16(150), FIX16(150)};
+    // Entity_addComponent(ball, COMPONENT_POSITION, &position);
 
-    VelocityComponent velocity = {FIX16(100), FIX16(100)};
-    Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
+    // VelocityComponent velocity = {FIX16(100), FIX16(100)};
+    // Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
 
-    ScreenConstraintComponent constraint = {true, true}; // Corrected typo 'contraint'
-    Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
-
-    Entity_addSpriteComponent(ball, &spr_donut, PAL0);
+    // //// box.min = {0,0};
+    // // box.max = {spr_donut.h, spr_donut.w};
+    // RigidBodyComponent body;
+    // AABBColliderShape box = { {0,0}, {spr_donut.h, spr_donut.w} };
+    // body.shape.type = SHAPE_TYPE_AABB;
+    // body.shape.colliderShape.box = box;
+    // Entity_addComponent(ball, COMPONENT_RIGID_BODY, &body);
+    // ScreenConstraintComponent constraint = {true, true}; // Corrected typo 'contraint'
+    // Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
+    //Entity_addSpriteComponent(ball, &spr_donut, PAL0);
 
     // Game specific initialization logic that isn't part of a generic system.
     // Load resources specific to this game scene
@@ -58,7 +69,12 @@ void MainScene_init(Scene* scene) {
 }
 
 void MainScene_update(Scene* scene, fix16 dt) {
-    //MainSceneData* data = (MainSceneData*)scene->data;
+    MainSceneData* data = (MainSceneData*)scene->data;
+
+    if (data->ballsCount < 2) {
+        MainGameScene_createBall();
+        data->ballsCount++;
+    }
 
     // Your existing Game_update logic:
     if (Input_isJustPressed(JOY_1, BUTTON_A)) {
@@ -86,15 +102,15 @@ void MainScene_draw(Scene* scene) {
     // e.g., VDP_drawText for score, UI elements, background layer scrolling.
     // VDP_drawText("Game drawing ", 1, 22); // Original line
 
-    // // Example: Draw ball count using scene data
-    //MainSceneData* data = (MainSceneData*)scene->data;
-    //char str_scene_message[16];
-    // sprintf(str_scene_message, 
-    //     "Scene id: %d, data: %s", 
-    //     data->sceneId, data->sceneCustomData
-    // ); // Convert EntityId to int for display
+    // Example: Draw ball count using scene data
+    //MainSceneData* data = (MainSceneData*)scene->data;    
+    // char str_scene_message[60];
+    // sprintf(str_scene_message,
+    //      "Drawing Scene id: %d, data: %s", 
+    //      data->sceneId, data->sceneCustomData
+    // );
     
-    //VDP_drawText(str_scene_message, 1, 2);
+    //VDP_drawText(str_scene_message, 1, 22);
     VDP_drawText("MainScene: drawing ", 1, 22);
 }
 

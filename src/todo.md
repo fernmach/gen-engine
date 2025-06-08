@@ -22,7 +22,8 @@
 - [ ] ECS
     - [x] Basic ECS implementation
     - [ ] Improve performance while adding removing components(MACRO BASED implementation?)
-    - [ ] Improve performance while addin and removing entities (Head/tail and component swap)    
+    - [ ] Improve performance while addin and removing entities (Head/tail and component swap)
+        - [ ] Consider implementing Groups(entitties with same components), SparseSets(Keep everthing cache friendly), Pagination(Avoid long unused arrays in memory)
 - [ ] Components
     - [x] Position component
     - [x] Velocity component
@@ -36,9 +37,10 @@
     - [x] Rendering system
     - [ ] Collision system
     - [ ] Input system
+    - [ ] Sound System
 - [ ] Event
     - [x] Basic event system implementation
-    - [ ] Implement delay event system(into a buffer). To avoid immediate call
+    - [ ] Implement delay event system(into a buffer). To avoid immediate call    
 - [ ] Scene
     - [x] Basic scene transition
     - [ ] Attach scene to all entities created within it
@@ -50,3 +52,5 @@
 - [ ] Installation
 - [ ] Finite state machine
     - [ ] ECS/NON ECS VERSION
+- [ ] Global
+    - [ ] windows width and heigh initialization(For generic calculations)
