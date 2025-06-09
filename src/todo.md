@@ -46,6 +46,11 @@
     - [ ] Attach scene to all entities created within it
     - [ ] Scene transition effects
 - [ ] Physycs
+    - [ ] Simple collision detection system
+        - [ ] Broad Phase (Which objects could be possible be colliding?)
+            - [ ] Sweep and Prume
+        - [ ] Narrow Phase (The one from Broad Phase, are they really colliding?)
+        - [ ] Resolve collision (Update dynamics: How do we update it?)
     - [ ] 2d colligin physycs (huge)
     - [ ] 2d vector math library
 - [ ] Unit/regression tests

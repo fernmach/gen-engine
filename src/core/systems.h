@@ -6,7 +6,10 @@ typedef short s16;
 typedef s16 fix16;
 
 void MovementSystem_update(fix16 dt);
+
 void CollisionSystem_update();
+void CollisionSystem_compareBodiesByLeftEdge(const void* a, const void* b);
+
 void ScreenConstraintSystem_update();
 //void PlayerControlSystem_update();
 void RenderSystem_update();

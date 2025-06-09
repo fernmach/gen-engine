@@ -74,6 +74,90 @@ void ScreenConstraintSystem_update() {
     }
 }
 
+// --- qsort Comparison Function ---
+// Compares two PhysicsComponent pointers based on their AABB's 'left' edge.
+// qsort expects a function that takes two const void* arguments.
+int CollisionSystem_compareBodiesByLeftEdge(const void* a, const void* b) {
+    // The arguments are pointers to elements of the array being sorted.
+    // In our case, the array s_activeBodyPointers contains PhysicsComponent* elements.
+    // So, 'a' and 'b' are effectively PhysicsComponent**.
+    RigidBodyComponent* bodyA = *(RigidBodyComponent**)a;
+    RigidBodyComponent* bodyB = *(RigidBodyComponent**)b;
+
+    if (bodyA->shape.colliderShape.box.min.x < bodyB->shape.colliderShape.box.min.x) {
+        return -1;
+    }
+
+    if (bodyA->shape.colliderShape.box.min.x > bodyB->shape.colliderShape.box.min.x) {
+        return 1;
+    }
+    
+    return 0;
+}
+
+// // Sweep and prune implementation
+// void CollisionSystem_update() {
+//        // Define the components this system operates on
+//     const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_RIGID_BODY;
+
+//     u8 activeBodyCount = 0;    
+//     // Used for sweep and prune broad phase colligion detction
+//     RigidBodyComponent* g_active_body_bointers[ECS_MAX_ENTITIES];
+
+//     // Create the array that will be sorted
+//     for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
+//         if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {
+//             g_active_body_bointers[activeBodyCount++] = &g_rigid_bodies[i];
+//         }
+//     }
+
+//     //TODO: Is this really necessary?
+//     if (activeBodyCount < 2) {
+//         return; // Not enough bodies to check for collisions
+//     }
+
+//     // 2. Sort active bodies by their left edge (min X-coordinate)
+//     //    qsort(array_to_sort, num_elements, size_of_element, comparison_function)
+//     qsort(g_active_body_bointers, 
+//         activeBodyCount, 
+//         sizeof(RigidBodyComponent*), 
+//         &CollisionSystem_compareBodiesByLeftEdge);
+
+//     for (EntityId i = 0; i < activeBodyCount; ++i) {
+//         RigidBodyComponent* body1 = &g_active_body_bointers[i];
+
+//         AABBColliderShape a;
+//         a.min.x = F16_toInt(g_positions[i].x);
+//         a.min.y = F16_toInt(g_positions[i].y);
+//         a.max.x = F16_toInt(g_positions[i].x) + body1->shape.colliderShape.box.max.x;
+//         a.max.y = F16_toInt(g_positions[i].y) + body1->shape.colliderShape.box.max.y;
+
+//         // Check colligion agains all entityes 
+//         for (EntityId j = i+1; j < activeBodyCount; ++j) {
+//             RigidBodyComponent* body2 = &g_active_body_bointers[j];
+
+//             // Pruning step:
+//             // If body2's left edge is beyond body1's right edge,
+//             // then no subsequent bodies (which are sorted further to the right)
+//             // can overlap with body1 on the X-axis.
+//             if (body2->shape.colliderShape.box.min.x > body1->shape.colliderShape.box.min.y) {
+//                 break; // Prune this inner loop for body1
+//             }
+
+//             AABBColliderShape b;
+//             b.min.x = F16_toInt(g_positions[j].x);
+//             b.min.y = F16_toInt(g_positions[j].y);
+//             b.max.x = F16_toInt(g_positions[j].x) + body2->shape.colliderShape.box.max.x;
+//             b.max.y = F16_toInt(g_positions[j].y) + body2->shape.colliderShape.box.max.y;            
+
+//             if ( AABBvsAABB( a, b ) ) {
+//                 LOGGER_DEBUG("Collision detected: Entities %d, %d", i, j);
+//             }
+//         }
+//     }    
+
+// }
+
 void CollisionSystem_update() {
     // Define the components this system operates on
     const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_RIGID_BODY;
@@ -82,6 +166,17 @@ void CollisionSystem_update() {
         if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {
 
             // Need to take into consideration the sprite position on the screen
+            // AABBColliderShape a = {
+            //     {
+            //         F16_toInt(g_positions[i].x),
+            //         F16_toInt(g_positions[i].y)
+            //     },
+            //     {
+            //         F16_toInt(g_positions[i].x) + g_rigid_bodies[i].shape.colliderShape.box.max.x,
+            //         F16_toInt(g_positions[i].y) + g_rigid_bodies[i].shape.colliderShape.box.max.y
+            //     }
+            // };            
+            
             AABBColliderShape a;
             a.min.x = F16_toInt(g_positions[i].x);
             a.min.y = F16_toInt(g_positions[i].y);
@@ -89,10 +184,10 @@ void CollisionSystem_update() {
             a.max.y = F16_toInt(g_positions[i].y) + g_rigid_bodies[i].shape.colliderShape.box.max.y;
             
             // Check colligion agains all entityes 
-            for (EntityId j = i; j < ECS_MAX_ENTITIES; ++j) {
+            for (EntityId j = i+1; j < ECS_MAX_ENTITIES; ++j) {
                 
-                if (i == j)
-                    continue;
+                //if (i == j)
+                  //  continue;
 
                 if (g_entity_active[j] && Entity_hasAllComponents(j, required_mask)) {
 
@@ -132,7 +227,6 @@ void CollisionSystem_update() {
                     if ( AABBvsAABB( a, b ) ) {
                         LOGGER_DEBUG("Collision detected: Entities %d, %d", i, j);
                     }
-
                 }
             }
         }

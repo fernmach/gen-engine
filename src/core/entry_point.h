@@ -92,7 +92,7 @@ static inline void Engine_update(fix16 delta_time) {
     PROFILE_END_SCOPE(screen_upda_id);
 
     PROFILE_SCOPE(collis_upda_id, "ColliSys");
-    ColligionSystem_update();
+    CollisionSystem_update();
     PROFILE_END_SCOPE(collis_upda_id);
 
     // PlayerControlSystem_update();
