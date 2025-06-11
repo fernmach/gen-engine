@@ -7,11 +7,13 @@ typedef s16 fix16;
 
 void MovementSystem_update(fix16 dt);
 
+bool CollisionSystem_compareByLeftEdge(u16 a, u16 b);
 void CollisionSystem_update();
-void CollisionSystem_compareBodiesByLeftEdge(const void* a, const void* b);
 
 void ScreenConstraintSystem_update();
+
 //void PlayerControlSystem_update();
+
 void RenderSystem_update();
 
 #endif // SYSTEMS_H

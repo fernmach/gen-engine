@@ -21,3 +21,67 @@ u16 getRandomNumberInRange( u16 min, u16 max ) {
     // int max = 100; // Replace with your desired maximum value
     // int randomNumber = (rand() % (max - min + 1)) + min;
 }
+
+void insertionSort(u16 arr[], u16 n, PFN_compareCallback compare) {
+    for (u16 i = 1; i < n; i++) {
+        u16 key = arr[i];
+        s16 j = i - 1; // Needs to be signed
+        // Here, we call the provided comparison function 'cmp'
+        while (j >= 0 && compare(arr[j], key)) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+// ----------------TESTS-----------------//
+
+// Callback function to sort in ascending order.
+// Returns true (1) if the first element is greater than the second.
+bool ascending(u16 a, u16 b) {
+    return a > b;
+}
+
+// Callback function to sort in descending order.
+// Returns true (1) if the first element is less than the second.
+bool descending(u16 a, u16 b) {
+    return a < b;
+}
+
+// Helper function to print an array
+void printArray(u16 arr[], u16 n) {
+    for (u16 i = 0; i < n; i++) {
+        KLog_U1(" ", arr[i]);
+    }
+}
+
+void insertSort_TEST() {
+    u16 original_arr[] = {64, 34, 25, 12, 22, 11, 90};
+    u16 n = sizeof(original_arr) / sizeof(original_arr[0]);
+
+     // Create a copy to sort ascending
+    u16 arr_asc[n];
+    memcpy(arr_asc, original_arr, n * sizeof(int));
+
+    KLog("Original array: ");
+    printArray(arr_asc, n);
+
+    // Sort in ascending order by passing the 'ascending' function
+    insertionSort(arr_asc, n, ascending);
+    KLog("Sorted array (Ascending): ");
+    printArray(arr_asc, n);
+
+    // Create another copy to sort descending
+    u16 arr_desc[n];
+    memcpy(arr_desc, original_arr, n * sizeof(int));
+
+    // Sort in descending order by passing the 'descending' function
+    insertionSort(arr_desc, n, descending);
+    KLog("Sorted array (Descending): ");
+    printArray(arr_desc, n);
+
+    return;
+}
+
+// ----------------END TESTS-----------------//

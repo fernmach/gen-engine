@@ -82,3 +82,8 @@ void SceneManager_destroyAllEntities() {
         SceneManager_destroyEntity(i);
     }
 }
+
+const bool* SceneManager_getActiveEntities() {
+    LOGGER_INFO("SceneManager: Retrieving list of active entities" );
+    return g_scene_active_entities;
+}

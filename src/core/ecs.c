@@ -143,7 +143,7 @@ void Entity_setComponentValue(EntityId id, ComponentType type, void* values) {
         return;
     }
 
-    if(type == COMPONENT_RIGID_BODY) {            
+    if(type == COMPONENT_RIGID_BODY) {               
         g_rigid_bodies[id] = *(RigidBodyComponent*)values;
         return;
     }

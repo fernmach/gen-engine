@@ -56,4 +56,7 @@ void SceneManager_destroyEntity(EntityId entityId);
 // (only the ones created with the SceneManager)
 void SceneManager_destroyAllEntities();
 
+// Returns the list of all entities curretly active in the scene
+const bool* SceneManager_getActiveEntities();
+
 #endif //_ENG_SCENE_H

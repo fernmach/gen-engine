@@ -2,10 +2,12 @@
 #include "../core/scene.h"
 #include "../core/components.h"
 #include "../core/utils.h"
+#include "../core/logger.h"
 
 // include our own resources
 #include "res_gfx.h"
 #include "res_snd.h"
+
 
 // Helper initialization functions
 PositionComponent MainGameScene_getRandomPosition() {    
@@ -32,14 +34,28 @@ void MainGameScene_createBall() {
     VelocityComponent velocity = MainGameScene_getRandomVelocity();
 
     // Rigid body definition;
-    RigidBodyComponent body;
-    AABBColliderShape box = { {(s16)0,(s16)0}, { (s16)spr_donut.h, (s16)spr_donut.w} };
-    body.shape.type = SHAPE_TYPE_AABB;
-    body.shape.colliderShape.box = box;
+    RigidBodyComponent rigidBody;    
+    AABBColliderShape box = { {(s16)0,(s16)0}, { (s16)spr_donut.h, (s16)spr_donut.w} };    
+    rigidBody.collider.type = SHAPE_TYPE_AABB;
+    rigidBody.collider.shape.box = box;    
     
     Entity_addComponent(ball, COMPONENT_POSITION, &position);
     Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
-    Entity_addComponent(ball, COMPONENT_RIGID_BODY, &body);
+    Entity_addComponent(ball, COMPONENT_RIGID_BODY, &rigidBody);
     Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
     Entity_addSpriteComponent(ball, &spr_donut, PAL0); // Assuming COMPONENT_SPRITE exists
+}
+
+void Ball_update(EntityId id) {
+    // PositionComponent* position = Entity_getComponent(id, COMPONENT_POSITION);
+    // LOGGER_DEBUG("Ball update %d, %d", F16_toInt(position->x), F16_toInt(position->y ));
+    // position->x += FIX16(10);
+    // position->y += FIX16(10);
+    // LOGGER_DEBUG("After update %d, %d", F16_toInt(position->x), F16_toInt(position->y ));
+    // Entity_setComponentValue(id, COMPONENT_POSITION, &position);
+
+    LOGGER_DEBUG("BEFORE BALL update %d, %d", F16_toInt(g_positions[id].x), F16_toInt(g_positions[id].y));
+    g_positions[id].x = -g_positions[id].x;
+    g_positions[id].y = -g_positions[id].y;
+    LOGGER_DEBUG("AFTER BALL update %d, %d", F16_toInt(g_positions[id].x), F16_toInt(g_positions[id].y));
 }

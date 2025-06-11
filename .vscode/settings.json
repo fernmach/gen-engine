@@ -31,6 +31,8 @@
         "dma.h": "c",
         "bmp.h": "c",
         "vdp.h": "c",
-        "font.h": "c"
+        "font.h": "c",
+        "entry_point.h": "c",
+        "genengine.h": "c"
     },
 }

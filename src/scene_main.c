@@ -24,6 +24,9 @@ typedef struct {
 // Static instance for this scene's data
 static MainSceneData main_scene_data;
 
+// Reference to a list of active entities in the scen(from SceneManager)
+const bool* scene_active_entities;
+
 // Main Scene initialization
 void MainScene_init(Scene* scene) {
 
@@ -34,26 +37,6 @@ void MainScene_init(Scene* scene) {
     strncpy(data->sceneCustomData, "Custom Value", sizeof(data->sceneCustomData));
     data->sceneCustomData[sizeof(data->sceneCustomData) - 1] = '\0';
     data->ballsCount = 0;
-
-    // // Creating a ball to run in the scene. And add components to it
-    // EntityId ball = SceneManager_createEntity();
-
-    // PositionComponent position = {FIX16(150), FIX16(150)};
-    // Entity_addComponent(ball, COMPONENT_POSITION, &position);
-
-    // VelocityComponent velocity = {FIX16(100), FIX16(100)};
-    // Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
-
-    // //// box.min = {0,0};
-    // // box.max = {spr_donut.h, spr_donut.w};
-    // RigidBodyComponent body;
-    // AABBColliderShape box = { {0,0}, {spr_donut.h, spr_donut.w} };
-    // body.shape.type = SHAPE_TYPE_AABB;
-    // body.shape.colliderShape.box = box;
-    // Entity_addComponent(ball, COMPONENT_RIGID_BODY, &body);
-    // ScreenConstraintComponent constraint = {true, true}; // Corrected typo 'contraint'
-    // Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
-    //Entity_addSpriteComponent(ball, &spr_donut, PAL0);
 
     // Game specific initialization logic that isn't part of a generic system.
     // Load resources specific to this game scene
@@ -71,9 +54,19 @@ void MainScene_init(Scene* scene) {
 void MainScene_update(Scene* scene, fix16 dt) {
     MainSceneData* data = (MainSceneData*)scene->data;
 
-    if (data->ballsCount < 2) {
-        MainGameScene_createBall();
+    if (data->ballsCount < 3) {
+        MainGameScene_createBall();        
         data->ballsCount++;
+    }
+    
+    if (Input_isJustPressed(JOY_1, BUTTON_C)) {
+        VDP_drawText("C pressed in switching direction", 1, 18);
+        scene_active_entities = SceneManager_getActiveEntities();
+        for(EntityId i=0; i < ECS_MAX_ENTITIES; i++) {
+            if (scene_active_entities[i]) {
+                Ball_update(i);
+            }
+        }
     }
 
     // Your existing Game_update logic:
@@ -88,10 +81,10 @@ void MainScene_update(Scene* scene, fix16 dt) {
         SceneManager_setNextScene(&menu_scene); // Switch to game scene
     }
 
-    if (Input_isJustPressed(JOY_1, BUTTON_C)) {
-        LOGGER_DEBUG("Menu Scene: B pressed, switching direction");
-        VDP_drawText("C pressed in switching direction", 1, 18);
-    }
+    // if (Input_isJustPressed(JOY_1, BUTTON_C)) {
+    //     LOGGER_DEBUG("Menu Scene: B pressed, switching direction");
+    //     VDP_drawText("C pressed in switching direction", 1, 18);
+    // }
 
     VDP_drawText("MainScene: updating", 1, 21);
 }

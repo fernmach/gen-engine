@@ -13,6 +13,7 @@
     typedef u8 EntityId;
 #endif
 
+
 // To keep track of active entities and their component compositions
 extern bool g_entity_active[ECS_MAX_ENTITIES];
 extern ComponentMask g_entity_component_masks[ECS_MAX_ENTITIES]; // Stores the combined flags for each entity

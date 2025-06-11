@@ -56,11 +56,7 @@ typedef struct {
 
 // Rigid body component
 //TODO: Implement more robust physics. For now only AABB vs AABB avaialble.
-//typedef struct {
-    //RigidBody body;
-    //EntityId collidingWith;
-    //bool isColliding;
-//} RigidBodyComponent;
+//TODO: Move the transform, velocity and acceleration into the rigid body definition
 typedef RigidBody RigidBodyComponent;
 
 // Screen constrating component

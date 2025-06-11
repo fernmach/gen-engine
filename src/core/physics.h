@@ -19,18 +19,27 @@ typedef struct
 typedef enum {
     SHAPE_TYPE_AABB   = 1,
     SHAPE_TYPE_CIRCLE = 2
-} ColliderShapeType;
+} ColliderType;
 
 typedef struct {
     union {
         AABBColliderShape box;
         CircleColliderShape circle;
-    } colliderShape;
-    ColliderShapeType type;
-} ColliderShape;
+    } shape;
+    ColliderType type;
+} Collider;
+
+// typedef struct {
+//   Position position
+//   Velocity velocity
+//   Acceleration acceleration
+// } Transform;
 
 typedef struct {
-    ColliderShape shape;
+  // Position position
+  // Velocity velocity
+  // Acceleration acceleration
+  Collider collider;
 } RigidBody;
 
 // public api implementation

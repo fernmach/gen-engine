@@ -10,5 +10,6 @@
 PositionComponent MainGameScene_getRandomPosition();
 VelocityComponent MainGameScene_getRandomVelocity();
 void MainGameScene_createBall();
+void Ball_update(EntityId id);
 
 #   endif // _BALLS_H_
