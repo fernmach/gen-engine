@@ -26,7 +26,6 @@
 #include "ecs.h"
 #include "systems.h"
 #include "scene.h"
-#include "physics.h"
 
 #include "../scene_main.h"
 
