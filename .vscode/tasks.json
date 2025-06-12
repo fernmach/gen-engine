@@ -1,0 +1,22 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "SGDK: Compile (Debug) & Run",
+      "type": "shell",
+      "command": "c:\\sgdk211\\bin\\make -f c:\\sgdk211\\makefile.gen -j1 debug && START /B C:\\Emulators\\Gens_KMod_v0.7.3\\gens %CD%/out/rom.bin",
+      "windows": {
+        "command": "c:\\sgdk211\\bin\\make -f c:\\sgdk211\\makefile.gen -j1 debug && START /B C:\\Emulators\\Gens_KMod_v0.7.3\\gens %CD%/out/rom.bin"
+      },
+      "presentation": {        
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "dependsOn": ["SGDK: Set Enviorment variable"],
+      "dependsOrder": "sequence"
+    }    
+  ]
+}
