@@ -34,14 +34,14 @@ void MainGameScene_createBall() {
     VelocityComponent velocity = MainGameScene_getRandomVelocity();
 
     // Rigid body definition;
-    RigidBodyComponent rigidBody;    
-    AABBColliderShape box = { {(s16)0,(s16)0}, { (s16)spr_donut.h, (s16)spr_donut.w} };    
-    rigidBody.collider.type = SHAPE_TYPE_AABB;
-    rigidBody.collider.shape.box = box;    
+    ColliderComponent collider;    
+    AABBColliderType box = { (s8)0, (s8)0, (u8)spr_donut.w, (s16)spr_donut.h };
+    collider.type = COLLIDER_TYPE_AABB;
+    collider.shape.box = box;
     
     Entity_addComponent(ball, COMPONENT_POSITION, &position);
     Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
-    Entity_addComponent(ball, COMPONENT_RIGID_BODY, &rigidBody);
+    Entity_addComponent(ball, COMPONENT_COLLIDER, &collider);
     Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
     Entity_addSpriteComponent(ball, &spr_donut, PAL0); // Assuming COMPONENT_SPRITE exists
 }
