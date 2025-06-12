@@ -22,13 +22,15 @@ u16 getRandomNumberInRange( u16 min, u16 max );
 // TODO: Figure out how quicksort works in SGDK and use it instead.
 void insertionSort(u16 arr[], u16 n, PFN_compareCallback compare);
 
+// TODO: INCLUDE TESTES IN THEIR OWN FILE
+// COMMENT IF NOT USING
 // ------------------ TESTS --------------------
 // Callback function to sort in ascending order.
 // Returns true (1) if the first element is greater than the second.
-bool ascending(u16 a, u16 b);
-bool descending(u16 a, u16 b);
-void printArray(u16 arr[], u16 n);
-void insertSort_TEST();
+// bool ascending(u16 a, u16 b);
+// bool descending(u16 a, u16 b);
+// void printArray(u16 arr[], u16 n);
+// void insertSort_TEST();
 
 // ------------------ END TESTS --------------------
 
