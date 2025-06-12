@@ -4,19 +4,17 @@
 #include "event.h"
 #include "input.h"
 #include "components.h"
-#include "physics.h"
 #include "ecs.h"
 #include "utils.h"
 
 #include <genesis.h>
 
-#include <tools.h>
-
 // --- Global component array definitions ---
-extern PositionComponent       g_positions[ECS_MAX_ENTITIES];
-extern VelocityComponent       g_velocities[ECS_MAX_ENTITIES];
-extern SpriteComponent         g_sprites[ECS_MAX_ENTITIES];
-extern RigidBodyComponent      g_rigid_bodies[ECS_MAX_ENTITIES];
+extern PositionComponent    g_positions[ECS_MAX_ENTITIES];
+extern VelocityComponent    g_velocities[ECS_MAX_ENTITIES];
+extern ColliderComponent    g_colliders[ECS_MAX_ENTITIES];
+extern SpriteComponent      g_sprites[ECS_MAX_ENTITIES];
+
 
 // --- Global entity tracking array definitions  ---
 extern bool g_entity_active[ECS_MAX_ENTITIES];
@@ -25,11 +23,10 @@ extern ComponentMask g_entity_component_masks[ECS_MAX_ENTITIES];
 // Temporary array to hold pointers to *active* physics components for sorting.
 // This is crucial to avoid sorting inactive components or copying large structs.
 // Used for sweep and prune broad phase colligion detction
-static u16 g_active_rb_count = 0;
+static u16 g_active_colliders_count = 0;
 
 //Should be EntityId
-static u16 g_active_rb[ECS_MAX_ENTITIES];
-
+static u16 g_active_colliders[ECS_MAX_ENTITIES];
 
 void MovementSystem_update(fix16 dt) {
     // Define the components this system operates on
@@ -88,6 +85,31 @@ void ScreenConstraintSystem_update() {
     }
 }
 
+bool CollisionSystem_AABBvsAABB(EntityId aId, EntityId bId ) {
+    // Exit with no intersection if found separated along an axis
+    PositionComponent posA = g_positions[aId];
+    ColliderComponent collA = g_colliders[aId];
+
+    PositionComponent posB = g_positions[bId];
+    ColliderComponent collB = g_colliders[bId];
+
+    fix16 a_min_left = posA.x;
+    fix16 a_min_right = posA.y;
+    fix16 a_max_left = posA.x + FIX16(collA.shape.box.x + collA.shape.box.w);
+    fix16 a_max_right = posA.y + FIX16(collA.shape.box.y + collA.shape.box.h);
+
+    fix16 b_min_left = posB.x;
+    fix16 b_min_right = posB.y;
+    fix16 b_max_left = posB.x + FIX16(collB.shape.box.x + collB.shape.box.w);
+    fix16 b_max_right = posB.y + FIX16(collB.shape.box.y + collB.shape.box.h);  
+
+    //if(a.max.x < b.min.x || a.min.x > b.max.x) return false;
+    if(a_max_left < b_min_left || a_min_left > b_max_left) return false;
+    if(a_max_right < b_min_right || a_min_right > b_max_right) return false;
+    // No separating axis found, therefor there is at least one overlapping axis 
+    return true;    
+}
+
 bool CollisionSystem_compareByLeftEdge(u16 i, u16 j) {
     return g_positions[i].x > g_positions[j].x;    
 }
@@ -95,100 +117,59 @@ bool CollisionSystem_compareByLeftEdge(u16 i, u16 j) {
 // Sweep and prune
 void CollisionSystem_update() {
     // Define the components this system operates on
-    const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_RIGID_BODY;
+    const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_COLLIDER;
 
     // Currently active rigid bodies
-    g_active_rb_count = 0;
+    g_active_colliders_count = 0;
 
     // Create the array that will be sorted
     for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
         if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {
-            g_active_rb[g_active_rb_count++] = i;            
-            //LOGGER_DEBUG("Collision: Active rigid body pos: %d, id: %d", g_active_rb_count, i);
+            g_active_colliders[g_active_colliders_count++] = i;            
+            //LOGGER_DEBUG("Collision: Active rigid body pos: %d, id: %d", g_active_colliders_count, i);
         }
     }
 
     // Not enough bodies to check for collisions
-    if (g_active_rb_count < 2) {
+    if (g_active_colliders_count < 2) {
         //LOGGER_DEBUG("Collision: Not enough bodies to check for collisions");
         return;
     }
 
-    //u16 n = sizeof(g_active_rb) / sizeof(g_active_rb[0]);
-    insertionSort(g_active_rb, g_active_rb_count, CollisionSystem_compareByLeftEdge);
-
+    //Order
+    insertionSort(g_active_colliders,
+        g_active_colliders_count,
+        CollisionSystem_compareByLeftEdge);
     //LOGGER_DEBUG('ORDERED BODIES');
     //printArray(g_active_rb, g_active_rb_count);
 
-    for (EntityId i = 0; i < g_active_rb_count; ++i) {
+    //Sweep
+    for (EntityId i = 0; i < g_active_colliders_count; ++i) {
+
         // Use the first entityId from the ordered list to get the doby for testing
-        EntityId body1Id = g_active_rb[i];
-        RigidBodyComponent body1 = g_rigid_bodies[ body1Id ];
-        //LOGGER_DEBUG("BODY 1 id: %d", g_active_rb[i]);
-
-        // Check colligion agains all entityes 
-        for (EntityId j = i+1; j < g_active_rb_count; ++j) {
-            EntityId body2Id = g_active_rb[j];
-            RigidBodyComponent body2 = g_rigid_bodies[ body2Id ];
-
-            // LOGGER_DEBUG("BODY 2 id: %d", g_active_rb[j]);
-
-            // LOGGER_DEBUG("Checking positions: Body 2 %d, Body 1 %d",
-            //     F16_toInt(g_positions[j].x),
-            //     F16_toInt(g_positions[i].x) + body1.collider.shape.box.max.x
-            // );
-
+        EntityId collider1Id = g_active_colliders[i];
+        ColliderComponent collider1 = g_colliders[ collider1Id ];
+        
+        // Check colligion agains all entities and break if prune
+        for (EntityId j = i+1; j < g_active_colliders_count; ++j) {
+            EntityId collider2Id = g_active_colliders[j];            
+            
             // Pruning step:
             // If body2's left edge is beyond body1's right edge,
             // then no subsequent bodies (which are sorted further to the right)
             // can overlap with body1 on the X-axis.
-            //if (body2->shape.colliderShape.box.min.x > body1->shape.colliderShape.box.max.x) {
-            if ( F16_toInt(g_positions[body2Id].x) >
-                 F16_toInt(g_positions[body1Id].x) + body1.collider.shape.box.max.x
+            //if (body2->shape.colliderShape.box.min.x > body1->shape.colliderShape.box.max.x) {            
+            if ( F16_toInt(g_positions[collider2Id].x) >
+                 F16_toInt(g_positions[collider1Id].x) + 
+                 (s16)(collider1.shape.box.x + collider1.shape.box.w)
             ) {
-                //LOGGER_DEBUG("Collision: Prunning BODY 1 - %d, BODY 2 - %d", body1Id, body2Id);
+                //LOGGER_DEBUG("Collision: Prunning BODY 1 - %d, BODY 2 - %d", collider1Id, collider2Id);
                 break; // Prune this inner loop for body1->
-            } 
-            // else {
-            //     LOGGER_DEBUG("Not prunning need to check %d, %d",
-            //         F16_toInt(g_positions[body2Id].x),
-            //         F16_toInt(g_positions[body1Id].x) + body1.collider.shape.box.max.x
-            //     );
-            // }
-
-            AABBColliderShape a;
-            a.min.x = F16_toInt(g_positions[body1Id].x);
-            a.min.y = F16_toInt(g_positions[body1Id].y);
-            a.max.x = F16_toInt(g_positions[body1Id].x) + body1.collider.shape.box.max.x;
-            a.max.y = F16_toInt(g_positions[body1Id].y) + body1.collider.shape.box.max.y;
-
-            AABBColliderShape b;
-            b.min.x = F16_toInt(g_positions[body2Id].x);
-            b.min.y = F16_toInt(g_positions[body2Id].y);
-            b.max.x = F16_toInt(g_positions[body2Id].x) + body2.collider.shape.box.max.x;
-            b.max.y = F16_toInt(g_positions[body2Id].y) + body2.collider.shape.box.max.y;
-
-            // LOGGER_DEBUG("Sprite width: A %d, %d", 
-            //     g_sprites[i].sgdkSprite->definition->w,
-            //     g_sprites[i].sgdkSprite->definition->h
-            // );
-
-            // LOGGER_DEBUG("Position: A %d, %d -- B %d, %d", 
-            //     F16_toInt(g_positions[i].x), F16_toInt(g_positions[i].y),
-            //     F16_toInt(g_positions[j].x), F16_toInt(g_positions[j].y));
-
-            // LOGGER_DEBUG("A -- Min %d, %d -- Max %d, %d", 
-            //     a.min.x, a.min.y,
-            //     a.max.x, a.max.y);
-
-            // LOGGER_DEBUG("B -- Min %d, %d -- Max %d, %d", 
-            //     b.min.x, b.min.y,
-            //     b.max.x, b.max.y);
+            }           
 
             //ASSERT_EXP(1==0);
-
-            if ( AABBvsAABB( a, b ) ) {
-                LOGGER_DEBUG("Collision detected: Entities %d, %d", body1Id, body2Id);
+            if(CollisionSystem_AABBvsAABB(collider1Id, collider2Id)) {
+                LOGGER_DEBUG("Collision: Dectected colligion beween %d && %d", collider1Id, collider2Id);
             }
         }
     }
@@ -262,7 +243,7 @@ void CollisionSystem_update() {
 //                     //ASSERT_EXP(1==0);
 
 //                     if ( AABBvsAABB( a, b ) ) {
-//                         LOGGER_DEBUG("Collision detected: Entities %d, %d", i, j);
+//                         //LOGGER_DEBUG("Collision detected: Entities %d, %d", i, j);
 //                     }
 //                 }
 //             }
