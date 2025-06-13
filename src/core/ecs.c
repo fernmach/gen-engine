@@ -14,7 +14,7 @@
 
 #define ASSERT_COMPONENT_TYPE(method) \
     /*LOGGER_DEBUG("ECS: %s. Entity: %d, type: %u", #method, id, type);*/ \
-    ASSERT_MSG(type > 0 && type < ECS_MAX_COMPONENTS, "ECS: Inactive entity id provided at" #method);
+    ASSERT_MSG(type > 0 && type < ECS_MAX_COMPONENTS, "ECS: Inactive component type provided at" #method);
 
 #define ASSERT_ALL(method) \
     ASSERT_MAX_ENTITY (method) \

@@ -169,7 +169,7 @@ void CollisionSystem_update() {
 
             //ASSERT_EXP(1==0);
             if(CollisionSystem_AABBvsAABB(collider1Id, collider2Id)) {
-                LOGGER_DEBUG("Collision: Dectected colligion beween %d && %d", collider1Id, collider2Id);
+                //LOGGER_DEBUG("Collision: Dectected colligion beween %d && %d", collider1Id, collider2Id);
             }
         }
     }
