@@ -38,11 +38,16 @@ void MainGameScene_createBall() {
     AABBColliderType box = { (s8)0, (s8)0, (u8)spr_donut.w, (s16)spr_donut.h };
     collider.type = COLLIDER_TYPE_AABB;
     collider.shape.box = box;
+
+    Entity_addComponentPosition(ball, position);
+    Entity_addComponentVelocity(ball, velocity);
+    Entity_addComponentCollider(ball, collider);
+    Entity_addComponentScreenConstraint(ball, constraint);
     
-    Entity_addComponent(ball, COMPONENT_POSITION, &position);
-    Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
-    Entity_addComponent(ball, COMPONENT_COLLIDER, &collider);
-    Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
+    // Entity_addComponent(ball, COMPONENT_POSITION, &position);
+    // Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
+    // Entity_addComponent(ball, COMPONENT_COLLIDER, &collider);
+    // Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
     Entity_addSpriteComponent(ball, &spr_donut, PAL0); // Assuming COMPONENT_SPRITE exists
 }
 
@@ -53,9 +58,16 @@ void Ball_update(EntityId id) {
     // position->y += FIX16(10);
     // LOGGER_DEBUG("After update %d, %d", F16_toInt(position->x), F16_toInt(position->y ));
     // Entity_setComponentValue(id, COMPONENT_POSITION, &position);
+    
 
-    LOGGER_DEBUG("BEFORE BALL update %d, %d", F16_toInt(g_positions[id].x), F16_toInt(g_positions[id].y));
-    g_positions[id].x = -g_positions[id].x;
-    g_positions[id].y = -g_positions[id].y;
-    LOGGER_DEBUG("AFTER BALL update %d, %d", F16_toInt(g_positions[id].x), F16_toInt(g_positions[id].y));
+    //LOGGER_DEBUG("BEFORE BALL update %d, %d", F16_toInt(g_velocities[id].dx), F16_toInt(g_velocities[id].dy));
+    // g_velocities[id].dx = -g_velocities[id].dx;
+    // g_velocities[id].dy = -g_velocities[id].dy;
+
+    VelocityComponent velocity = Entity_getComponentVelocity(id);
+    velocity.dx = -velocity.dx;
+    velocity.dy = -velocity.dy;
+    Entity_setComponentVelocity(id, velocity);
+
+    //LOGGER_DEBUG("AFTER BALL update %d, %d", F16_toInt(g_velocities[id].dx), F16_toInt(g_velocities[id].dy));}
 }
