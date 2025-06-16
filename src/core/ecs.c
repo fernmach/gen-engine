@@ -79,7 +79,7 @@ void ECS_clearAllEntities() {
     memset(g_entity_component_masks, COMPONENT_NONE, sizeof(g_entity_component_masks));
 
     g_active_entity_count = 0;
-    LOGGER_DEBUG("ECS: Clearing all entities");
+    LOGGER_INFO("ECS: Clearing all entities");
 }
 
 EntityId Entity_create() {    
@@ -98,7 +98,7 @@ EntityId Entity_create() {
 
     g_active_entity_count++;
 
-    LOGGER_DEBUG("ECS: Created entity %d", new_id);
+    //LOGGER_DEBUG("ECS: Created entity %d", new_id);
 
     return new_id;
 }
@@ -137,19 +137,21 @@ void Entity_destroy(EntityId id) {
         // IMPORTANT: If any external system holds a reference to the entity that was at 'last_id',
         // that reference is now invalid. You must have a way to update it.
         // For example, if the player was entity 'last_id', you now need to know it's at 'id'.
-        LOGGER_DEBUG("ECS: Destroyed entity %d, swaped for %d", id, last_id);        
+        //LOGGER_DEBUG("ECS: Destroyed entity %d, swaped for %d", id, last_id);        
     }    
     g_entity_component_masks[last_id]   = COMPONENT_NONE; // for the last position
-    LOGGER_DEBUG("ECS: current active count %d", g_active_entity_count); 
+    //LOGGER_DEBUG("ECS: current active count %d", g_active_entity_count); 
 }
 
 void Entity_addComponent(EntityId id, ComponentType type) {
     ASSERT_ALL("Entity_addComponent");
+    
     g_entity_component_masks[id] |= type;   
 }
 
 void Entity_removeComponent(EntityId id, ComponentType type) {
     ASSERT_ALL("Entity_removeComponent");
+
     g_entity_component_masks[id] &= ~type;
 }
 
