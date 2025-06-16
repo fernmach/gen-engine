@@ -13,8 +13,6 @@ typedef void (*PFN_onSceneUpdate)(Scene* scene, fix16 delta_time);    // Called 
 typedef void (*PFN_onSceneDraw)(Scene* scene);      // Called every frame for drawing
 typedef void (*PFN_onSceneDestroy)(Scene* scene);   // Called when scene ends
 
-//List of all entities created in the scene
-extern bool g_scene_active_entities[ECS_MAX_ENTITIES];
 
 // The Scene structure
 struct Scene {
@@ -25,6 +23,8 @@ struct Scene {
     void* data; // Optional: pointer to scene-specific data struct
     const char* name; // For debugging or identification    
 };
+
+extern bool g_scene_active_entities[ECS_MAX_ENTITIES];
 
 // --- Scene Manager Functions ---
 

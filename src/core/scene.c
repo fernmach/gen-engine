@@ -5,16 +5,11 @@
 static Scene* current_scene = NULL;
 static Scene* next_scene_request = NULL;
 
-//List of all entities created in the scene
 bool g_scene_active_entities[ECS_MAX_ENTITIES];
 
 void SceneManager_init() {
     current_scene = NULL;
     next_scene_request = NULL;
-
-    // Any other global manager initialization if needed
-    memset(g_scene_active_entities, FALSE, sizeof(g_scene_active_entities));
-
     LOGGER_INFO("SceneManager subsystem initialized");
 }
 
@@ -59,8 +54,7 @@ void SceneManager_draw() {
 EntityId SceneManager_createEntity() {
     if (current_scene != NULL) {
         EntityId entityId = Entity_create();
-        if (entityId < ECS_MAX_ENTITIES) {
-            g_scene_active_entities[entityId] = TRUE;
+        if (entityId <= ECS_MAX_ENTITIES) {
             LOGGER_INFO("SceneManager: Created entity: %d in scene: %s", entityId, current_scene->name);
         }
         return entityId;
@@ -69,21 +63,28 @@ EntityId SceneManager_createEntity() {
 }
 
 void SceneManager_destroyEntity(EntityId entityId) {
-    if (current_scene != NULL && g_scene_active_entities[entityId]) {
-        Entity_destroy(entityId);        
-        g_scene_active_entities[entityId] = FALSE;
-        LOGGER_INFO("SceneManager: Destroyed entity: %d in scene: %s", entityId, current_scene->name);
+    if (current_scene != NULL) {       
+        Entity_destroy(entityId);
     }
 }
 
 void SceneManager_destroyAllEntities() {
-    LOGGER_INFO("SceneManager: Destroying all entities from scene: %s", current_scene->name);    
-    for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
-        SceneManager_destroyEntity(i);
-    }
+    // for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
+    //     if ( g_scene_active_entities[i] )
+    //         SceneManager_destroyEntity(i);
+    // }
+    ECS_clearAllEntities();
 }
 
 const bool* SceneManager_getActiveEntities() {
     LOGGER_INFO("SceneManager: Retrieving list of active entities" );
+    memset(g_scene_active_entities, FALSE, sizeof(g_scene_active_entities));
+
+    for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
+        if ( g_entity_component_masks[i] != COMPONENT_NONE ) {
+            g_scene_active_entities[i] = TRUE;
+        }
+    }
+
     return g_scene_active_entities;
 }
