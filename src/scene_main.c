@@ -61,12 +61,16 @@ void MainScene_update(Scene* scene, fix16 dt) {
     
     if (Input_isJustPressed(JOY_1, BUTTON_C)) {
         VDP_drawText("C pressed in switching direction", 1, 18);
-        scene_active_entities = SceneManager_getActiveEntities();
-        for(EntityId i=0; i < ECS_MAX_ENTITIES; i++) {
-            if (scene_active_entities[i]) {
-                Ball_update(i);
-            }
-        }
+
+        Ball_destroy(0);
+
+        // scene_active_entities = SceneManager_getActiveEntities();
+        // for(EntityId i=0; i < ECS_MAX_ENTITIES; i++) {
+        //     if (scene_active_entities[i]) {
+        //         Ball_update(i);
+        //     }
+        // }
+
     }
 
     // Your existing Game_update logic:
