@@ -27,6 +27,10 @@ VelocityComponent MainGameScene_getRandomVelocity() {
 void MainGameScene_createBall() {
     // Creating a ball to run in the scene. And add components to it
     EntityId ball = SceneManager_createEntity();
+
+    if (ball == ECS_MAX_ENTITIES) {
+        return;
+    }
     
     // Position velocity and screen constraing
     ScreenConstraintComponent constraint = {true, true}; // Corrected typo 'contraint'
@@ -35,13 +39,21 @@ void MainGameScene_createBall() {
 
     // Rigid body definition;
     ColliderComponent collider;    
-    AABBColliderType box = { (s8)0, (s8)0, (u8)spr_donut.w, (s16)spr_donut.h };
+    AABBColliderType box; // = { (s8)0, (s8)0, (u8)spr_donut.w, (u8)spr_donut.h };    
+    
+    box.x = 0;
+    box.y = 0;
+    box.w = spr_donut.w;;    
+    box.h = spr_donut.h;
+
     collider.type = COLLIDER_TYPE_AABB;
     collider.shape.box = box;
 
     Entity_addComponentPosition(ball, position);
     Entity_addComponentVelocity(ball, velocity);
     Entity_addComponentCollider(ball, collider);
+    //Entity_addComponentCollider1(ball, collider);
+    //Entity_addComponentCollider2(ball, collider);
     Entity_addComponentScreenConstraint(ball, constraint);
     
     // Entity_addComponent(ball, COMPONENT_POSITION, &position);
@@ -69,5 +81,10 @@ void Ball_update(EntityId id) {
     velocity.dy = -velocity.dy;
     Entity_setComponentVelocity(id, velocity);
 
+    //LOGGER_DEBUG("AFTER BALL update %d, %d", F16_toInt(g_velocities[id].dx), F16_toInt(g_velocities[id].dy));}
+}
+
+void Ball_destroy(EntityId id) {    
+    Entity_destroy(0);
     //LOGGER_DEBUG("AFTER BALL update %d, %d", F16_toInt(g_velocities[id].dx), F16_toInt(g_velocities[id].dy));}
 }
