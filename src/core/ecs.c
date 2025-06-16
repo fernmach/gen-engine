@@ -10,7 +10,7 @@
 
 #define ASSERT_INACTIVE_ENTITY(method) \
     /*LOGGER_DEBUG("ECS: %s. Entity: %d, Active: %u", #method, id, g_entity_active[id]);*/ \
-    ASSERT_MSG(g_entity_active[id], "ECS: Inactive entity id provided at " #method);
+    ASSERT_MSG(id < g_active_entity_count, "ECS: Inactive entity id provided at " #method);
 
 #define ASSERT_COMPONENT_TYPE(method) \
     /*LOGGER_DEBUG("ECS: %s. Entity: %d, type: %u", #method, id, type);*/ \
@@ -33,11 +33,13 @@ SpriteComponent             g_sprites[ECS_MAX_ENTITIES];
 ScreenConstraintComponent   g_screen[ECS_MAX_ENTITIES];
 
 // --- Global entity tracking array definitions  ---
-bool g_entity_active[ECS_MAX_ENTITIES];
+//bool g_entity_active[ECS_MAX_ENTITIES];
 ComponentMask g_entity_component_masks[ECS_MAX_ENTITIES];
 
-// --- Holds the next available entity id in the pool---
-static EntityId s_next_entity_id_pool = 0;
+// --- NEW: Internal State for Packed Array ---
+// Tracks the number of active entities for the swap and pop operation
+// All active entities are guaranteed to be in the range [0, g_active_entity_count - 1].
+EntityId g_active_entity_count = 0;
 
 void ECS_init() {
     // Zero out all component data and entity states
@@ -47,12 +49,10 @@ void ECS_init() {
     memset(g_sprites, 0, sizeof(g_sprites));
     memset(g_screen, 0, sizeof(g_screen));
 
-    memset(g_entity_active, FALSE, sizeof(g_entity_active));
-
-     // Initialize all masks to 0
+    // Initialize all masks to 0
     memset(g_entity_component_masks, COMPONENT_NONE, sizeof(g_entity_component_masks));
 
-    s_next_entity_id_pool = 0;
+    g_active_entity_count = 0;
 
     // Important: Initialize SGDK Sprite engine before starting ECS (SPR_init())
     // This is implemente in the Engine_init() event
@@ -60,184 +60,97 @@ void ECS_init() {
 }
 
 void ECS_clearAllEntities() {
-    for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
-        if (g_entity_active[i]) {
-           Entity_destroy(i);
+    for (EntityId i = 0; i < g_active_entity_count; ++i) {
+        // Clear any resources if exists before clearing entity
+        if ((g_entity_component_masks[i] & COMPONENT_SPRITE) != 0) {
+            if (g_sprites[i].sgdkSprite != NULL) {
+                SPR_releaseSprite(g_sprites[i].sgdkSprite);
+                g_sprites[i].sgdkSprite = NULL;
+            }
         }
-    }
+    }    
+
+    // Zero out all component data and entity states
+    memset(g_positions, 0, sizeof(g_positions));
+    memset(g_velocities, 0, sizeof(g_velocities));
+    memset(g_colliders, 0, sizeof(g_colliders));
+    memset(g_sprites, 0, sizeof(g_sprites));
+    memset(g_screen, 0, sizeof(g_screen));
+    memset(g_entity_component_masks, COMPONENT_NONE, sizeof(g_entity_component_masks));
+
+    g_active_entity_count = 0;
+    LOGGER_DEBUG("ECS: Clearing all entities");
 }
 
-EntityId Entity_create() {
-    // Loop way
-    for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
-        if (!g_entity_active[i]) {
-            g_entity_active[i] = TRUE;
-            g_entity_component_masks[i] = COMPONENT_NONE;
-            // Optional: Clear component data for this entity
-            return i;
-        }
+EntityId Entity_create() {    
+    if (g_active_entity_count >= ECS_MAX_ENTITIES) {
+        LOGGER_WARN("ECS: Maximum number of entites reached %d", ECS_MAX_ENTITIES);
+        return ECS_MAX_ENTITIES;
     }
 
-    // TODO: Implement ECS with ppling and memory grrouping
-    // if (s_next_entity_id_pool <= ECS_MAX_ENTITIES) {
-    //     g_entity_active[s_next_entity_id_pool] = TRUE;
-    //     g_entity_component_masks[s_next_entity_id_pool] = COMPONENT_NONE;
-    //     return s_next_entity_id_pool++;
-    // }
+    EntityId new_id = g_active_entity_count;
 
-    // Only reached when maximmum reached
-    LOGGER_WARN("ECS: Maximum number of entites reached %d", ECS_MAX_ENTITIES);
-    return ECS_MAX_ENTITIES;
+    // Reset its mask. The component data is already considered garbage from previous use,
+    // and will be overwritten when components are added.
+    // Optional: Clear component data for this entity
+    // The new entity ID is simply the current count.
+    g_entity_component_masks[new_id] = COMPONENT_NONE;
+
+    g_active_entity_count++;
+
+    LOGGER_DEBUG("ECS: Created entity %d", new_id);
+
+    return new_id;
 }
 
 void Entity_destroy(EntityId id) {   
     ASSERT_MAX_ENTITY("Entity_destroy");
     ASSERT_INACTIVE_ENTITY("Entity_destroy");
 
-    g_entity_active[id] = FALSE;
-    g_entity_component_masks[id] = COMPONENT_NONE; // Clear the mask
-
-    /*if (g_sprites[id].sgdk_sprite != NULL) { // Example of component-specific cleanup
-        SPR_releaseSprite(g_sprites[id].sgdk_sprite);
-        g_sprites[id].sgdk_sprite = NULL;
-    }*/
-    // Note: The actual data in g_positions[id], g_velocities[id] etc.
-    // is still there but considered "garbage" because the mask says
-    // the entity no longer "has" those components.
-    //}        
-    
-    // TODO: Implement ECS with ppling and memory grrouping
-    // if (g_entity_active[id]) {
-    //     // Finde the head of the entities array
-    //     EntityId head_entity = s_next_entity_id_pool-1;
-
-    //     // Transfer the head to the newly available position
-    //     g_positions[id] = g_positions[head_entity];
-    //     g_velocities[id] = g_velocities[head_entity];
-    //     g_sprites[id] = g_sprites[head_entity];
-
-    //     // Decactivate the head
-    //     g_entity_active[head_entity] = FALSE;
-    //     g_entity_component_masks[head_entity] = COMPONENT_NONE; // Clear the mask
-
-    //     s_next_entity_id_pool -= 1;
-    // } 
-}
-
-void Entity_setComponentValue(EntityId id, ComponentType type, void* values) {
-    ASSERT_ALL("Entity_setComponentValue");
-    ASSERT_MSG(values != NULL, "ECS: Parameter 'values' required");
-
-    if(type == COMPONENT_POSITION) {
-        // Cast 'values' to a PositionComponent pointer and dereference it
-        // This copies the *contents* of the PositionComponent struct
-        // pointed to by 'values' into g_positions[id].
-        //LOGGER_DEBUG("INSIDE component %d", ((PositionComponent*)values)->x);
-        //ASSERT_EXP(1!=0) ;
-        g_positions[id] = *(PositionComponent*)values;
-        return;
+    // --- Component-specific cleanup (IMPORTANT) ---
+    // If a component needs special cleanup (like releasing an SGDK sprite),
+    // do it BEFORE you overwrite its data with the swap.
+    if ((g_entity_component_masks[id] & COMPONENT_SPRITE) != 0) {
+        if (g_sprites[id].sgdkSprite != NULL) {
+            SPR_releaseSprite(g_sprites[id].sgdkSprite);
+            g_sprites[id].sgdkSprite = NULL;
+        }
     }
+    // --- End cleanup ---
 
-    if(type == COMPONENT_VELOCITY) {            
-        g_velocities[id] = *(VelocityComponent*)values;
-        return;
-    }
+    // Decrement the active entity count. This is the "pop".
+    g_active_entity_count--;    
 
-    if(type == COMPONENT_COLLIDER) {               
-        g_colliders[id] = *(ColliderComponent*)values;
-        return;
-    }
+    // Get the ID of the last active entity.
+    EntityId last_id = g_active_entity_count;
 
-    if(type == COMPONENT_SPRITE) {
-        g_sprites[id] = *(SpriteComponent*)values;
-        return;
+    // If the entity we are destroying is NOT the last one in the array,
+    // we need to move the last one into its place to fill the gap.
+    if (id != last_id) {
+        // This is the "swap" part.
+        g_positions[id]                     = g_positions[last_id];
+        g_velocities[id]                    = g_velocities[last_id];
+        g_colliders[id]                     = g_colliders[last_id];
+        g_sprites[id]                       = g_sprites[last_id];
+        g_screen[id]                        = g_screen[last_id];
+        // TODO: Implement tagging?
+        // IMPORTANT: If any external system holds a reference to the entity that was at 'last_id',
+        // that reference is now invalid. You must have a way to update it.
+        // For example, if the player was entity 'last_id', you now need to know it's at 'id'.
+        LOGGER_DEBUG("ECS: Destroyed entity %d, swaped for %d", id, last_id);        
     }    
-
-    if(type == COMPONENT_SCREEN_CONSTRAINT) {
-        g_screen[id] = *(ScreenConstraintComponent*)values;
-        return;
-    }    
+    g_entity_component_masks[last_id]   = COMPONENT_NONE; // for the last position
+    LOGGER_DEBUG("ECS: current active count %d", g_active_entity_count); 
 }
 
-void* Entity_getComponent(EntityId id, ComponentType type) {
-    ASSERT_ALL("Entity_getComponent");
-    //ASSERT_MSG(Entity_hasComponent(id, type),
-    //    "ECS: Component not found in entity");
-
-    // Is the component attached to the entity (Entity_hasComponent)
-    if ((g_entity_component_masks[id] & type) != 0) {
-        if(type == COMPONENT_POSITION) {        
-            return (void*)&g_positions[id];
-        }
-
-        if(type == COMPONENT_VELOCITY) {
-            return (void*)&g_velocities[id];
-        }
-
-        if(type == COMPONENT_COLLIDER) {
-            return (void*)&g_colliders[id];
-        }
-
-        if(type == COMPONENT_SPRITE) {
-            return (void*)&g_sprites[id];
-        }
-
-        if(type == COMPONENT_SCREEN_CONSTRAINT) {
-            return (void*)&g_screen[id];
-        }
-    }
-
-    return NULL;
-}
-
-void Entity_addComponent(EntityId id, ComponentType type, void* value) {
+void Entity_addComponent(EntityId id, ComponentType type) {
     ASSERT_ALL("Entity_addComponent");
-
-    //if (id < ECS_MAX_ENTITIES && g_entity_active[id]) {
-    g_entity_component_masks[id] |= type;
-
-    if (value != NULL) {
-        Entity_setComponentValue(id, type, value);
-    }
-
-    // Note: You might want to initialize the component data here
-    // e.g., if (component_mask == COMPONENT_POSITION) { memset(&g_positions[id], 0, sizeof(PositionComponent)); }
-    // Or, more typically, the code that calls addComponent is responsible for also setting the data.    
+    g_entity_component_masks[id] |= type;   
 }
 
 void Entity_removeComponent(EntityId id, ComponentType type) {
     ASSERT_ALL("Entity_removeComponent");
-
     g_entity_component_masks[id] &= ~type;
-
-    // Optional: Zero out component data (g_positions[id] = {0,0};)
-    // This helps if you're worried about stale data, but the mask prevents its use.
-    // Is the component attached to the entity (Entity_hasComponent)    
-    if(type == COMPONENT_POSITION) {        
-        g_positions[id] = (PositionComponent){0, 0};
-        return;
-    }
-
-    if(type == COMPONENT_VELOCITY) {
-        g_velocities[id] = (VelocityComponent){0, 0};
-        return;
-    }
-
-    if(type == COMPONENT_COLLIDER) {        
-        memset(&g_colliders[id], 0, sizeof(ColliderComponent));
-        return;
-    }
-
-    if(type == COMPONENT_SPRITE) {            
-        SPR_releaseSprite(g_sprites[id].sgdkSprite);
-        g_sprites[id].sgdkSprite = NULL;
-        return;
-    }
-
-    if(type == COMPONENT_SCREEN_CONSTRAINT) {
-        g_screen[id] = (ScreenConstraintComponent){FALSE,FALSE};
-        return;
-    }
 }
 
 // Checks if an entity has AT LEAST ONE of the flags in 'component_mask_query'
@@ -256,3 +169,65 @@ bool Entity_hasAllComponents(EntityId id, ComponentMask required_mask) {
         
     return (g_entity_component_masks[id] & required_mask) == required_mask;    
 }
+
+// void ECS_getStatsFromComponentArray(void* arr[], ComponentType type) {
+//     switch (type)
+//     {
+//     case COMPONENT_POSITION:
+//         for (int i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
+//             if ( (PositionComponent*)arr[i] )
+//         }
+//         break;
+    
+//     default:
+//         break;
+//     }
+// }
+
+// void ECS_DrawStats(u16 x, u16 y) {
+//     char buffer[40]; // Max SGDK line width
+//     VDP_setTextPalette(0);
+
+//     sprintf(buffer, "ECS Max, %d, Active: %d, ", ECS_MAX_ENTITIES, ACTIVE_ENTITY_COUNT);
+//     VDP_drawText(buffer, x, y++);
+//     //VDP_drawText("Name         TotFr Call MinC MaxC AvgC AvgFr", x, y++);
+//     // Col Widths:   12           6      3    4    4    4    5   = 38 + spaces
+//     VDP_drawText("Comp         TotFr MinC MaxC AvgC AvgFr", x, y++);
+//     // Col Widths:   12           6      3    4    4    4    5   = 38 + spaces
+
+//     for (int i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
+
+//         if (profilerEntries[i].active) {
+//             ProfilerEntry* entry = &profilerEntries[i];
+
+//             u16 name = ;
+//             u32 us_min_call_curr = (entry->minSubTicksPerCallThisFrame == MAX_U32) ? 0 : PROFILER_SUBTICKS_TO_US(entry->minSubTicksPerCallThisFrame);
+//             u32 us_max_call_curr = PROFILER_SUBTICKS_TO_US(entry->maxSubTicksPerCallThisFrame);
+//             u32 us_avg_call = PROFILER_SUBTICKS_TO_US(entry->avgSubTicksPerCall);
+//             u32 us_avg_frame = PROFILER_SUBTICKS_TO_US(entry->avgSubTicksPerFrame);
+
+
+//             // Make sure sprintf and buffer can handle the numbers.
+//             // %lu should be fine for u32. If us_total_frame > ~4.2M it overflows u32.
+//             // Max frame time in subticks: (1/60s) * 76800 subticks/s = 1280 subticks for NTSC.
+//             // Max us: 1280 * 625 / 48 = 16666 us. Fits u32.
+//             // sprintf(buffer, "%-*.*s %6lu %3lu %4lu %4lu %4lu %5lu",
+//             //         PROFILER_NAME_MAX_LEN, PROFILER_NAME_MAX_LEN, entry->name,
+//             //         us_total_frame,
+//             //         entry->callCountThisFrame,
+//             //         us_min_call_curr,
+//             //         us_max_call_curr,
+//             //         us_avg_call,
+//             //         us_avg_frame);
+//             sprintf(buffer, "%-*.*s %5lu %4lu %4lu %4lu %5lu",
+//                     PROFILER_NAME_MAX_LEN-3, PROFILER_NAME_MAX_LEN-3, entry->name,
+//                     us_total_frame,                    
+//                     us_min_call_curr,
+//                     us_max_call_curr,
+//                     us_avg_call,
+//                     us_avg_frame);
+//             VDP_drawText(buffer, x, y++);
+//             if (y >= (VDP_getScreenHeight() / 8) -1 ) break;
+//         }
+//     }
+// }
