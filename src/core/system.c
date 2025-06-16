@@ -15,9 +15,7 @@ extern VelocityComponent    g_velocities[ECS_MAX_ENTITIES];
 extern ColliderComponent    g_colliders[ECS_MAX_ENTITIES];
 extern SpriteComponent      g_sprites[ECS_MAX_ENTITIES];
 
-
 // --- Global entity tracking array definitions  ---
-extern bool g_entity_active[ECS_MAX_ENTITIES];
 extern ComponentMask g_entity_component_masks[ECS_MAX_ENTITIES];
 
 // Temporary array to hold pointers to *active* physics components for sorting.
@@ -32,9 +30,9 @@ void MovementSystem_update(fix16 dt) {
     // Define the components this system operates on
     const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_VELOCITY;
 
-    for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
+    for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
         //RenderSystemDebug_clearText(i);
-        if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {            
+        if (Entity_hasAllComponents(i, required_mask)) {
             g_positions[i].x += F16_mul(g_velocities[i].dx, dt);
             g_positions[i].y += F16_mul(g_velocities[i].dy, dt);            
             //LOGGER_DEBUG("Running %d %d", g_positions[i].x, g_positions[i].y);
@@ -53,8 +51,8 @@ void ScreenConstraintSystem_update() {
 
     //LOGGER_DEBUG("%d, %d", screen_width, screen_height);
 
-    for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
-        if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {
+    for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
+        if (Entity_hasAllComponents(i, required_mask)) {
 
             // ... (screen bounds logic) ...
             //s16 screen_x = F16_toInt(g_positions[i].x);
@@ -123,8 +121,8 @@ void CollisionSystem_update() {
     g_active_colliders_count = 0;
 
     // Create the array that will be sorted
-    for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
-        if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {
+    for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
+        if (Entity_hasAllComponents(i, required_mask)) {
             g_active_colliders[g_active_colliders_count++] = i;            
             //LOGGER_DEBUG("Collision: Active rigid body pos: %d, id: %d", g_active_colliders_count, i);
         }
@@ -255,8 +253,8 @@ void RenderSystem_update() {
     // This system needs Position (to know where) and Sprite (to know what)
     const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_SPRITE;
 
-    for (EntityId i = 0; i < ECS_MAX_ENTITIES; ++i) {
-        if (g_entity_active[i] && Entity_hasAllComponents(i, required_mask)) {
+    for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
+        if (Entity_hasAllComponents(i, required_mask)) {
             if (g_sprites[i].sgdkSprite != NULL) { // Still good to check the actual sprite pointer
 
                 //LOGGER_DEBUG("Entity %d position {%d, %d}", i, g_positions[i].x, g_positions[i].y);
