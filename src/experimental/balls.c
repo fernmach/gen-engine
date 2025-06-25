@@ -35,7 +35,8 @@ void MainGameScene_createBall() {
     // Position velocity and screen constraing
     ScreenConstraintComponent constraint = {true, true}; // Corrected typo 'contraint'
     PositionComponent position = MainGameScene_getRandomPosition();
-    VelocityComponent velocity = MainGameScene_getRandomVelocity();
+    //VelocityComponent velocity = MainGameScene_getRandomVelocity();
+    VelocityComponent velocity = {FIX16(0), FIX16(0)};
 
     // Rigid body definition;
     ColliderComponent collider;    
@@ -63,7 +64,7 @@ void MainGameScene_createBall() {
     Entity_addSpriteComponent(ball, &spr_donut, PAL0); // Assuming COMPONENT_SPRITE exists
 }
 
-void Ball_update(EntityId id) {
+void Ball_update(EntityId id, fix16 dx, fix16 dy) {
     // PositionComponent* position = Entity_getComponent(id, COMPONENT_POSITION);
     // LOGGER_DEBUG("Ball update %d, %d", F16_toInt(position->x), F16_toInt(position->y ));
     // position->x += FIX16(10);
@@ -77,8 +78,8 @@ void Ball_update(EntityId id) {
     // g_velocities[id].dy = -g_velocities[id].dy;
 
     VelocityComponent velocity = Entity_getComponentVelocity(id);
-    velocity.dx = -velocity.dx;
-    velocity.dy = -velocity.dy;
+    velocity.dx = dx;
+    velocity.dy = dy;
     Entity_setComponentVelocity(id, velocity);
 
     //LOGGER_DEBUG("AFTER BALL update %d, %d", F16_toInt(g_velocities[id].dx), F16_toInt(g_velocities[id].dy));}

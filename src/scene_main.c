@@ -54,7 +54,7 @@ void MainScene_init(Scene* scene) {
 void MainScene_update(Scene* scene, fix16 dt) {
     MainSceneData* data = (MainSceneData*)scene->data;
 
-    if (data->ballsCount < 10) {
+    if (data->ballsCount < 2) {
         MainGameScene_createBall();        
         data->ballsCount++;
     }
@@ -62,14 +62,14 @@ void MainScene_update(Scene* scene, fix16 dt) {
     if (Input_isJustPressed(JOY_1, BUTTON_C)) {
         VDP_drawText("C pressed in switching direction", 1, 18);
 
-        //Ball_destroy(0);
+        // //Ball_destroy(0);
 
-        scene_active_entities = SceneManager_getActiveEntities();
-        for(EntityId i=0; i < ECS_MAX_ENTITIES; i++) {
-            if (scene_active_entities[i]) {
-                Ball_update(i);
-            }
-        }
+        // scene_active_entities = SceneManager_getActiveEntities();
+        // for(EntityId i=0; i < ECS_MAX_ENTITIES; i++) {
+        //     if (scene_active_entities[i]) {
+        //         Ball_update(i);
+        //     }
+        // }
 
     }
 
@@ -84,6 +84,43 @@ void MainScene_update(Scene* scene, fix16 dt) {
         VDP_drawText("B pressed in Main Menu Scene", 1, 18);
         SceneManager_setNextScene(&menu_scene); // Switch to game scene
     }
+
+    // Your existing Game_update logic:
+    
+    
+
+    // Your existing Game_update logic:
+    if (Input_isPressed(JOY_1, BUTTON_UP)) {
+        Ball_update(0, FIX16(0), FIX16(-100));
+    } else if (Input_isReleased(JOY_1, BUTTON_UP)) {
+        Ball_update(0, FIX16(0), FIX16(0));
+    }
+    
+    if (Input_isPressed(JOY_1, BUTTON_DOWN)) {        
+        Ball_update(0, FIX16(0), FIX16(100));
+    } else if (Input_isReleased(JOY_1, BUTTON_DOWN)) {
+        Ball_update(0, FIX16(0), FIX16(0));
+    }
+
+    // Your existing Game_update logic:
+    if (Input_isPressed(JOY_1, BUTTON_LEFT)) {
+        Ball_update(0, FIX16(-100), FIX16(0));
+    } else if (Input_isReleased(JOY_1, BUTTON_LEFT)) {
+        Ball_update(0, FIX16(0), FIX16(0));
+    }
+    
+    if (Input_isPressed(JOY_1, BUTTON_RIGHT)) {        
+        Ball_update(0, FIX16(100), FIX16(0));
+    } else if (Input_isReleased(JOY_1, BUTTON_RIGHT)) {
+        Ball_update(0, FIX16(0), FIX16(0));
+    }
+
+    // // Your existing Game_update logic:
+    // if (Input_isPressed(JOY_1, BUTTON_LEFT)) {
+    //     Ball_update(0, 0, 50);
+    // } else if (Input_isPressed(JOY_1, BUTTON_RIGHT)) {
+    //     Ball_update(0, 0, -50);
+    // }
 
     // if (Input_isJustPressed(JOY_1, BUTTON_C)) {
     //     LOGGER_DEBUG("Menu Scene: B pressed, switching direction");
