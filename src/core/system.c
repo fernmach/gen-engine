@@ -7,6 +7,7 @@
 #include "ecs.h"
 #include "utils.h"
 #include "vector_math.h"
+#include "event.h"
 
 #include <genesis.h>
 
@@ -147,6 +148,31 @@ bool CollisionSystem_checkForCollision( EntityId aId, EntityId bId,
     return true;
 }
 
+void CollisionSystem_resolveCollision( EntityId aId, EntityId bId, fix16 penetration, Vect2D_f16 normal) {
+    // Collider 2 is static(move a oiut of b)
+    // Move A along the normal by the penetration amount.
+    // This resolves the collision by pushing A out of B.
+    if (g_colliders[bId].isStatic) {
+
+        g_positions[aId].x -= F16_mul(normal.x, penetration);
+        g_positions[aId].y -= F16_mul(normal.y, penetration);
+
+    } else if(g_colliders[aId].isStatic) {                   
+
+        g_positions[bId].x -= F16_mul(FIX16(0) - normal.x, penetration);
+        g_positions[bId].y -= F16_mul(FIX16(0) - normal.y, penetration);
+
+    } else {
+
+        // Move both objects by half the penetration in opposite directions.                    
+        fix16 half_pen = F16_div(penetration, FIX16(2));
+        g_positions[aId].x  -= F16_mul(normal.x, half_pen);
+        g_positions[aId].y -= F16_mul(normal.y, half_pen);
+        g_positions[bId].x  += F16_mul(normal.x, half_pen);
+        g_positions[bId].y  += F16_mul(normal.y, half_pen);
+    }
+}
+
 // Sweep and prune
 void CollisionSystem_update() {
     // Define the components this system operates on
@@ -211,30 +237,30 @@ void CollisionSystem_update() {
             }           
 
             if(CollisionSystem_checkForCollision(collider1Id, collider2Id, &penetration, &normal) ) {
-                //TODO: Raise collision event with
+
                 //TODO: Resolve collision(static and diynamic)
                 // LOGGER_DEBUG("COLLIDED %d, %d, pen: %d normal: %d, %d, static, %d, %d", collider1Id, collider2Id, penetration, normal.x, normal.y, g_colliders[collider1Id].isStatic, g_colliders[collider2Id].isStatic);
+                CollisionSystem_resolveCollision (
+                    collider1Id,
+                    collider2Id,
+                    penetration,
+                    normal
+                );
 
-                // Collider 2 is static(move a oiut of b)
-                // Move A along the normal by the penetration amount.
-                // This resolves the collision by pushing A out of B.
-                if (g_colliders[collider2Id].isStatic) {                    
-                    g_positions[collider1Id].x -= F16_mul(normal.x, penetration);
-                    g_positions[collider1Id].y -= F16_mul(normal.y, penetration);
+                //TODO: Raise collision event with
+                LOGGER_INFO("Physics: Publishing collision event.");
 
-                } else if(g_colliders[collider1Id].isStatic) {                    
-                    g_positions[collider2Id].x -= F16_mul(FIX16(0) - normal.x, penetration);
-                    g_positions[collider2Id].y -= F16_mul(FIX16(0) - normal.y, penetration);
-                } else {
-                    // Move both objects by half the penetration in opposite directions.                    
-                    fix16 half_pen = F16_div(penetration, FIX16(2));
-                    g_positions[collider1Id].x  -= F16_mul(normal.x, half_pen);
-                    g_positions[collider1Id].y -= F16_mul(normal.y, half_pen);
-                    g_positions[collider2Id].x  += F16_mul(normal.x, half_pen);
-                    g_positions[collider2Id].y  += F16_mul(normal.y, half_pen);
-                }
-
-                //CollisionSystem_resolveCollision( collider1Id, collider2Id, normal);
+                Event collisionEvent = {
+                    .type = EVT_COLLISION,
+                    .data.collision = {
+                        .entityA = collider1Id,
+                        .entityB = collider2Id,
+                        .normal = normal,
+                        .penetration = penetration
+                    }
+                };
+                
+                Event_publish(&collisionEvent);                
             }
         }
     }

@@ -11,8 +11,10 @@ void MovementSystem_update(fix16 dt);
 // ---------Colligion resolution/detection ----------------
 // Broad phase dection
 bool CollisionSystem_compareByLeftEdge(u16 a, u16 b);
-// AABB Colision check with penetration and normal returned
+// AABB collision check with penetration and normal returned
 void CollisionSystem_checkForCollision( EntityId aId, EntityId bId, fix16* out_penetration, Vect2D_f16* out_normal);
+// AABB resolve collision(simple resolution no physics applied)
+void CollisionSystem_resolveCollision( EntityId aId, EntityId bId, fix16* out_penetration, Vect2D_f16* out_normal);
 // Narrow phase detection
 void CollisionSystem_update();
 
