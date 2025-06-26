@@ -3,6 +3,7 @@
 #include "../core/components.h"
 #include "../core/utils.h"
 #include "../core/logger.h"
+#include "../core/event.h"
 
 // include our own resources
 #include "res_gfx.h"
@@ -22,6 +23,24 @@ VelocityComponent MainGameScene_getRandomVelocity() {
         FIX16( getRandomNumberInRange(1, 100) ), 
         FIX16( getRandomNumberInRange(1, 100) )
     };
+}
+
+// Specific Entity Collision Handler (e.g., for a player object)
+bool onBallCollision(const Event* event, void* contextData) {
+    LOGGER_INFO("Event listened. Type: %u (%s), values: %d, %d, normal: {%d,%d}, pen: %d", 
+        event->type,
+        Event_getDescription(event->type),
+        event->data.collision.entityA,
+        event->data.collision.entityB,        
+        event->data.collision.normal.x,
+        event->data.collision.normal.y,
+        event->data.collision.penetration
+    );
+    return TRUE;
+}
+
+void MainGameScene_initBall() {
+    Event_subscribe(EVT_COLLISION, &onBallCollision, NULL);
 }
 
 void MainGameScene_createBall() {
@@ -51,13 +70,14 @@ void MainGameScene_createBall() {
     collider.shape.box = box;
 
     if (ball == 0) {
-        LOGGER_DEBUG("Static collider %d", ball);
         collider.isStatic = FALSE;
     } else if (ball == 1) {
         collider.isStatic = FALSE;
     } else {
         collider.isStatic = TRUE;
     }
+
+    LOGGER_DEBUG("Static collider %d, %d, %d", ball, collider.isStatic, collider.isTrigger);
 
     Entity_addComponentPosition(ball, position);
     Entity_addComponentVelocity(ball, velocity);

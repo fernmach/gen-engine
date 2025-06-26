@@ -9,6 +9,8 @@
 // Helper initialization functions
 PositionComponent MainGameScene_getRandomPosition();
 VelocityComponent MainGameScene_getRandomVelocity();
+
+void MainGameScene_initBall();
 void MainGameScene_createBall();
 void Ball_update(EntityId id, fix16 dx, fix16 dy);
 void Ball_destroy(EntityId id);
