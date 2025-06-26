@@ -54,7 +54,7 @@ void MainScene_init(Scene* scene) {
 void MainScene_update(Scene* scene, fix16 dt) {
     MainSceneData* data = (MainSceneData*)scene->data;
 
-    if (data->ballsCount < 2) {
+    if (data->ballsCount < 4) {
         MainGameScene_createBall();        
         data->ballsCount++;
     }

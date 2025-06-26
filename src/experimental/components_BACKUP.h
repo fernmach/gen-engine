@@ -71,7 +71,7 @@ typedef enum {
     COLLIDER_TYPE_CIRCLE = 2
 } ColliderType;
 
-typedef struct {    
+typedef struct {
     union {
        AABBColliderType box; 
        CircleColliderType circle;
@@ -79,6 +79,35 @@ typedef struct {
     ColliderType type;
     bool isStatic;
 } ColliderComponent;
+
+// Density and restitution examples.
+// Rock       Density : 0.6  Restitution : 0.1
+// Wood       Density : 0.3  Restitution : 0.2
+// Metal      Density : 1.2  Restitution : 0.05
+// BouncyBall Density : 0.3  Restitution : 0.8
+// SuperBall  Density : 0.3  Restitution : 0.95
+// Pillow     Density : 0.1  Restitution : 0.2
+// Static     Density : 0.0  Restitution : 0.4
+//https://www.engineeringtoolbox.com/density-solids-d_1265.html
+//Min density = 0.5
+//Max density = 21.4
+typedef struct
+{
+    fix16 density;
+    fix16 mass;
+    //fix16 inverseMass;
+    fix16 restitution;
+    fix16 area;
+    bool isStatic;
+    u8 width; 
+    u8 heith;
+} RigidBody;
+
+
+// Rigid body component
+//TODO: Implement more robust physics. For now only AABB vs AABB avaialble.
+//TODO: Move the transform, velocity and acceleration into the rigid body definition
+//typedef Collider RigidBodyComponent;
 
 // Screen constrating component
 typedef struct {

@@ -50,6 +50,15 @@ void MainGameScene_createBall() {
     collider.type = COLLIDER_TYPE_AABB;
     collider.shape.box = box;
 
+    if (ball == 0) {
+        LOGGER_DEBUG("Static collider %d", ball);
+        collider.isStatic = FALSE;
+    } else if (ball == 1) {
+        collider.isStatic = FALSE;
+    } else {
+        collider.isStatic = TRUE;
+    }
+
     Entity_addComponentPosition(ball, position);
     Entity_addComponentVelocity(ball, velocity);
     Entity_addComponentCollider(ball, collider);
