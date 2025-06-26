@@ -78,6 +78,7 @@ typedef struct {
     } shape;
     ColliderType type;
     bool isStatic;
+    bool isTrigger;
 } ColliderComponent;
 
 // Screen constrating component
