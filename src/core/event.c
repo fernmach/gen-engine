@@ -10,7 +10,7 @@ typedef struct {
 
 // --- Helper Functions ---
 static char* g_event_type_strings[EVT_MAX_EVENT_TYPES] = {
-    "None", "Game Paused", "Game Resumed", "Custom"
+    "None", "Game Paused", "Game Resumed", "Collision", "Collision Trigger", "Custom"
 };
 
 // --- Static Data for the Event Bus ---
@@ -134,7 +134,8 @@ void Event_publish(const Event* event) {
         return;
     }
 
-    LOGGER_INFO("Event: Publishing event type: %u", event->type);
+    LOGGER_INFO( "Event: Publishing event type: %u - %s", event->type,
+        Event_getDescription(event->type) );
 
     //TODO: Reevaluate the necessity of a caching
     u8 currentListenerCount = g_event_listener_counts[event->type]; // Cache count in case a handler unsubscribes

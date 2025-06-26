@@ -2,6 +2,7 @@
 #define _ENG_EVENT_H_
 
 #include "config.h"
+#include "ecs.h"
 
 // Forward declaration (SGDK)
 typedef unsigned char u8;
@@ -22,32 +23,44 @@ typedef u8 bool;
 typedef enum {
     EVT_NONE = 0,          // Should not be used, good for uninitialized
     EVT_GAME_PAUSED,       // System: game was paused
-    EVT_GAME_RESUMED,          // System: game was resumed
-    // EVT_COLLISION,         // Physics: two entities collided
-    // EVT_PLAYER_JUMPED,     // Gameplay: player initiated a jump
-    // EVT_ENEMY_DIED,        // Gameplay: an enemy was defeated    
+    EVT_GAME_RESUMED,      // System: game was resumed
+    EVT_COLLISION,         // Physics: two entities collided
+    EVT_TRIGGER_COLLISION, // Physics: a trigger collider collided with an entity
+    // EVT_PLAYER_JUMPED,  // Gameplay: player initiated a jump
+    // EVT_ENEMY_DIED,     // Gameplay: an enemy was defeated
     EVT_CUSTOM,       // Custom event the can use generic data
 
     // ... add more specific events
     EVT_MAX_EVENT_TYPES    // Used to size arrays, keep it last
 } EventType;
 
+// --- Event-Specific Data Structures ---
+// For events that carry data, define a struct.
+
+typedef struct {    
+    Vect2D_f16 normal;
+    fix16 penetration;   
+    EntityId entityA;
+    EntityId entityB;    
+} CollisionEventData;
+
 // EventType type;
-typedef struct {
-    EventType type;
+typedef struct {    
     union {
-        u8    u8_val[2];    // Array of two 8-bit unsigned integers
-        u16   u16_val[2];   // Array of two 16-bit unsigned integers
-        u32   u32_val[2];   // Array of two 32-bit unsigned integers
-        fix16 fix16_val[2]; // Array of two 16-bit fixed-point numbers
+        u8      generic_placeholder;    // Generic placeholder
+        u8      u8_val[2];              // Array of two 8-bit unsigned integers
+        u16     u16_val[2];             // Array of two 16-bit unsigned integers
+        u32     u32_val[2];             // Array of two 32-bit unsigned integers
+        fix16   fix16_val[2];           // Array of two 16-bit fixed-point numbers
         // You could also add single values if many events only need one:
         // u8  single_u8;
         // u16 single_u16;
         // etc.
 
         //Specific event structure
-        // CollisionEventData collision;
+        CollisionEventData collision;
     } data;
+    EventType type;
 } Event;
 
 // --- Event Handler Function Pointer ---
