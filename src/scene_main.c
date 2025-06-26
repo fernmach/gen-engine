@@ -38,6 +38,9 @@ void MainScene_init(Scene* scene) {
     data->sceneCustomData[sizeof(data->sceneCustomData) - 1] = '\0';
     data->ballsCount = 0;
 
+    // Register ball event handlers
+    MainGameScene_initBall();
+
     // Game specific initialization logic that isn't part of a generic system.
     // Load resources specific to this game scene
     // e.g., PAL_setPalette(PAL0, spr_donut.palette->data, DMA);
