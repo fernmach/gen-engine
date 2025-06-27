@@ -79,19 +79,35 @@ void MainGameScene_createBall() {
     collider.shape.box = box;
 
     if (ball == 0) {
+
         collider.isStatic = FALSE;
         collider.isTrigger = FALSE;
+        collider.layer = LAYER_1;
+        collider.iteractWith = LAYER_2 | LAYER_3;
+
     } else if (ball == 1) {
+
         collider.isStatic = FALSE;
         collider.isTrigger = FALSE;
+        collider.layer = LAYER_2;
+        collider.iteractWith = LAYER_1;
+
     } else {
+
         collider.isStatic = TRUE;
         collider.isTrigger = FALSE;
+        collider.layer = LAYER_3;
+        collider.iteractWith = LAYER_1;
+
     }
 
     if (ball == 4) {
+
         collider.isStatic = TRUE;
         collider.isTrigger = TRUE;
+        collider.layer = LAYER_3;
+        collider.iteractWith = LAYER_1;
+
     }
 
     LOGGER_DEBUG("Static collider %d, %d, %d", ball, collider.isStatic, collider.isTrigger);

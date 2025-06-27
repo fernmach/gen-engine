@@ -71,12 +71,45 @@ typedef enum {
     COLLIDER_TYPE_CIRCLE = 2
 } ColliderType;
 
+//Layer: Represents the type of object. Each object belongs to exactly one layer. Layers are defined as powers of two (e.g., 1, 2, 4, 8...).
+typedef enum {
+    LAYER_NONE               = 0,        // Represents no components (all bits off)
+    LAYER_1                  = 1 << 0,
+    LAYER_2                  = 1 << 1,
+    LAYER_3                  = 1 << 2,
+    LAYER_4                  = 1 << 3,
+    LAYER_5                  = 1 << 4,
+    LAYER_6                  = 1 << 5,
+    LAYER_7                  = 1 << 6,
+    LAYER_8                  = 1 << 7,
+    LAYER_9                  = 1 << 8, 
+    MAX_COLLIDER_LAYER       = 1 << 9
+} ColliderLayer;
+
+//Mask: Represents the layers this object can collide with. This is a combination of layer bits (e.g., LAYER_ENEMY | LAYER_WALL)
+// typedef enum {
+//     MASK_NONE               = 0,        // Represents no components (all bits off)
+//     MASK_1                  = 1 << 0,
+//     MASK_2                  = 1 << 1,
+//     MASK_3                  = 1 << 2,
+//     MASK_4                  = 1 << 3,
+//     MASK_5                  = 1 << 4,
+//     MASK_6                  = 1 << 5,
+//     MASK_7                  = 1 << 6,
+//     MASK_8                  = 1 << 7,
+//     MASK_9                  = 1 << 8, 
+//     MAX_COLLIDER_MASK       = 1 << 9
+// } ColliderLayerMask;
+typedef u32 ColliderLayerMask;
+
 typedef struct {    
     union {
        AABBColliderType box; 
        CircleColliderType circle;
     } shape;
     ColliderType type;
+    ColliderLayer layer;            // Collision layer
+    ColliderLayerMask iteractWith;  // Other collision layers it iteract with eg.: LAYER_1 && LAYER_2
     bool isStatic;
     bool isTrigger;
 } ColliderComponent;

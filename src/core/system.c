@@ -221,7 +221,14 @@ void CollisionSystem_update() {
             ColliderComponent collider2 = g_colliders[ collider2Id ];
 
             // Do not attempt to check collisions when both are static bodies.
-            if (collider1.isStatic && collider2.isStatic) {                
+            if (collider1.isStatic && collider2.isStatic) {
+                //LOGGER_DEBUG("Collision: Skipping static bodies: BODY 1 - %d, BODY 2 - %d", collider1Id, collider2Id);
+                break;
+            }
+
+            // Check if the colliders are in the same layer, and has the same mask
+            if ( ((collider1.layer & collider2.iteractWith) == 0) || ((collider2.layer & collider1.iteractWith) == 0)  ) {
+                //LOGGER_DEBUG("Collision: Skipping DIFFERENT layers: BODYIES %d, %d", collider1Id, collider2Id);
                 break;
             }
 
@@ -237,6 +244,8 @@ void CollisionSystem_update() {
                 // LOGGER_DEBUG("Collision: Prunning BODY 1 - %d, BODY 2 - %d", collider1Id, collider2Id);
                 break; // Prune this inner loop for body1->
             }           
+
+            //LOGGER_DEBUG("Collision: BODIES %d,%d - LAYERS %d,%d - MASKS: %d,%d", collider1Id, collider2Id, collider1.layer, collider2.layer, collider1.iteractWith, collider2.iteractWith);
 
             if(CollisionSystem_checkForCollision(collider1Id, collider2Id, &penetration, &normal) ) {
                 // LOGGER_DEBUG("COLLIDED %d, %d, pen: %d normal: %d, %d, static, %d, %d", collider1Id, collider2Id, penetration, normal.x, normal.y, g_colliders[collider1Id].isStatic, g_colliders[collider2Id].isStatic);
