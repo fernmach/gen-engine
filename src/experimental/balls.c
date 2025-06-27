@@ -27,7 +27,7 @@ VelocityComponent MainGameScene_getRandomVelocity() {
 
 // Specific Entity Collision Handler (e.g., for a player object)
 bool onBallCollision(const Event* event, void* contextData) {
-    LOGGER_INFO("Event listened. Type: %u (%s), values: %d, %d, normal: {%d,%d}, pen: %d", 
+    LOGGER_INFO("Event listened. Type: %u (%s), entities: %d, %d, normal: {%d,%d}, pen: %d", 
         event->type,
         Event_getDescription(event->type),
         event->data.collision.entityA,
@@ -36,6 +36,15 @@ bool onBallCollision(const Event* event, void* contextData) {
         event->data.collision.normal.y,
         event->data.collision.penetration
     );
+
+    LOGGER_INFO("Even entity A/B static state: %d / %d", 
+        g_colliders[event->data.collision.entityA].isStatic,
+        g_colliders[event->data.collision.entityB].isStatic);
+
+    LOGGER_INFO("Even entity A/B triggers state: %d / %d", 
+        g_colliders[event->data.collision.entityA].isTrigger,
+        g_colliders[event->data.collision.entityB].isTrigger);
+
     return TRUE;
 }
 
@@ -71,10 +80,18 @@ void MainGameScene_createBall() {
 
     if (ball == 0) {
         collider.isStatic = FALSE;
+        collider.isTrigger = FALSE;
     } else if (ball == 1) {
         collider.isStatic = FALSE;
+        collider.isTrigger = FALSE;
     } else {
         collider.isStatic = TRUE;
+        collider.isTrigger = FALSE;
+    }
+
+    if (ball == 4) {
+        collider.isStatic = TRUE;
+        collider.isTrigger = TRUE;
     }
 
     LOGGER_DEBUG("Static collider %d, %d, %d", ball, collider.isStatic, collider.isTrigger);

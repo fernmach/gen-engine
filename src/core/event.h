@@ -25,7 +25,7 @@ typedef enum {
     EVT_GAME_PAUSED,       // System: game was paused
     EVT_GAME_RESUMED,      // System: game was resumed
     EVT_COLLISION,         // Physics: two entities collided
-    EVT_TRIGGER_COLLISION, // Physics: a trigger collider collided with an entity
+    EVT_COLLISION_TRIGGER, // Physics: a trigger collider collided with an entity
     // EVT_PLAYER_JUMPED,  // Gameplay: player initiated a jump
     // EVT_ENEMY_DIED,     // Gameplay: an enemy was defeated
     EVT_CUSTOM,       // Custom event the can use generic data

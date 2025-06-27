@@ -215,6 +215,8 @@ void CollisionSystem_update() {
         
         // Check colligion agains all entities and break if prune
         for (EntityId j = i+1; j < g_active_colliders_count; ++j) {
+
+            // Use the second entityId from the ordered list to get the doby for testing
             EntityId collider2Id = g_active_colliders[j];
             ColliderComponent collider2 = g_colliders[ collider2Id ];
 
@@ -237,19 +239,22 @@ void CollisionSystem_update() {
             }           
 
             if(CollisionSystem_checkForCollision(collider1Id, collider2Id, &penetration, &normal) ) {
-
-                //TODO: Resolve collision(static and diynamic)
                 // LOGGER_DEBUG("COLLIDED %d, %d, pen: %d normal: %d, %d, static, %d, %d", collider1Id, collider2Id, penetration, normal.x, normal.y, g_colliders[collider1Id].isStatic, g_colliders[collider2Id].isStatic);
-                CollisionSystem_resolveCollision (
-                    collider1Id,
-                    collider2Id,
-                    penetration,
-                    normal
-                );
+                
+                // The collision resolution will not happen over triggers.
+                // only the event will happen
+                if(!collider1.isTrigger && !collider2.isTrigger) {
 
-                //TODO: Raise collision event with
-                LOGGER_INFO("Physics: Publishing collision event.");
+                    CollisionSystem_resolveCollision (
+                        collider1Id,
+                        collider2Id,
+                        penetration,
+                        normal
+                    );
 
+                }
+
+                // Raise the collisino event
                 Event collisionEvent = {
                     .type = EVT_COLLISION,
                     .data.collision = {
