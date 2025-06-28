@@ -62,7 +62,7 @@
 
     // Define empty macros and stubs so the code compiles without logging
     #define Logger_init(initial_level)
-    #define Logger_output(enabled)
+    #define Logger_output(level, message, ...)
     #define Logger_shutdown()
     #define Logger_setEnabled(enabled)
     #define Logger_isEnabled()
