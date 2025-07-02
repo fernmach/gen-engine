@@ -37,19 +37,19 @@ bool onBallCollision(const Event* event, void* contextData) {
         event->data.collision.penetration
     );
 
-    LOGGER_INFO("Even entity A/B static state: %d / %d", 
-        g_colliders[event->data.collision.entityA].isStatic,
-        g_colliders[event->data.collision.entityB].isStatic);
+    // LOGGER_INFO("Even entity A/B static state: %d / %d", 
+    //     g_colliders[event->data.collision.entityA].isStatic,
+    //     g_colliders[event->data.collision.entityB].isStatic);
 
-    LOGGER_INFO("Even entity A/B triggers state: %d / %d", 
-        g_colliders[event->data.collision.entityA].isTrigger,
-        g_colliders[event->data.collision.entityB].isTrigger);
+    // LOGGER_INFO("Even entity A/B triggers state: %d / %d", 
+    //     g_colliders[event->data.collision.entityA].isTrigger,
+    //     g_colliders[event->data.collision.entityB].isTrigger);
 
     return TRUE;
 }
 
 void MainGameScene_initBall() {
-    Event_subscribe(EVT_COLLISION, &onBallCollision, NULL);
+    Event_subscribe(EVT_COLLISION, &onBallCollision, NULL);    
 }
 
 void MainGameScene_createBall() {
@@ -110,7 +110,7 @@ void MainGameScene_createBall() {
 
     }
 
-    LOGGER_DEBUG("Static collider %d, %d, %d", ball, collider.isStatic, collider.isTrigger);
+    //LOGGER_DEBUG("Static collider %d, %d, %d", ball, collider.isStatic, collider.isTrigger);
 
     Entity_addComponentPosition(ball, position);
     Entity_addComponentVelocity(ball, velocity);

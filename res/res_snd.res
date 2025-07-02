@@ -1,1 +1,1 @@
-XGM mus_actraiser "music/actraiser.vgm"
+XGM2 music_background "music/actraiser.vgm"

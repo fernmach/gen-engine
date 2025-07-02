@@ -20,7 +20,7 @@
 // #else
 //     #define LOGGER_ENABLED 1
 // #endif
-#define LOGGER_ENABLED 1
+#define LOGGER_ENABLED 0
 
 /**
  *  \brief
@@ -32,7 +32,7 @@
 // #else
 //     #define ASSERTIONS_ENABLED 0
 // #endif
-#define ASSERTS_ENABLED 1
+#define ASSERTS_ENABLED 0
 
 /**
  *  \brief
@@ -84,6 +84,27 @@
 
 /**
  *  \brief
+ *      Adjusts the size of the audio event buffer.
+ *      Adjust based on your game's needs and available RAM.
+ */
+#define AUDIO_BUFFER_CAPACITY 16
+
+/**
+ *  \brief
+ *      Adjusts the maximum number of audio sources that can exists in memory.
+ *      Adjust based on your game's needs and available RAM.
+ */
+#define AUDIO_MAX_SOURCES ECS_MAX_ENTITIES
+
+/**
+ *  \brief
+ *      Sets the XGM driver version: 1 = XGM, 2 = XGM2
+ *      Adjust based on your game's needs and available RAM.
+ */
+#define AUDIO_XGM_DRIVER_VERSION 2
+
+/**
+ *  \brief
  *      Set to 1 to turn game engine profiler. 
  */
 #define PROFILER_ENABLED 0
@@ -93,6 +114,12 @@
  *      Set to 1 to turn game engine CPU load and FPS display. 
  */
 #define PROFILER_FPS_CPU_ENABLED 1
+
+/**
+ *  \brief
+ *      Set to 1 to turn on the game engine Audio CPU load indicator. 
+ */
+#define PROFILER_AUDIO_CPU_LOAD_ENEBLED 1
 
 /**
  *  \brief

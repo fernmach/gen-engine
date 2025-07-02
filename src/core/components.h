@@ -86,20 +86,6 @@ typedef enum {
     MAX_COLLIDER_LAYER       = 1 << 9
 } ColliderLayer;
 
-//Mask: Represents the layers this object can collide with. This is a combination of layer bits (e.g., LAYER_ENEMY | LAYER_WALL)
-// typedef enum {
-//     MASK_NONE               = 0,        // Represents no components (all bits off)
-//     MASK_1                  = 1 << 0,
-//     MASK_2                  = 1 << 1,
-//     MASK_3                  = 1 << 2,
-//     MASK_4                  = 1 << 3,
-//     MASK_5                  = 1 << 4,
-//     MASK_6                  = 1 << 5,
-//     MASK_7                  = 1 << 6,
-//     MASK_8                  = 1 << 7,
-//     MASK_9                  = 1 << 8, 
-//     MAX_COLLIDER_MASK       = 1 << 9
-// } ColliderLayerMask;
 typedef u32 ColliderLayerMask;
 
 typedef struct {    

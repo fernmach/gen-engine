@@ -8,6 +8,7 @@
 
 // include our own resources
 #include "res_gfx.h"
+#include "res_sfx.h"
 #include "res_snd.h"
 
 // Forward declare the scene instance 
@@ -25,7 +26,10 @@ typedef struct {
 static MainSceneData main_scene_data;
 
 // Reference to a list of active entities in the scen(from SceneManager)
-const bool* scene_active_entities;
+//const bool* scene_active_entities;
+
+static AudioId bkgAudioId;
+static AudioId jmpAudioId;
 
 // Main Scene initialization
 void MainScene_init(Scene* scene) {
@@ -41,6 +45,20 @@ void MainScene_init(Scene* scene) {
     // Register ball event handlers
     MainGameScene_initBall();
 
+    bkgAudioId = Audio_addSource( (Audio) {
+        .source = music_background,
+        .size = sizeof(music_background),
+        .type = AUDIO_TYPE_MUSIC
+    });
+    Audio_play( bkgAudioId );
+
+    
+    jmpAudioId = Audio_addSource( (Audio) {
+        .source = sfx_jump,
+        .size = sizeof(sfx_jump),
+        .type = AUDIO_TYPE_SFX
+    });
+
     // Game specific initialization logic that isn't part of a generic system.
     // Load resources specific to this game scene
     // e.g., PAL_setPalette(PAL0, spr_donut.palette->data, DMA);
@@ -48,6 +66,8 @@ void MainScene_init(Scene* scene) {
 
     // Fade out scene
     //PAL_fadeInAll(PAL0, 50, FALSE);
+
+    //Audio_play(mus_actraiser);
 
     // Your existing Game_init logic:
     VDP_drawText("MainScene: init", 1, 20); // For debugging
@@ -65,6 +85,10 @@ void MainScene_update(Scene* scene, fix16 dt) {
     if (Input_isJustPressed(JOY_1, BUTTON_C)) {
         VDP_drawText("C pressed in switching direction", 1, 18);
 
+        //Audio_removeSource( bkgAudioId );
+        //Audio_pause( bkgAudioId );
+        Audio_stop( bkgAudioId );
+
         // //Ball_destroy(0);
 
         // scene_active_entities = SceneManager_getActiveEntities();
@@ -80,6 +104,10 @@ void MainScene_update(Scene* scene, fix16 dt) {
     if (Input_isJustPressed(JOY_1, BUTTON_A)) {
         LOGGER_DEBUG("Menu Scene: A pressed");
         VDP_drawText("A pressed in Main Game Scene", 1, 18);
+
+        //Audio_resume( bkgAudioId );
+        Audio_play( jmpAudioId );
+        //XGM2_playPCMEx(sfx_jump, sizeof(sfx_jump), SOUND_PCM_CH2, 15, FALSE, FALSE);
     }
 
     if (Input_isJustPressed(JOY_1, BUTTON_B)) {
@@ -162,6 +190,7 @@ void MainScene_destroy(Scene* scene) {
 
     // Destroy entities attached to the scene
     SceneManager_destroyAllEntities();
+    Audio_clearAllSources();
 
     // Fade out scene
     //PAL_fadeOutAll(50, FALSE);

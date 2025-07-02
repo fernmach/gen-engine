@@ -49,6 +49,9 @@ static inline void Engine_init() {
     // Initialize event subsystem
     Event_init();
 
+    // Initialize audio subsystem
+    Audio_init();
+
     // Initialize entity subsystems
     ECS_init();
 
@@ -97,11 +100,9 @@ static inline void Engine_update(fix16 delta_time) {
 
     // PlayerControlSystem_update();
     
-    // DEPRECATED
-    // Game-specific updates not covered by generic systems    
-    // PROFILE_SCOPE(game_upda_id, "GameUpdate");
-    // Game.update(delta_time); <--DEPRECATED
-    // PROFILE_END_SCOPE(game_upda_id);
+    PROFILE_SCOPE(audio_upda_id, "AudioSys");
+    Audio_processEvents();
+    PROFILE_END_SCOPE(audio_upda_id);
 
     // 4. Draw Scene
     PROFILE_SCOPE(scn_draw_id, "SceneMgrDraw");
@@ -115,12 +116,6 @@ static inline void Engine_update(fix16 delta_time) {
     RenderSystem_update();
     PROFILE_END_SCOPE(render_upda_id);
     
-    // DEPRECATED
-    // //Game_draw(); 
-    // PROFILE_SCOPE(game_draw_id, "GameDraw");
-    // Game.draw(); <-- DEPRECATED HANDLED BY SCENE MANAGER
-    // PROFILE_END_SCOPE(game_draw_id);
-
     #if (PROFILER_FPS_CPU_ENABLED)
     // 3.1 Optionl display debug features 
     // Show on screen CUP load if configured
@@ -130,6 +125,11 @@ static inline void Engine_update(fix16 delta_time) {
     // // Show FPS count on screen if configured
     VDP_drawText("FPS:", 1, 1);
     VDP_showFPS(false, 5, 1);
+    #endif
+
+    #if (PROFILER_AUDIO_CPU_LOAD_ENEBLED)        
+    VDP_drawText("Audio:", 1, 2);
+    Audio_showCPULoad(7, 2);    
     #endif
 
     // Finish profiling for the frame
@@ -157,7 +157,8 @@ static inline void Engine_shutdown() {
     Input_shutdown();
     Event_shutdown();    
     //TODO: Create memory shutdown call
-    //Memory_shutdown();
+    //Memory_shutdown();    
+    Audio_shutdown();
     Logger_shutdown();
 
     LOGGER_INFO("Shutting down engine");

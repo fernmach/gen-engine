@@ -33,6 +33,10 @@
         "vdp.h": "c",
         "font.h": "c",
         "entry_point.h": "c",
-        "genengine.h": "c"
+        "genengine.h": "c",
+        "utils.h": "c",
+        "audio.h": "c",
+        "audio_defines.h": "c",
+        "circular_buffer.h": "c"
     },
 }
