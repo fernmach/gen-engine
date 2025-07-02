@@ -20,7 +20,7 @@
 // #else
 //     #define LOGGER_ENABLED 1
 // #endif
-#define LOGGER_ENABLED 0
+#define LOGGER_ENABLED 1
 
 /**
  *  \brief
@@ -32,7 +32,7 @@
 // #else
 //     #define ASSERTIONS_ENABLED 0
 // #endif
-#define ASSERTS_ENABLED 0
+#define ASSERTS_ENABLED 1
 
 /**
  *  \brief
