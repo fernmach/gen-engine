@@ -4,7 +4,6 @@
 #include <genesis.h>
 #include "ecs.h"
 
-// Forward declaration of the Scene struct
 typedef struct Scene Scene;
 
 // --- Event Handler Function Pointer ---
@@ -12,7 +11,6 @@ typedef void (*PFN_onSceneInit)(Scene* scene);      // Called when scene starts
 typedef void (*PFN_onSceneUpdate)(Scene* scene, fix16 delta_time);    // Called every frame for logic
 typedef void (*PFN_onSceneDraw)(Scene* scene);      // Called every frame for drawing
 typedef void (*PFN_onSceneDestroy)(Scene* scene);   // Called when scene ends
-
 
 // The Scene structure
 struct Scene {

@@ -14,6 +14,8 @@
 #define _ENG_AUDIO_H_
 
 #include "config.h"
+#include "audio/music.h"
+#include "audio/sfx.h"
 #include "audio_defines.h"
 #include "audio_types.h"
 
@@ -22,7 +24,7 @@
 // Forward declare audio event buss
 static CircularBuffer g_audio_event_bus;
 
-void Audio_init();
+void Audio_init(const MusicDriver *music_driver, const SFXDriver sfx_driver);
 AudioId Audio_addSource(Audio audio);
 void Audio_removeSource(AudioId audioId);
 void Audio_clearAllSources();
@@ -32,6 +34,13 @@ void Audio_play(AudioId id);
 void Audio_pause(AudioId id);
 void Audio_resume(AudioId id);
 void Audio_stop(AudioId id);
+void Audio_isPlaying(AudioId id);
+
+//void Audio_playMusic(Music music);
+// void Audio_pauseMusic(AudioId id);
+// void Audio_resumeMusic(AudioId id);
+// void Audio_stopMusic(AudioId id);
+// void Audio_isPlaying(AudioId id);
 
 // void Audio_fadeIn();
 // void Audio_fadeOut();
@@ -57,13 +66,13 @@ static inline void Audio_raiseEvent(AudioId id, AudioEventType eventType) {
 }
 
 //-- Debuging utility functions
-static inline SOUND_DRIVER_CPU_LOAD_TYPE Audio_getCPULoad() {
-    return SOUND_DRIVER_GET_CPU_LOAD;
+static inline u16 Audio_getCPULoad() {
+    return Music_getCPULoad();
 }
 
 static inline void Audio_showCPULoad(u16 x, u16 y) {
     char audio_load_indicator[4];
-    sprintf(audio_load_indicator, SOUND_DRIVER_CPU_LOAD_FORMAT, Audio_getCPULoad() );
+    sprintf(audio_load_indicator, AUDIO_XGM_DRIVER_CPU_LOAD_FORMAT, Music_getCPULoad() );
     VDP_clearText(x, y, 4);
     VDP_drawText(audio_load_indicator, x, y);
 }

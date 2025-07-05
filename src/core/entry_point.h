@@ -50,7 +50,7 @@ static inline void Engine_init() {
     Event_init();
 
     // Initialize audio subsystem
-    Audio_init();
+    Audio_init(&XGM2_MusicDriver, SFX_XGM2_DRIVER);
 
     // Initialize entity subsystems
     ECS_init();

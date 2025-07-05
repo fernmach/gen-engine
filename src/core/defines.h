@@ -24,4 +24,10 @@
  */
 #define F16_half(val) ((val) >> 1)
 
+/**
+ *  \brief
+ *      Defides an F16 number by two (faster then using the F16_div)
+ */
+#define FUNCTION_NAME __func__
+
 #endif // _ENG_DEFNINES_H_

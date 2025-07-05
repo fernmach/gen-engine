@@ -24,6 +24,8 @@
 #include "event.h"
 #include "components.h"
 #include "ecs.h"
+#include "audio/xgm2_music_driver.h"
+#include "audio/xgm_music_driver.h"
 #include "audio.h"
 #include "systems.h"
 #include "scene.h"

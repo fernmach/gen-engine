@@ -37,6 +37,11 @@
         "utils.h": "c",
         "audio.h": "c",
         "audio_defines.h": "c",
-        "circular_buffer.h": "c"
+        "circular_buffer.h": "c",
+        "audio_music.h": "c",
+        "audio_types.h": "c",
+        "sfx_driver.h": "c",
+        "sfx.h": "c",
+        "music_driver.h": "c"
     },
 }

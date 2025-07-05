@@ -11,29 +11,36 @@
 
 // Defome audio component current state
 typedef enum {
-    AUDIO_TYPE_MUSIC,
-    AUDIO_TYPE_SFX
-} AudioType;
-
-// Defome audio component current state
-typedef enum {
     AUDIO_STATE_PLAYING,
     AUDIO_STATE_STOPED,
     AUDIO_STATE_PAUSED
 } AudioState;
+
+// Defome audio component current state
+typedef enum {
+    AUDIO_TYPE_MUSIC,
+    AUDIO_TYPE_SFX
+} AudioType;
 
 // Define an audio component
 typedef struct
 {   
     const u8* source;
     u32 size;
-    u8 tempo;
-    u8 loop;
-    u8 volume;
-    AudioState state;
     AudioType type;
-    //char* name[10];
+    u8 channel;
+    u8 priority;
 } Audio;
+
+// Define an audio component
+typedef struct
+{
+    const u8* sample;
+    u32 size;
+} MusicAudio;
+
+// SFX audio definition, as in defined in the sfx
+typedef SFXData SFXAudio;
 
 // Define the audio events your game will have.
 // Using an enum makes the code much more readable.
@@ -43,6 +50,7 @@ typedef enum {
     AUDIO_EVENT_PAUSE,
     AUDIO_EVENT_STOP,
     AUDIO_EVENT_RESUME,
+    AUDIO_EVENT_UPDATE, // For volume, tempo, loop and others.
     AUDIO_MAX_EVENT_TYPES
 } AudioEventType;
 
