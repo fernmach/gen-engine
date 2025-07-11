@@ -47,18 +47,13 @@ typedef struct {
 // EventType type;
 typedef struct {    
     union {
-        u8      generic_placeholder;    // Generic placeholder
-        u8      u8_val[2];              // Array of two 8-bit unsigned integers
-        u16     u16_val[2];             // Array of two 16-bit unsigned integers
-        u32     u32_val[2];             // Array of two 32-bit unsigned integers
-        fix16   fix16_val[2];           // Array of two 16-bit fixed-point numbers
-        // You could also add single values if many events only need one:
-        // u8  single_u8;
-        // u16 single_u16;
-        // etc.
-
         //Specific event structure
         CollisionEventData collision;
+        u32     u32_val[2];             // Array of two 32-bit unsigned integers
+        fix16   fix16_val[2];           // Array of two 16-bit fixed-point numbers        
+        u16     u16_val[2];             // Array of two 16-bit unsigned integers
+        u8      u8_val[2];              // Array of two 8-bit unsigned integers
+        u8      generic_placeholder;    // Generic placeholder        
     } data;
     EventType type;
 } Event;
