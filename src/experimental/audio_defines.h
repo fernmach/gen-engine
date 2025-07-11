@@ -7,6 +7,8 @@
  * Audio definition to mormalize driver method calls.
  */
 
+ /*
+
 #ifndef _ENG_AUDIO_DEFNINES_H_
 #define _ENG_AUDIO_DEFNINES_H_
 
@@ -41,23 +43,31 @@
 
 #else
 
-    #define SOUND_DRIVER_PLAY(source) XGM2_play(source)
-    #define SOUND_DRIVER_STOP() XGM2_stop()
-    #define SOUND_DRIVER_PAUSE() XGM2_pause()
-    #define SOUND_DRIVER_RESUME() XGM2_resume()    
-    #define SOUND_DRIVER_IS_PLAYING() XGM2_isPlaying()
+    #define AUDIO_MUSIC_DRIVER_PLAY(source) XGM2_play(source)
+    #define AUDIO_MUSIC_DRIVER_STOP() XGM2_stop()
+    #define AUDIO_MUSIC_DRIVER_PAUSE() XGM2_pause()
+    #define AUDIO_MUSIC_DRIVER_RESUME() XGM2_resume()
+    #define AUDIO_MUSIC_DRIVER_SET_LOOP(value) XGM2_setLoopNumber(value)
+    #define AUDIO_MUSIC_DRIVER_SET_TEMPO(value) XGM2_setMusicTempo(value)
 
-    // bool XGM2_playPCM	(	const u8 *	sample,
-    // const u32	len,
-    // const SoundPCMChannel	channel )
-    #define SOUND_DRIVER_PCM_PLAY(id, sample, size, channel, priority) \
-        XGM2_playPCM(sample, size, channel);
+    #define AUDIO_MUSIC_DRIVER_SET_VOLUME(value) \
+        XGM2_setFMVolume(value); \
+        XGM2_setPSGVolume(value);
+        
+    #define AUDIO_MUSIC_DRIVER_IS_PLAYING() XGM2_isPlaying()
 
-    #define SOUND_DRIVER_GET_CPU_LOAD XGM2_getCPULoad(true)
+    #define AUDIO_PCM_DRIVER_PLAY(sample, size, channel, priority) \
+        XGM2_playPCMEx(sample, size, channel, priority, FALSE, FALSE)
 
-    #define SOUND_DRIVER_CPU_LOAD_TYPE u16
-    #define SOUND_DRIVER_CPU_LOAD_FORMAT "%d"
+    #define AUDIO_PCM_DRIVER_STOP(channel) XGM2_stopPCM((SoundPCMChannel)channel)
+    #define AUDIO_PCM_DRIVER_IS_PLAYING(channel_mask) XGM2_isPlayingPCM(channel_mask)
+
+    #define AUDIO_DRIVER_GET_CPU_LOAD() XGM2_getCPULoad(true)
+    #define AUDIO_DRIVER_CPU_LOAD_TYPE u16
+    #define AUDIO_DRIVER_CPU_LOAD_FORMAT "%d"
 
 #endif
 
 #endif // _ENG_AUDIO_DEFNINES_H_
+
+*/

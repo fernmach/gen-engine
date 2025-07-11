@@ -13,6 +13,12 @@ void SceneManager_init() {
     LOGGER_INFO("SceneManager subsystem initialized");
 }
 
+void SceneManager_shutdown() {    
+    if (current_scene != NULL && current_scene->destroy != NULL) {
+        current_scene->destroy(current_scene);
+    }
+}
+
 void SceneManager_setNextScene(Scene* next_scene) {
     next_scene_request = next_scene;    
 }

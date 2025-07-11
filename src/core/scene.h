@@ -30,6 +30,7 @@ extern bool g_scene_active_entities[ECS_MAX_ENTITIES];
 
 // Initializes the scene manager
 void SceneManager_init();
+void SceneManager_shutdown();
 
 // Sets the scene to switch to on the next update cycle
 // This allows the current scene to finish its current frame's update/draw
