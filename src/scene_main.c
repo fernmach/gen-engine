@@ -28,9 +28,6 @@ static MainSceneData main_scene_data;
 // Reference to a list of active entities in the scen(from SceneManager)
 //const bool* scene_active_entities;
 
-static AudioId bkgAudioId;
-static AudioId jmpAudioId;
-
 // Main Scene initialization
 void MainScene_init(Scene* scene) {
 
@@ -45,19 +42,7 @@ void MainScene_init(Scene* scene) {
     // Register ball event handlers
     MainGameScene_initBall();
 
-    bkgAudioId = Audio_addSource( (Audio) {
-        .source = music_background,
-        .size = sizeof(music_background),
-        .type = AUDIO_TYPE_MUSIC
-    });
-    Audio_play( bkgAudioId );
-
-    
-    jmpAudioId = Audio_addSource( (Audio) {
-        .source = sfx_jump,
-        .size = sizeof(sfx_jump),
-        .type = AUDIO_TYPE_SFX
-    });
+    //Audio_playMusic(music_background, sizeof(music_background));
 
     // Game specific initialization logic that isn't part of a generic system.
     // Load resources specific to this game scene
@@ -66,8 +51,6 @@ void MainScene_init(Scene* scene) {
 
     // Fade out scene
     //PAL_fadeInAll(PAL0, 50, FALSE);
-
-    //Audio_play(mus_actraiser);
 
     // Your existing Game_init logic:
     VDP_drawText("MainScene: init", 1, 20); // For debugging
@@ -84,10 +67,13 @@ void MainScene_update(Scene* scene, fix16 dt) {
     
     if (Input_isJustPressed(JOY_1, BUTTON_C)) {
         VDP_drawText("C pressed in switching direction", 1, 18);
-
-        //Audio_removeSource( bkgAudioId );
-        //Audio_pause( bkgAudioId );
-        Audio_stop( bkgAudioId );
+      
+      
+        //Audio_pauseMusic();
+        //Audio_setMusicTempo(30);
+        //Audio_setMusicVolume(30);
+        //Audio_playSFX(sfx_jump, sizeof(sfx_jump));
+        Audio_playSFXEx(sfx_jump, sizeof(sfx_jump), SOUND_PCM_CH2, 15, FALSE, FALSE);
 
         // //Ball_destroy(0);
 
@@ -105,15 +91,16 @@ void MainScene_update(Scene* scene, fix16 dt) {
         LOGGER_DEBUG("Menu Scene: A pressed");
         VDP_drawText("A pressed in Main Game Scene", 1, 18);
 
-        //Audio_resume( bkgAudioId );
-        Audio_play( jmpAudioId );
-        //XGM2_playPCMEx(sfx_jump, sizeof(sfx_jump), SOUND_PCM_CH2, 15, FALSE, FALSE);
+        Audio_stopSFX(SOUND_PCM_CH2);
+        //Audio_resumeMusic();
     }
 
     if (Input_isJustPressed(JOY_1, BUTTON_B)) {
         LOGGER_DEBUG("Menu Scene: B pressed, switching to Menu Scene");
         VDP_drawText("B pressed in Main Menu Scene", 1, 18);
-        SceneManager_setNextScene(&menu_scene); // Switch to game scene
+        //SceneManager_setNextScene(&menu_scene); // Switch to game scene
+
+        //Audio_stopMusic();
     }
 
     // Your existing Game_update logic:
@@ -190,7 +177,9 @@ void MainScene_destroy(Scene* scene) {
 
     // Destroy entities attached to the scene
     SceneManager_destroyAllEntities();
-    Audio_clearAllSources();
+    Audio_clearBuffer();
+
+    MainGameScene_destroyBall();
 
     // Fade out scene
     //PAL_fadeOutAll(50, FALSE);
@@ -201,8 +190,6 @@ void MainScene_destroy(Scene* scene) {
     // Clear planes before leave
     VDP_clearPlane(BG_A, TRUE);
     VDP_clearPlane(BG_B, TRUE);
-
-    LOGGER_INFO("MainScene: Destroying");
 
     // Clean up entities created by this scene
     // This is CRUCIAL. You need a way to identify entities belonging to this scene.

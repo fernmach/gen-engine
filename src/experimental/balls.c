@@ -52,6 +52,11 @@ void MainGameScene_initBall() {
     Event_subscribe(EVT_COLLISION, &onBallCollision, NULL);    
 }
 
+
+void MainGameScene_destroyBall() {    
+    Event_unsubscribe(EVT_COLLISION, &onBallCollision, NULL);
+}
+
 void MainGameScene_createBall() {
     // Creating a ball to run in the scene. And add components to it
     EntityId ball = SceneManager_createEntity();

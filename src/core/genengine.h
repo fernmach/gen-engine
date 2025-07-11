@@ -22,9 +22,10 @@
 #include "memory.h"
 #include "input.h"
 #include "event.h"
+#include "music.h"
+#include "sfx.h"
 #include "components.h"
 #include "ecs.h"
-#include "audio.h"
 #include "systems.h"
 #include "scene.h"
 

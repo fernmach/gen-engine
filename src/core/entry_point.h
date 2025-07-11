@@ -149,11 +149,7 @@ static inline void Engine_update(fix16 delta_time) {
 // TODO: implement MEM_Free routines for sprites and backgrounds;
 static inline void Engine_shutdown() {    
     // Potentially destroy current scene if one is active
-    Scene* current = SceneManager_getCurrentScene();
-    if (current != NULL && current->destroy != NULL) {
-        current->destroy(current);
-    }
-
+    SceneManager_shutdown();
     Input_shutdown();
     Event_shutdown();    
     //TODO: Create memory shutdown call
