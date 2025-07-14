@@ -46,9 +46,8 @@ void Event_shutdown() {
     //     }
     // }
 
-    //TODO: Clean up memory
-    //memset(g_event_listener_counts, 0, sizeof(g_event_listener_counts));
-    //memset(g_event_listeners, 0, sizeof(g_event_listeners));
+    memset(g_event_listener_counts, 0, sizeof(g_event_listener_counts));
+    memset(g_event_listeners, 0, sizeof(g_event_listeners));
 
     // TODO: Cleanup queued entries
     LOGGER_INFO("Shutting down event subsystem");
@@ -105,7 +104,7 @@ bool Event_unsubscribe(EventType type, EventHandler handler, void* contextData) 
         if (g_event_listeners[type][i].handler == handler &&
             g_event_listeners[type][i].contextData == contextData) 
         {
-            //TODO: Alter to instead of moving all listeners only move the last to the current free position            
+            //TODO: Alter to instead of moving all listeners only move the last to the current free position(SWAP)
             // Found the listener. Remove it by shifting subsequent listeners down.
             // This keeps the list compact.
             for (u8 j = i; j < g_event_listener_counts[type] - 1; ++j) {
