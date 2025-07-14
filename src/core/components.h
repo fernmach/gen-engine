@@ -2,24 +2,24 @@
 #define _ENG_COMPONENTS_H_
 
 #include "config.h"
+#include "defines.h"
+#include "fsm.h"
 
 // SGDK forward declaration
 #include <genesis.h>
 
-// Forward declarion for entity id definition
-#if ECS_MAX_ENTITIES > 255
-    typedef u16 EntityId;
-#else
-    typedef u8 EntityId;
-#endif
+// Forward declare the FSM definition
+struct FSMDefinition;
 
 // This typedef will store the COMBINED flags for an entity
 // Use u16 if you have <= 16 components, u32 for <= 32
 // SGDK often uses u16 for efficiency if possible.
 #if (ECS_MAX_COMPONENTS <= 16)
     typedef u16 ComponentMask;
+    #define DECLARE_COMPONENT_MASK typedef u16 ComponentMask
 #elif (ECS_MAX_COMPONENTS <= 32)
     typedef u32 ComponentMask;
+    #define DECLARE_COMPONENT_MASK typedef u32 ComponentMask
 #endif
 
 // List of component types supported by the engin
@@ -31,8 +31,9 @@ typedef enum {
     COMPONENT_COLLIDER                  = 1 << 2,   // Bit 2 (Value: 2)
     COMPONENT_SPRITE                    = 1 << 3,   // Bit 3 (Value: 4)
     COMPONENT_SCREEN_CONSTRAINT         = 1 << 4,   // Bit 4 (Value: 4)
+    COMPONENT_FSM                       = 1 << 5,   // Bit 4 (Value: 4)
 
-    COMPONENT_MAX_VALUE                 = 1 << 5
+    COMPONENT_MAX_VALUE                 = 1 << 6
 } ComponentType;
 
 // --- Component Types ---
@@ -114,6 +115,14 @@ typedef struct {
 } SpriteComponent;
 //typedef Sprite* SpriteComponent;
 
+// The FSM Component. This is the part that gets attached to an entity.
+// It's lightweight, containing only the current state and a timer.
+typedef struct FSMComponent {
+    u16 currentState;            // The current state, as an index into the FSMDefinition's states array
+    s16 stateTimer;              // A generic timer for states to use (e.g., "stay in attack animation for 30 frames")
+    const FSMDefinition* definition; // Pointer to the entity's behavior definition
+} FSMComponent;
+
 // --- Global Component Arrays ---
 // These arrays store the actual component data, indexed by EntityID
 extern PositionComponent            g_positions[ECS_MAX_ENTITIES];
@@ -121,5 +130,6 @@ extern VelocityComponent            g_velocities[ECS_MAX_ENTITIES];
 extern ColliderComponent            g_colliders[ECS_MAX_ENTITIES];
 extern SpriteComponent              g_sprites[ECS_MAX_ENTITIES];
 extern ScreenConstraintComponent    g_screen[ECS_MAX_ENTITIES];
+extern FSMComponent                 g_fsm[ECS_MAX_ENTITIES];
 
 #endif // _ENG_COMPONENTS_H_
