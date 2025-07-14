@@ -2,6 +2,7 @@
 
 // External scenes (for transitioning)
 #include "scene_menu.h"
+#include "examples/fsm/scene_fsm.h"
 
 // Experimental ball creation for testing;
 #include "./experimental/balls.h"
@@ -30,6 +31,8 @@ static MainSceneData main_scene_data;
 
 // Main Scene initialization
 void MainScene_init(Scene* scene) {
+
+    SceneManager_setNextScene(&fsm_scene); // Switch to game scene    
 
     scene->data = &main_scene_data; // Link scene's data pointer
     MainSceneData* data = (MainSceneData*)scene->data;
@@ -66,8 +69,7 @@ void MainScene_update(Scene* scene, fix16 dt) {
     }
     
     if (Input_isJustPressed(JOY_1, BUTTON_C)) {
-        VDP_drawText("C pressed in switching direction", 1, 18);
-      
+        VDP_drawText("C pressed in switching direction", 1, 18);      
       
         //Audio_pauseMusic();
         //Audio_setMusicTempo(30);
