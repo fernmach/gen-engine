@@ -30,14 +30,16 @@
     - [x] Sprite component
     - [ ] Acceleration component
     - [ ] Input component
-    - [ ] Collider component
+    - [x] Collider component
+    - [ ] FMT component
 - [ ] System
     - [ ] Acelleration system
     - [x] Movement system
     - [x] Rendering system
-    - [ ] Collision system
+    - [x] Collision system
     - [ ] Input system
-    - [ ] Sound System
+    - [x] Sound System
+    - [ ] FMT system
 - [ ] Event
     - [x] Basic event system implementation
     - [ ] Implement delay event system(into a buffer). To avoid immediate call    
@@ -56,6 +58,6 @@
 - [ ] Unit/regression tests
 - [ ] Installation
 - [ ] Finite state machine
-    - [ ] ECS/NON ECS VERSION
+    - [x] ECS/NON ECS VERSION
 - [ ] Global
     - [ ] windows width and heigh initialization(For generic calculations)
