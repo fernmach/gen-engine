@@ -104,6 +104,10 @@ static inline void Engine_update(fix16 delta_time) {
     Audio_processEvents();
     PROFILE_END_SCOPE(audio_upda_id);
 
+    PROFILE_SCOPE(fsm_upda_id, "FSMSys");
+    FSMSystem_update();
+    PROFILE_END_SCOPE(fsm_upda_id);
+
     // 4. Draw Scene
     PROFILE_SCOPE(scn_draw_id, "SceneMgrDraw");
     SceneManager_draw(); // <--- CALL SCENE MANAGER DRAW
