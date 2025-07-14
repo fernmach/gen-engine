@@ -41,6 +41,9 @@
         "audio_types.h": "c",
         "sfx.h": "c",
         "audio_buffer.h": "c",
-        "music.h": "c"
+        "music.h": "c",
+        "defines.h": "c",
+        "components.h": "c",
+        "scene_fsm.h": "c"
     },
 }
