@@ -1,4 +1,5 @@
 #include "config.h"
+#include "defines.h"
 #include "ecs.h"
 #include "logger.h"
 #include "asserts.h"
@@ -31,6 +32,7 @@ VelocityComponent           g_velocities[ECS_MAX_ENTITIES];
 ColliderComponent           g_colliders[ECS_MAX_ENTITIES];
 SpriteComponent             g_sprites[ECS_MAX_ENTITIES];
 ScreenConstraintComponent   g_screen[ECS_MAX_ENTITIES];
+FSMComponent                g_fsm[ECS_MAX_ENTITIES];
 
 // --- Global entity tracking array definitions  ---
 //bool g_entity_active[ECS_MAX_ENTITIES];
@@ -48,6 +50,7 @@ void ECS_init() {
     memset(g_colliders, 0, sizeof(g_colliders));
     memset(g_sprites, 0, sizeof(g_sprites));
     memset(g_screen, 0, sizeof(g_screen));
+    memset(g_fsm, 0, sizeof(g_fsm));
 
     // Initialize all masks to 0
     memset(g_entity_component_masks, COMPONENT_NONE, sizeof(g_entity_component_masks));
@@ -76,6 +79,7 @@ void ECS_clearAllEntities() {
     memset(g_colliders, 0, sizeof(g_colliders));
     memset(g_sprites, 0, sizeof(g_sprites));
     memset(g_screen, 0, sizeof(g_screen));
+    memset(g_fsm, 0, sizeof(g_fsm));
     memset(g_entity_component_masks, COMPONENT_NONE, sizeof(g_entity_component_masks));
 
     g_active_entity_count = 0;
