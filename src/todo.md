@@ -39,7 +39,7 @@
     - [x] Collision system
     - [ ] Input system
     - [x] Sound System
-    - [ ] FMT system
+    - [x] FMT system
 - [ ] Event
     - [x] Basic event system implementation
     - [ ] Implement delay event system(into a buffer). To avoid immediate call    
