@@ -24,6 +24,7 @@
 #include "event.h"
 #include "music.h"
 #include "sfx.h"
+#include "fsm.h"
 #include "components.h"
 #include "ecs.h"
 #include "systems.h"
