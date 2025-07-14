@@ -2,17 +2,11 @@
 #define _ENG_ECS_H_
 
 #include "config.h"
+#include "defines.h"
 #include "asserts.h"
 #include "components.h"
 
 #include <genesis.h>
-
-// Entity id definition
-#if ECS_MAX_ENTITIES > 255
-    typedef u16 EntityId;
-#else
-    typedef u8 EntityId;
-#endif
 
 //#define INVALID_ENTITY_ID ((EntityId)-1)
 
@@ -32,7 +26,7 @@ void Entity_destroy(EntityId id);   // Deactivate an entity and "free" its compo
 void Entity_addComponent(EntityId id, ComponentType type);
 void Entity_removeComponent(EntityId id, ComponentType type);
 bool Entity_hasComponent(EntityId id, ComponentType type); // Checks for a single component
-bool Entity_hasAllComponents(EntityId id, ComponentMask types); // Checks for a set of components
+bool Entity_hasAllComponents(EntityId id, ComponentMask required_mask); // Checks for a set of components
 
 // Add a position component to the specified entity
 static inline void Entity_addSpriteComponent(EntityId id, const SpriteDefinition *spriteDef, u8 palette) {    
@@ -54,7 +48,7 @@ static inline void Entity_addSpriteComponent(EntityId id, const SpriteDefinition
 static inline void Entity_addComponent##name(EntityId id, typeDataStruct value) { \
     ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at Entity_addComponent"#name); \
     ASSERT_MSG(id < g_active_entity_count, "ECS: Inactive entity id provided at Entity_addComponent"#name); \
-    ASSERT_MSG(componentType > 0 && componentType < ECS_MAX_COMPONENTS, "ECS: Inactive component type provided at Entity_addComponent"#name); \
+    ASSERT_MSG(componentType > 0 && componentType < COMPONENT_MAX_VALUE, "ECS: Invalid component type provided at Entity_addComponent"#name); \
     g_entity_component_masks[id] |= componentType; \
     entityArrayName[id] = value; \
 }
@@ -63,7 +57,7 @@ static inline void Entity_addComponent##name(EntityId id, typeDataStruct value) 
 static inline void Entity_removeComponent##name(EntityId id) { \
     ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at Entity_removeComponent"#name); \
     ASSERT_MSG(id < g_active_entity_count, "ECS: Inactive entity id provided at Entity_removeComponent"#name); \
-    ASSERT_MSG(componentType > 0 && componentType < ECS_MAX_COMPONENTS, "ECS: Inactive component type provided at Entity_removeComponent"#name); \
+    ASSERT_MSG(componentType > 0 && componentType < COMPONENT_MAX_VALUE, "ECS: Invalid component type provided at Entity_removeComponent"#name); \
     g_entity_component_masks[id] &= ~componentType; \
 }
 
@@ -72,15 +66,23 @@ static inline void Entity_removeComponent##name(EntityId id) { \
 static inline typeDataStruct Entity_getComponent##name(EntityId id) { \
     ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at Entity_getComponent"#name); \
     ASSERT_MSG(id < g_active_entity_count, "ECS: Inactive entity id provided at Entity_getComponent"#name); \
-    ASSERT_MSG(componentType > 0 && componentType < ECS_MAX_COMPONENTS, "ECS: Inactive component type provided at Entity_getComponent"#name); \
+    ASSERT_MSG(componentType > 0 && componentType < COMPONENT_MAX_VALUE, "ECS: Invalid component type provided at Entity_getComponent"#name); \
     return entityArrayName[id]; \
+}
+
+#define REGISTER_COMPONENT_GET_ACCESSOR_REF(name, entityArrayName, componentType, typeDataStruct) \
+static inline typeDataStruct* Entity_getComponent##name##Ref(EntityId id) { \
+    ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at Entity_getComponent"#name); \
+    ASSERT_MSG(id < g_active_entity_count, "ECS: Inactive entity id provided at Entity_getComponent"#name); \
+    ASSERT_MSG(componentType > 0 && componentType < COMPONENT_MAX_VALUE, "ECS: Invalid component type provided at Entity_getComponent"#name); \
+    return &entityArrayName[id]; \
 }
 
 #define REGISTER_COMPONENT_SET_ACCESSOR(name, entityArrayName, componentType, typeDataStruct) \
 static inline void Entity_setComponent##name(EntityId id, typeDataStruct value) { \
     ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at Entity_setComponent"#name); \
     ASSERT_MSG(id < g_active_entity_count, "ECS: Inactive entity id provided at Entity_setComponent"#name); \
-    ASSERT_MSG(componentType > 0 && componentType < ECS_MAX_COMPONENTS, "ECS: Inactive component type provided at Entity_setComponent"#name); \
+    ASSERT_MSG(componentType > 0 && componentType < COMPONENT_MAX_VALUE, "ECS: Invalid component type provided at Entity_setComponent"#name); \
     entityArrayName[id] = value; \
 }
 
@@ -88,11 +90,13 @@ static inline void Entity_setComponent##name(EntityId id, typeDataStruct value) 
     REGISTER_COMPONENT_ADD_ACCESSOR(name, entityArrayName, componentType, typeDataStruct) \
     REGISTER_COMPONENT_REMOVE_ACCESSOR(name, componentType) \
     REGISTER_COMPONENT_GET_ACCESSOR(name, entityArrayName, componentType, typeDataStruct) \
-    REGISTER_COMPONENT_SET_ACCESSOR(name, entityArrayName, componentType, typeDataStruct)
+    REGISTER_COMPONENT_SET_ACCESSOR(name, entityArrayName, componentType, typeDataStruct) \
+    REGISTER_COMPONENT_GET_ACCESSOR_REF(name, entityArrayName, componentType, typeDataStruct)
 
 REGISTER_COMPONENT_ACESSORS(Position, g_positions, COMPONENT_POSITION, PositionComponent);
 REGISTER_COMPONENT_ACESSORS(Velocity, g_velocities, COMPONENT_VELOCITY, VelocityComponent);
 REGISTER_COMPONENT_ACESSORS(Collider, g_colliders, COMPONENT_COLLIDER, ColliderComponent);
 REGISTER_COMPONENT_ACESSORS(ScreenConstraint, g_screen, COMPONENT_SCREEN_CONSTRAINT, ScreenConstraintComponent);
+REGISTER_COMPONENT_ACESSORS(FSM, g_fsm, COMPONENT_FSM, FSMComponent);
 
 #endif // _ENG_ECS_H_
