@@ -108,67 +108,6 @@ static inline bool CollisionSystem_compareByLeftEdge(u16 i, u16 j) {
     return g_positions[i].x > g_positions[j].x;    
 }
 
-//https://code.tutsplus.com/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331t
-//AABB collision
-// bool CollisionSystem_checkForCollision( EntityId aId, EntityId bId, 
-//     fix16* out_penetration, Vect2D_f16* out_normal )
-// {
-//     // 1. Get components from the ECS
-//     PositionComponent posA = g_positions[aId];
-//     ColliderComponent collA = g_colliders[aId];
-
-//     PositionComponent posB = g_positions[bId];
-//     ColliderComponent collB = g_colliders[bId];
-
-//     // Note: Correctly calculating the AABB bounds. 
-//     // It's assumed pos is the top-left of the entity, and the collider's x/y is an offset.
-//     fix16 a_min_x = posA.x + FIX16(collA.shape.box.x);
-//     fix16 a_min_y = posA.y + FIX16(collA.shape.box.y);
-//     fix16 a_w = FIX16(collA.shape.box.w);
-//     fix16 a_h = FIX16(collA.shape.box.h);
-
-//     fix16 b_min_x = posB.x + FIX16(collB.shape.box.x);
-//     fix16 b_min_y = posB.y + FIX16(collB.shape.box.y);
-//     fix16 b_w = FIX16(collB.shape.box.w);
-//     fix16 b_h = FIX16(collB.shape.box.h);
-    
-//     // 2. Calculate center points and half-extents (half-widths/heights)
-//     fix16 a_half_w = F16_div(a_w, FIX16(2));
-//     fix16 a_half_h = F16_div(a_h, FIX16(2));
-//     Vect2D_f16 centerA = { a_min_x + a_half_w, a_min_y + a_half_h };
-
-//     fix16 b_half_w = F16_div(b_w, FIX16(2));
-//     fix16 b_half_h = F16_div(b_h, FIX16(2));
-//     Vect2D_f16 centerB = { b_min_x + b_half_w, b_min_y + b_half_h };
-
-//     // 3. Calculate the vector from the center of A to the center of B
-//     Vect2D_f16 n = { centerB.x - centerA.x, centerB.y - centerA.y };
-
-//     // 4. Calculate the extent of overlap on each axis
-//     fix16 x_overlap = (a_half_w + b_half_w) - F16_abs(n.x);
-//     fix16 y_overlap = (a_half_h + b_half_h) - F16_abs(n.y);
-
-//     // 5. If there is no overlap on either axis, there is no collision
-//     if (x_overlap <= 0 || y_overlap <= 0) {
-//         return false;
-//     }
-
-//     // 6. Find the axis of minimum penetration
-//     if (x_overlap < y_overlap) {
-//         // Pointing right if n.x > 0, left if n.x < 0
-//         *out_penetration = x_overlap;
-//         out_normal->x = (n.x < 0) ? FIX16(-1) : FIX16(1);
-//         out_normal->y = FIX16(0);
-//     } else {
-//         // Pointing down if n.y > 0, up if n.y < 0
-//         *out_penetration = y_overlap;
-//         out_normal->x = FIX16(0);
-//         out_normal->y = (n.y < 0) ? FIX16(-1) : FIX16(1);
-//     }
-
-//     return true;
-// }
-
 // Pass pointers directly! Avoids lookups inside the function.
 static inline bool CollisionSystem_checkForCollision(      
     const PositionComponent* pPosA, const ColliderComponent* pCollA,
@@ -365,6 +304,33 @@ static inline void CollisionSystem_update() {
                 
                 // Publish collision event
                 Event_publish(&collisionEvent);                
+            }
+        }
+    }
+}
+
+static inline void FSMSystem_update() {
+     // Define the components this system operates on
+    const ComponentMask required_mask = COMPONENT_FSM;
+
+    // This loop depends on your ECS implementation.
+    // It should iterate over all entities that have an FSMComponent.
+    // For this example, let's assume a simple loop.
+    for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; i++) {
+        // Assume your ECS has a way to check if an entity has a component
+        if (Entity_hasAllComponents(i, required_mask)) {
+            //FSMComponent* fsm = Entity_getComponentFSMComponentRef(i);
+            FSMComponent* fsm =  &g_fsm[i];
+
+            // Update the state timer
+            if(fsm->stateTimer > 0) {
+                fsm->stateTimer--;
+            }
+
+            // Call the onUpdate function for the current state, if it exists
+            const State* currentStateLogic = &fsm->definition->states[fsm->currentState];
+            if (currentStateLogic->onUpdate != NULL) {
+                currentStateLogic->onUpdate(i);
             }
         }
     }
