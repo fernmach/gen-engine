@@ -63,15 +63,7 @@ static inline void Entity_removeComponent##name(EntityId id) { \
 
 // ASSERT_MSG((g_entity_component_masks[id] & componentType) = 0, "ECS: Component not attached to entity  Entity_getComponent"#name);
 #define REGISTER_COMPONENT_GET_ACCESSOR(name, entityArrayName, componentType, typeDataStruct) \
-static inline typeDataStruct Entity_getComponent##name(EntityId id) { \
-    ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at Entity_getComponent"#name); \
-    ASSERT_MSG(id < g_active_entity_count, "ECS: Inactive entity id provided at Entity_getComponent"#name); \
-    ASSERT_MSG(componentType > 0 && componentType < COMPONENT_MAX_VALUE, "ECS: Invalid component type provided at Entity_getComponent"#name); \
-    return entityArrayName[id]; \
-}
-
-#define REGISTER_COMPONENT_GET_ACCESSOR_REF(name, entityArrayName, componentType, typeDataStruct) \
-static inline typeDataStruct* Entity_getComponent##name##Ref(EntityId id) { \
+static inline typeDataStruct* Entity_getComponent##name(EntityId id) { \
     ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at Entity_getComponent"#name); \
     ASSERT_MSG(id < g_active_entity_count, "ECS: Inactive entity id provided at Entity_getComponent"#name); \
     ASSERT_MSG(componentType > 0 && componentType < COMPONENT_MAX_VALUE, "ECS: Invalid component type provided at Entity_getComponent"#name); \
@@ -79,19 +71,18 @@ static inline typeDataStruct* Entity_getComponent##name##Ref(EntityId id) { \
 }
 
 #define REGISTER_COMPONENT_SET_ACCESSOR(name, entityArrayName, componentType, typeDataStruct) \
-static inline void Entity_setComponent##name(EntityId id, typeDataStruct value) { \
+static inline void Entity_setComponent##name(EntityId id, typeDataStruct* value) { \
     ASSERT_MSG(id < ECS_MAX_ENTITIES, "ECS: Entity id out of range at Entity_setComponent"#name); \
     ASSERT_MSG(id < g_active_entity_count, "ECS: Inactive entity id provided at Entity_setComponent"#name); \
     ASSERT_MSG(componentType > 0 && componentType < COMPONENT_MAX_VALUE, "ECS: Invalid component type provided at Entity_setComponent"#name); \
-    entityArrayName[id] = value; \
+    entityArrayName[id] = *value; \
 }
 
 #define REGISTER_COMPONENT_ACESSORS(name, entityArrayName, componentType, typeDataStruct) \
     REGISTER_COMPONENT_ADD_ACCESSOR(name, entityArrayName, componentType, typeDataStruct) \
     REGISTER_COMPONENT_REMOVE_ACCESSOR(name, componentType) \
     REGISTER_COMPONENT_GET_ACCESSOR(name, entityArrayName, componentType, typeDataStruct) \
-    REGISTER_COMPONENT_SET_ACCESSOR(name, entityArrayName, componentType, typeDataStruct) \
-    REGISTER_COMPONENT_GET_ACCESSOR_REF(name, entityArrayName, componentType, typeDataStruct)
+    REGISTER_COMPONENT_SET_ACCESSOR(name, entityArrayName, componentType, typeDataStruct)    
 
 REGISTER_COMPONENT_ACESSORS(Position, g_positions, COMPONENT_POSITION, PositionComponent);
 REGISTER_COMPONENT_ACESSORS(Velocity, g_velocities, COMPONENT_VELOCITY, VelocityComponent);
