@@ -29,7 +29,7 @@ bool Entity_hasComponent(EntityId id, ComponentType type); // Checks for a singl
 bool Entity_hasAllComponents(EntityId id, ComponentMask required_mask); // Checks for a set of components
 
 // Add a position component to the specified entity
-static inline void Entity_addSpriteComponent(EntityId id, const SpriteDefinition *spriteDef, u8 palette) {    
+static inline void Entity_addComponentSprite(EntityId id, const SpriteDefinition *spriteDef, u8 palette) {    
     g_entity_component_masks[id] |= COMPONENT_SPRITE;    
     g_sprites[id].sgdkSprite = SPR_addSprite(
                              spriteDef,
@@ -39,7 +39,10 @@ static inline void Entity_addSpriteComponent(EntityId id, const SpriteDefinition
                          ); // Palette, priority, flip        
 }
 
-
+// Add a position component to the specified entity
+static inline SpriteComponent* Entity_getComponentSprite(EntityId id) {
+    return &g_sprites[id];
+}
 
 // To use outsisde of the ecs
 #define ACTIVE_ENTITY_COUNT g_active_entity_count

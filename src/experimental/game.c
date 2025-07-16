@@ -51,7 +51,7 @@
 //     Entity_addComponent(ball, COMPONENT_POSITION, &position);
 //     Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
 //     Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
-//     Entity_addSpriteComponent(ball, &spr_donut, PAL0); // Assuming COMPONENT_SPRITE exists
+//     Entity_addComponentSprite(ball, &spr_donut, PAL0); // Assuming COMPONENT_SPRITE exists
 
 //     data->ballsCount++;
 // }

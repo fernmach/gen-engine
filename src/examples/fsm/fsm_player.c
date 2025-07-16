@@ -125,7 +125,7 @@ EntityId Player_create(s16 x, s16 y) {
     // Add required components
     Entity_addComponentPosition(entityId, (PositionComponent){FIX16(x),FIX16(y)});
     Entity_addComponentVelocity(entityId, (VelocityComponent){FIX16(0),FIX16(0)});
-    Entity_addSpriteComponent(entityId, &spr_donut, PAL0);
+    Entity_addComponentSprite(entityId, &spr_donut, PAL0);
     Entity_addComponentFSM(entityId, fsm);
 
     // Manually call the first onEnter
