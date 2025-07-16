@@ -3,7 +3,7 @@
 
 void FSM_changeState(EntityId entityId, u16 newState) {
     // Get the FSM component for the entity
-    FSMComponent* fsm = Entity_getComponentFSMRef(entityId); // <--- REPLACE WITH YOUR ECS FUNCTION
+    FSMComponent* fsm = Entity_getComponentFSM(entityId); // <--- REPLACE WITH YOUR ECS FUNCTION
 
     // Don't transition to the same state
     if (fsm->currentState == newState) {

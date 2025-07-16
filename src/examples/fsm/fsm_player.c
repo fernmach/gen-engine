@@ -63,7 +63,7 @@ static void player_walking_onEnter(EntityId entityId) {
 }
 
 static void player_walking_onUpdate(EntityId entityId) {
-    VelocityComponent* vel = Entity_getComponentVelocityRef(entityId); // <--- Your ECS function
+    VelocityComponent* vel = Entity_getComponentVelocity(entityId); // <--- Your ECS function
 
     if (Input_isPressed(JOY_1, BUTTON_RIGHT)) {
         vel->dx = FIX16(100.0);
@@ -97,16 +97,16 @@ static void player_walking_onUpdate(EntityId entityId) {
 
 // -- ATTACKING
 static void player_attacking_onEnter(EntityId entityId) {
-    FSMComponent* fsm = Entity_getComponentFSMRef(entityId);
+    FSMComponent* fsm = Entity_getComponentFSM(entityId);
     fsm->stateTimer = 10; // Attack lasts for 30 frames
     VDP_clearTextLine(18);
     VDP_drawText("State: ATTACKING", 1, 18);
 }
 
 static void player_attacking_onUpdate(EntityId entityId) {
-    FSMComponent fsm = Entity_getComponentFSM(entityId);
+    FSMComponent* fsm = Entity_getComponentFSM(entityId);
     // When the timer runs out, go back to idle
-    if (fsm.stateTimer == 0) {
+    if (fsm->stateTimer == 0) {
         FSM_changeState(entityId, PLAYER_STATE_IDLE);
     }
 }

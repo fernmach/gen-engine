@@ -319,8 +319,7 @@ static inline void FSMSystem_update() {
     for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; i++) {
         // Assume your ECS has a way to check if an entity has a component
         if (Entity_hasAllComponents(i, required_mask)) {
-            //FSMComponent* fsm = Entity_getComponentFSMComponentRef(i);
-            FSMComponent* fsm =  &g_fsm[i];
+            FSMComponent* fsm = Entity_getComponentFSM(i);            
 
             // Update the state timer
             if(fsm->stateTimer > 0) {

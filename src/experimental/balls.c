@@ -132,8 +132,8 @@ void MainGameScene_createBall() {
 }
 
 void Ball_update(EntityId id, fix16 dx, fix16 dy) {
-    // PositionComponent* position = Entity_getComponent(id, COMPONENT_POSITION);
-    // LOGGER_DEBUG("Ball update %d, %d", F16_toInt(position->x), F16_toInt(position->y ));
+    // PositionComponent* position = (id, COMPONENT_POSITION);
+    // LOGGER_DEBUG("Ball update %d, %d", F16_toInt(poEntity_getComponentsition->x), F16_toInt(position->y ));
     // position->x += FIX16(10);
     // position->y += FIX16(10);
     // LOGGER_DEBUG("After update %d, %d", F16_toInt(position->x), F16_toInt(position->y ));
@@ -144,10 +144,9 @@ void Ball_update(EntityId id, fix16 dx, fix16 dy) {
     // g_velocities[id].dx = -g_velocities[id].dx;
     // g_velocities[id].dy = -g_velocities[id].dy;
 
-    VelocityComponent velocity = Entity_getComponentVelocity(id);
-    velocity.dx = dx;
-    velocity.dy = dy;
-    Entity_setComponentVelocity(id, velocity);
+    VelocityComponent* velocity = Entity_getComponentVelocity(id);
+    velocity->dx = dx;
+    velocity->dy = dy;    
 
     //LOGGER_DEBUG("AFTER BALL update %d, %d", F16_toInt(g_velocities[id].dx), F16_toInt(g_velocities[id].dy));}
 }
