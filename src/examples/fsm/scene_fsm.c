@@ -27,7 +27,7 @@ static void fsm_scene_init(Scene* scene_self) {
 static void fsm_scene_update(Scene* scene_self, fix16 dt) {
     // scene_self->data will point to menu_data
     //MenuSceneData* data = (MenuSceneData*)scene_self->data;
-    if (Input_isJustPressed(JOY_1, BUTTON_A && BUTTON_B)) {
+    if (Input_isJustPressed(JOY_1, BUTTON_A & BUTTON_B)) {
         LOGGER_DEBUG("FSM Scene: switched to main scene");
         SceneManager_setNextScene(&main_scene); // Switch to game scene
     }

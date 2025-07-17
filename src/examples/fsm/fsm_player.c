@@ -42,14 +42,13 @@ static void player_idle_onEnter(EntityId entityId) {
 
 static void player_idle_onUpdate(EntityId entityId) {
 
-    /// Your existing Game_update logic:
-    if (Input_isPressed(JOY_1, BUTTON_RIGHT) ||
-        Input_isPressed(JOY_1, BUTTON_LEFT)
+    if (INPUT_IS_PRESSED(JOY_1, BUTTON_RIGHT) ||
+        INPUT_IS_PRESSED(JOY_1, BUTTON_LEFT)
     ) {
         FSM_changeState(entityId, PLAYER_STATE_WALKING);
     }
  
-    if (Input_isPressed(JOY_1, BUTTON_A)) {
+    if (INPUT_IS_PRESSED(JOY_1, BUTTON_A)) {
         FSM_changeState(entityId, PLAYER_STATE_ATTACKING);
     }    
 }
@@ -65,9 +64,9 @@ static void player_walking_onEnter(EntityId entityId) {
 static void player_walking_onUpdate(EntityId entityId) {
     VelocityComponent* vel = Entity_getComponentVelocity(entityId); // <--- Your ECS function
 
-    if (Input_isPressed(JOY_1, BUTTON_RIGHT)) {
+    if (INPUT_IS_PRESSED(JOY_1, BUTTON_RIGHT)) {
         vel->dx = FIX16(100.0);
-    } else if (Input_isPressed(JOY_1, BUTTON_LEFT)) {
+    } else if (INPUT_IS_PRESSED(JOY_1, BUTTON_LEFT)) {
         vel->dx = FIX16(-100.0);
     } else {
         // No movement, go back to idle
@@ -75,7 +74,7 @@ static void player_walking_onUpdate(EntityId entityId) {
         FSM_changeState(entityId, PLAYER_STATE_IDLE);
     }
 
-    if (Input_isPressed(JOY_1, BUTTON_A)) {
+    if (INPUT_IS_PRESSED(JOY_1, BUTTON_A)) {
         FSM_changeState(entityId, PLAYER_STATE_ATTACKING);
     }
 }
