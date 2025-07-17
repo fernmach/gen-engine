@@ -32,7 +32,7 @@ static MainSceneData main_scene_data;
 // Main Scene initialization
 void MainScene_init(Scene* scene) {
 
-    SceneManager_setNextScene(&fsm_scene); // Switch to game scene    
+    //SceneManager_setNextScene(&fsm_scene); // Switch to game scene    
 
     scene->data = &main_scene_data; // Link scene's data pointer
     MainSceneData* data = (MainSceneData*)scene->data;
@@ -96,10 +96,10 @@ void MainScene_update(Scene* scene, fix16 dt) {
         Audio_stopSFX(SOUND_PCM_CH2);
         //Audio_resumeMusic();
     }
-
-    if (Input_isJustPressed(JOY_1, BUTTON_B)) {
-        LOGGER_DEBUG("Menu Scene: B pressed, switching to Menu Scene");
-        VDP_drawText("B pressed in Main Menu Scene", 1, 18);
+    
+    if ( INPUT_ARE_ALL_JUST_PRESSED(JOY_1, BUTTON_A | BUTTON_B) ) {
+        LOGGER_DEBUG("Main Scene: A+B pressed, switching to Menu Scene");
+        VDP_drawText("A+B pressed in Main Menu Scene", 1, 18);
         //SceneManager_setNextScene(&menu_scene); // Switch to game scene
 
         //Audio_stopMusic();
