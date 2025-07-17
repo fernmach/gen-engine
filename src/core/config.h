@@ -66,7 +66,7 @@
 // #define 	JOY_8   0x0007 
 // #define 	JOY_NUM   0x0008 
 // #define 	JOY_ALL   0xFFFF
-#define INPUT_MAX_JOYPADS JOY_1
+#define INPUT_MAX_JOYPADS JOY_2
 
 /**
  *  \brief
