@@ -7,9 +7,32 @@
 
 JoypadState g_joypad1;
 
-#if INPUT_MAX_JOYPADS == 2
+#define INPUT_INITIALIZE(number) \
+    g_joypad##number.current = 0; \
+    g_joypad##number.previous = 0;
+
+// Input initialization helper
+#define INPUT_VARIABLE_INITIALIZATION(number) \
+    INPUT_INITIALIZE(number) \
+    LOGGER_INFO("Input: Joypad "#number" enabled.");
+
+// Input update helper
+#define INPUT_UPDATE(number) \
+    g_joypad##number.previous = g_joypad##number.current; \
+    g_joypad##number.current = JOY_readJoypad(JOY_##number);
+
+// Input variable declaration
+#if (INPUT_MAX_JOYPADS == JOY_2)
     JoypadState g_joypad2;
+#elif (INPUT_MAX_JOYPADS == JOY_3)
+    JoypadState g_joypad2;
+    JoypadState g_joypad3;
+#elif (INPUT_MAX_JOYPADS == JOY_4)
+    JoypadState g_joypad2;
+    JoypadState g_joypad3;
+    JoypadState g_joypad4;
 #endif
+
 
 // SGDK joy event callback. Registered on input init.
 // TODO: Is it better to use this event to get all button states in one go?
@@ -33,32 +56,60 @@ void Input_init() {
     g_joypad1.previous = 0;    
     // JOY_setEventHandler( myJoyHandler ); // Optional: for interrupt-driven input
 
-    #if INPUT_MAX_JOYPADS == 2
-        LOGGER_INFO("Input: Joypad 2 enabled.");
-        g_joypad2.current = 0;
-        g_joypad2.previous = 0;    
+    #if INPUT_MAX_JOYPADS == JOY_2
+       INPUT_VARIABLE_INITIALIZATION(2);
+    #elif INPUT_MAX_JOYPADS == JOY_3
+        INPUT_VARIABLE_INITIALIZATION(2);
+        INPUT_VARIABLE_INITIALIZATION(3);
+    #elif INPUT_MAX_JOYPADS == JOY_4
+        INPUT_VARIABLE_INITIALIZATION(2);
+        INPUT_VARIABLE_INITIALIZATION(3);
+        INPUT_VARIABLE_INITIALIZATION(4);
     #endif
 
     LOGGER_INFO("Input subsystem initialized.");
 }
 
 void Input_update() {
+
+    // Update the joycon reading state values
+    JOY_update();
+
     // Player 1
     g_joypad1.previous = g_joypad1.current;
     g_joypad1.current = JOY_readJoypad(JOY_1);
 
-    // For player 2
-    #if INPUT_MAX_JOYPADS == 2
-        g_joypad2.previous = g_joypad2.current;
-        g_joypad2.current = JOY_readJoypad(JOY_2);
+    #if INPUT_MAX_JOYPADS == JOY_2        
+       INPUT_UPDATE(2);
+    #elif INPUT_MAX_JOYPADS == JOY_3
+        INPUT_UPDATE(2);
+        INPUT_UPDATE(3);
+    #elif INPUT_MAX_JOYPADS == JOY_4
+        INPUT_UPDATE(2);
+        INPUT_UPDATE(3);
+        INPUT_UPDATE(4);
     #endif
 }
 
-void Input_shutdown() {    
+void Input_shutdown() {
+    g_joypad1.current = 0;
+    g_joypad1.previous = 0;    
+    
+    #if INPUT_MAX_JOYPADS == JOY_2        
+       INPUT_INITIALIZE(2);
+    #elif INPUT_MAX_JOYPADS == JOY_3
+        INPUT_INITIALIZE(2);
+        INPUT_INITIALIZE(3);
+    #elif INPUT_MAX_JOYPADS == JOY_4
+        INPUT_INITIALIZE(2);
+        INPUT_INITIALIZE(3);
+        INPUT_INITIALIZE(4);
+    #endif
+
     LOGGER_INFO("Input subsystem shutting down.");
 }
 
-// TODO: Include methods for other joypads
+// FIXME: Deprecated. Remove in favor of the static input access
 bool Input_isPressed(u8 joyId, u16 button_mask) {    
     ASSERT_MSG(joyId<=INPUT_MAX_JOYPADS, "Invalid joypad id on Input_isPressed");
 
@@ -68,7 +119,7 @@ bool Input_isPressed(u8 joyId, u16 button_mask) {
             return (g_joypad1.current & button_mask);    
             break;
 
-        #if INPUT_MAX_JOYPADS == 2
+        #if INPUT_MAX_JOYPADS == JOY_2
         case JOY_2:
             return (g_joypad2.current & button_mask);    
             break;
@@ -80,14 +131,14 @@ bool Input_isPressed(u8 joyId, u16 button_mask) {
 
 bool Input_isJustPressed(u8 joyId, u16 button_mask) {
     ASSERT_MSG(joyId<=INPUT_MAX_JOYPADS, "Invalid joypad id on Input_isJustPressed");
-    
+        
     switch (joyId)
     {
         case JOY_1:
             return (g_joypad1.current & button_mask) && !(g_joypad1.previous & button_mask);
             break;
 
-        #if INPUT_MAX_JOYPADS == 2
+        #if INPUT_MAX_JOYPADS == JOY_2
         case JOY_2:
             return (g_joypad2.current & button_mask) && !(g_joypad2.previous & button_mask); 
             break;
@@ -106,9 +157,9 @@ bool Input_isReleased(u8 joyId, u16 button_mask) {
             return !(g_joypad1.current & button_mask) && (g_joypad1.previous & button_mask);
             break;
 
-        #if INPUT_MAX_JOYPADS == 2
+        #if INPUT_MAX_JOYPADS == JOY_2
         case JOY_2:
-            return !(g_joypad1.current & button_mask) && (g_joypad1.previous & button_mask);
+            return !(g_joypad2.current & button_mask) && (g_joypad2.previous & button_mask);
             break;
         #endif
     }
