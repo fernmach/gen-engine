@@ -22,10 +22,6 @@
     ASSERT_INACTIVE_ENTITY (method) \
     ASSERT_COMPONENT_TYPE (method) \
 
-//LOGGER_FATAL("ECS: Error while removing component value. Entity: %d, Component: %u", id, type);
-
-//TODO: Implement pooling mechanism
-
 // --- Global component array definitions ---
 PositionComponent           g_positions[ECS_MAX_ENTITIES];
 VelocityComponent           g_velocities[ECS_MAX_ENTITIES];
