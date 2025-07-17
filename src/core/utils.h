@@ -19,7 +19,6 @@ typedef bool (*PFN_compareCallback)(u16, u16);
 u16 getRandomNumberInRange( u16 min, u16 max );
 
 // Order an array using insertionSort using a compare callback function
-// TODO: Figure out how quicksort works in SGDK and use it instead.
 void insertionSort(u16 arr[], u16 n, PFN_compareCallback compare);
 
 // TODO: INCLUDE TESTES IN THEIR OWN FILE

@@ -35,7 +35,6 @@ void insertionSort(u16 arr[], u16 n, PFN_compareCallback compare) {
     }
 }
 
-//TODO: Is is really necessary for better performance?
 #define INSORT(type, signed_type) \
 void insertionSort_##type(type arr[], type n, PFN_compareCallback compare) {  \
     for (type i = 1; i < n; i++) {                                            \
