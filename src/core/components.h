@@ -107,6 +107,39 @@ typedef struct {
     bool y;
 } ScreenConstraintComponent;
 
+// TODO: Create an EdgeColliderComponent to trigger behavior when
+// and entity hits one or more edges of the screen (requires Camera 
+// implementation)
+/*
+typedef enum {
+    EDGE_NONE           = 0,        
+    EDGE_LEFT           = 1 << 0,
+    EDGE_RIGHT          = 1 << 1,
+    EDGE_TOP            = 1 << 2,
+    EDGE_BOTTOM         = 1 << 3,    
+    EDGE_TYPE_COUNT     = 5
+} Edge;
+
+typedef enum {
+    EDGE_RESOLUTION_NONE,
+    EDGE_RESOLUTION_STOP_OBJECT,
+    EDGE_RESOLUTION_STOP_OBJECT_AND_TRIGGER,
+    EDGE_RESOLUTION_INVERT_VELOCITY,
+    EDGE_RESOLUTION_INVERT_VELOCITY_AND_TRIGGER,
+    EDGE_RESOLUTION_TRIGGER_EVENT,
+    EDGE_RESOLUTION_COUNT
+} EdgeColliderBehavior;
+
+typedef u16 EdgeTypeMask;
+
+// Will trigger a behavior when a collisin happens in the 
+// define screen boundaries.
+typedef struct {
+    EdgeTypeMask edgeMask;
+    EdgeColliderBehavior resolutionType;
+} EdgeColliderComponent;
+*/
+
 // Sprite component
 typedef struct {
     Sprite* sgdkSprite;         // Pointer to the SGDK sprite object
