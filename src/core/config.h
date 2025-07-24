@@ -123,6 +123,12 @@
 
 /**
  *  \brief
+ *      Set to 1 to display collider borders during gameplay
+ */
+#define DEBUG_COLLIDER_BORDERS_ENABLED 0
+
+/**
+ *  \brief
  *      Name of first scene to be loaded then the engine starts
  *      If not set the scene_main will be consiered the main one
  */

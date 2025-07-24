@@ -55,6 +55,9 @@ static inline void Engine_init() {
     // Initialize entity subsystems
     ECS_init();
 
+    // Initialize debug subsystems
+    DBG_init();
+
     // Initialize scene manager subsystem
     SceneManager_init();
 
@@ -85,6 +88,10 @@ static inline void Engine_update(fix16 delta_time) {
     SceneManager_update(delta_time); // <--- CALL SCENE MANAGER UPDATE
     PROFILE_END_SCOPE(scn_upda_id);
 
+    #if DEBUG_COLLIDER_BORDERS_ENABLED
+    DebugSystem_clearColliderBoxUpdate()
+    #endif
+
     // 3. Update  global Game Logic (Systems)
     PROFILE_SCOPE(move_upda_id, "MoveSys");
     MovementSystem_update(delta_time);
@@ -97,6 +104,10 @@ static inline void Engine_update(fix16 delta_time) {
     PROFILE_SCOPE(collis_upda_id, "ColliSys");
     CollisionSystem_update();
     PROFILE_END_SCOPE(collis_upda_id);
+
+    #if DEBUG_COLLIDER_BORDERS_ENABLED
+    DebugSystem_drawColliderBoxUpdate();
+    #endif
 
     // PlayerControlSystem_update();
     

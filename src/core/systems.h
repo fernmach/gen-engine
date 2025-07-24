@@ -11,6 +11,7 @@
 #include "ecs.h"
 #include "utils.h"
 //#include "vector_math.h"
+#include "debug.h"
 #include "event.h"
 #include "systems.h"
 
@@ -40,6 +41,39 @@ static u16 g_active_colliders[ECS_MAX_ENTITIES];
 
 //static ContactPair g_contact_pairs[ECS_MAX_ENTITIES];
 //static u16 g_contact_pairs_count = 0;
+
+// Evaluate if the viual collider debugging is enabled
+#if DEBUG_COLLIDER_BORDERS_ENABLED
+
+static inline void DebugSystem_clearColliderBoxUpdate() {
+     // Define the components this system operates on
+    const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_COLLIDER;
+
+    // Create the array that will be sorted
+    for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
+        if (Entity_hasAllComponents(i, required_mask)) {                        
+            const ColliderComponent* collider = &g_colliders[i];
+            PositionComponent* position = &g_positions[i];
+            DBG_CLEAR_COLLIDER_BOX(collider, position);
+        }
+    }    
+}
+
+static inline void DebugSystem_drawColliderBoxUpdate() {
+     // Define the components this system operates on
+    const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_COLLIDER;
+
+    // Create the array that will be sorted
+    for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
+        if (Entity_hasAllComponents(i, required_mask)) {                        
+            const ColliderComponent* collider = &g_colliders[i];
+            PositionComponent* position = &g_positions[i];
+            DBG_DRAW_COLLIDER_BOX(collider, position);
+        }
+    }    
+}
+
+#endif
 
 static inline void MovementSystem_update(fix16 dt) {
     // Define the components this system operates on
@@ -356,9 +390,11 @@ static inline void RenderSystem_update() {
                 s16 screen_x = F16_toInt(pPos->x);
                 s16 screen_y = F16_toInt(pPos->y);
 
-                SPR_setPosition(pSprite, screen_x, screen_y);        
-                // ... other sprite updates ...
+                //DBG_CLEAR_SPRITE_BOX(pSprite);
+                SPR_setPosition(pSprite, screen_x, screen_y);
+                //DBG_DRAW_SPRITE_BOX(pSprite);
 
+                // ... other sprite updates ...
                 // Update animation, visibility, etc. based on SpriteComponent data
                 // SPR_setAnim(g_sprites[i].sgdk_sprite, g_sprites[i].current_anim_frame);
                 // SPR_setVisibility(g_sprites[i].sgdk_sprite, VISIBLE / HIDDEN);

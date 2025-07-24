@@ -122,11 +122,11 @@ typedef enum {
 
 typedef enum {
     EDGE_RESOLUTION_NONE,
-    EDGE_RESOLUTION_STOP_OBJECT,
-    EDGE_RESOLUTION_STOP_OBJECT_AND_TRIGGER,
+    EDGE_RESOLUTION_STOP,
+    EDGE_RESOLUTION_STOP_AND_TRIGGER,
     EDGE_RESOLUTION_INVERT_VELOCITY,
     EDGE_RESOLUTION_INVERT_VELOCITY_AND_TRIGGER,
-    EDGE_RESOLUTION_TRIGGER_EVENT,
+    EDGE_RESOLUTION_TRIGGER,
     EDGE_RESOLUTION_COUNT
 } EdgeColliderBehavior;
 
@@ -136,7 +136,7 @@ typedef u16 EdgeTypeMask;
 // define screen boundaries.
 typedef struct {
     EdgeTypeMask edgeMask;
-    EdgeColliderBehavior resolutionType;
+    EdgeColliderBehavior edgeColliderBehavior;
 } EdgeColliderComponent;
 */
 

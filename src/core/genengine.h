@@ -22,6 +22,7 @@
 #include "memory.h"
 #include "input.h"
 #include "event.h"
+#include "debug.h"
 #include "music.h"
 #include "sfx.h"
 #include "fsm.h"
