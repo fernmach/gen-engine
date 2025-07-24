@@ -44,6 +44,7 @@
         "music.h": "c",
         "defines.h": "c",
         "components.h": "c",
-        "scene_fsm.h": "c"
+        "scene_fsm.h": "c",
+        "debug.h": "c"
     },
 }
