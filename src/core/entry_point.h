@@ -88,7 +88,9 @@ static inline void Engine_update(fix16 delta_time) {
     SceneManager_update(delta_time); // <--- CALL SCENE MANAGER UPDATE
     PROFILE_END_SCOPE(scn_upda_id);
 
+    #if DEBUG_COLLIDER_BORDERS_ENABLED
     DebugSystem_clearColliderBoxUpdate()
+    #endif
 
     // 3. Update  global Game Logic (Systems)
     PROFILE_SCOPE(move_upda_id, "MoveSys");
@@ -103,7 +105,9 @@ static inline void Engine_update(fix16 delta_time) {
     CollisionSystem_update();
     PROFILE_END_SCOPE(collis_upda_id);
 
+    #if DEBUG_COLLIDER_BORDERS_ENABLED
     DebugSystem_drawColliderBoxUpdate();
+    #endif
 
     // PlayerControlSystem_update();
     
