@@ -6,6 +6,9 @@
 // SGDK forward declaration
 #include <genesis.h>
 
+// TODO: Evaluate the necessity of remove the entire file from 
+// compilation then the collider debuggin is off
+
 // Define a constant for the VRAM index of our debug tile
 #define DEBUG_TILE_IDX (TILE_USER_INDEX)
 // Sprite positionning offset
@@ -19,6 +22,7 @@ extern const u32 solid_tile_data[8];
 void DBG_init();
 void DBG_update(Sprite* sprite, const SpriteDefinition* spriteDef, s16 previousX, s16 previousY);
 
+// TODO: Evaluate the necessity of deleting these two functions They are deprecated in favor of DBG_drawBox.
 // Declaration for our debug sprite drawing function
 void DBG_drawSpriteBorder(Sprite* sprite, const SpriteDefinition* spriteDef, u16 tile_attr);
 void DBG_clearSpriteBorder(Sprite* sprite, const SpriteDefinition* spriteDef);
@@ -37,8 +41,7 @@ void DBG_clearBox(s16 x, s16 y, u16 w, u16 h);
 
 // Draw the new border at the current position
 #define DBG_DRAW_SPRITE_BORDER(sprite, spriteDef) \
-    const u16 border_tile_attr = TILE_ATTR(PAL1, 1, FALSE, FALSE); \
-    DBG_drawSpriteBorder(sprite, spriteDef, border_tile_attr);
+    DBG_drawSpriteBorder(sprite, spriteDef, TILE_ATTR(PAL1, 1, FALSE, FALSE));
 
 // 2. Draw the new debug box at the CURRENT position
 #define DBG_DRAW_SPRITE_BOX(sprite) \
