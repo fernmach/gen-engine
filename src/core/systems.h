@@ -42,6 +42,9 @@ static u16 g_active_colliders[ECS_MAX_ENTITIES];
 //static ContactPair g_contact_pairs[ECS_MAX_ENTITIES];
 //static u16 g_contact_pairs_count = 0;
 
+// Evaluate if the viual collider debugging is enabled
+#if DEBUG_COLLIDER_BORDERS_ENABLED
+
 static inline void DebugSystem_clearColliderBoxUpdate() {
      // Define the components this system operates on
     const ComponentMask required_mask = COMPONENT_POSITION | COMPONENT_COLLIDER;
@@ -69,6 +72,8 @@ static inline void DebugSystem_drawColliderBoxUpdate() {
         }
     }    
 }
+
+#endif
 
 static inline void MovementSystem_update(fix16 dt) {
     // Define the components this system operates on
