@@ -63,7 +63,7 @@ void MainScene_init(Scene* scene) {
 void MainScene_update(Scene* scene, fix16 dt) {
     MainSceneData* data = (MainSceneData*)scene->data;
 
-    if (data->ballsCount < 5) {
+    if (data->ballsCount < 1) {
         MainGameScene_createBall();        
         data->ballsCount++;
     }
@@ -76,6 +76,12 @@ void MainScene_update(Scene* scene, fix16 dt) {
         //Audio_setMusicVolume(30);
         //Audio_playSFX(sfx_jump, sizeof(sfx_jump));
         Audio_playSFXEx(sfx_jump, sizeof(sfx_jump), SOUND_PCM_CH2, 15, FALSE, FALSE);
+
+        //SpriteComponent* spr = Entity_getComponentSprite(0);
+        //PAL_setPalette(PAL1, spr->sgdkSprite->definition->palette, DMA);
+        //SPR_setAutoAnimation(spr->sgdkSprite, TRUE);
+        Entity_setComponentSpriteAnimation(0, 0);  
+        //SPR_setAnimAndFrame(spr->sgdkSprite, 0, 1);
 
         // //Ball_destroy(0);
 
