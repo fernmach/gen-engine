@@ -376,10 +376,10 @@ static inline void RenderSystem_update() {
     for (EntityId i = 0; i < ACTIVE_ENTITY_COUNT; ++i) {
         if (Entity_hasAllComponents(i, required_mask)) {
 
-            Sprite* const pSprite = g_sprites[i].sgdkSprite;
-            //SpriteComponent* pSpriteComponent = &g_sprites[i];
+            //Sprite* const pSprite = g_sprites[i].sgdkSprite;
+            SpriteComponent* pSpriteComponent = &g_sprites[i];
 
-            if (pSprite != NULL) { // Still good to check the actual sprite pointer
+            if (pSpriteComponent->sgdkSprite != NULL) { // Still good to check the actual sprite pointer
 
                 const PositionComponent* pPos = &g_positions[i];
 
@@ -392,17 +392,19 @@ static inline void RenderSystem_update() {
                 s16 screen_y = F16_toInt(pPos->y);
 
                 //DBG_CLEAR_SPRITE_BOX(pSprite);
-                SPR_setPosition(pSprite, screen_x, screen_y);
+                SPR_setPosition(pSpriteComponent->sgdkSprite, screen_x, screen_y);
                 //DBG_DRAW_SPRITE_BOX(pSprite);
 
                 // if(pSpriteComponent->isHFlipDirty) {
-                //     SPR_setHFlip(pSpriteComponent->hFlip);
+                //     LOGGER_DEBUG("Render: Sprite HFLIP flag detected, fliping");                    
+                //     SPR_setHFlip(pSpriteComponent->sgdkSprite, pSpriteComponent->hFlip);
+                //     pSpriteComponent->isHFlipDirty = FALSE;                    
                 // }
-
+                
                 // ... other sprite updates ...
                 // Update animation, visibility, etc. based on SpriteComponent data
                 // SPR_setAnim(g_sprites[i].sgdk_sprite, g_sprites[i].current_anim_frame);
-                // SPR_setVisibility(g_sprites[i].sgdk_sprite, VISIBLE / HIDDEN);
+                // SPR_setVisibility(g_sprites[i].sgdk_sprite, VISIBLE / HIDDEN);                
             }
         }
     }

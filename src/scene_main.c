@@ -80,7 +80,15 @@ void MainScene_update(Scene* scene, fix16 dt) {
         //SpriteComponent* spr = Entity_getComponentSprite(0);
         //PAL_setPalette(PAL1, spr->sgdkSprite->definition->palette, DMA);
         //SPR_setAutoAnimation(spr->sgdkSprite, TRUE);
-        Entity_setComponentSpriteAnimation(0, 0);  
+        SpriteComponent* spr = Entity_getComponentSprite(0);
+        SpriteComponent_setAnimation(spr, 0);
+        SpriteComponent_setHFlip(spr, TRUE);
+
+        //Entity_setComponentSpriteAnimation(0, 0);
+        //Entity_setComponentSpriteHFlip(0, TRUE);
+        //Entity_setComponentSpriteVFlip(0, TRUE);
+
+        //Sprite* sprite = Entity_getComponentSprite(0);        
         //SPR_setAnimAndFrame(spr->sgdkSprite, 0, 1);
 
         // //Ball_destroy(0);

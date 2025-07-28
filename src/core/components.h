@@ -167,9 +167,10 @@ typedef struct {
                                 // Added For collision or other logic    
                                 // Add animation data, palette, etc. here if needed
     //SpriteComponentProperties properties;
-    //SpritePropertyMask propertiesToUpdate;
-    bool hFlip;
-    bool isHFlipDirty;
+    //SpritePropertyMask propertiesToUpdate;    
+    /*bool hFlip;
+    bool vFlip;
+    bool isDirty;*/
 } SpriteComponent;
 //typedef Sprite* SpriteComponent;
 

@@ -44,15 +44,43 @@ static inline SpriteComponent* Entity_getComponentSprite(EntityId id) {
     return &g_sprites[id];
 }
 
+/*---- Direct Sprite component manipulation ------*/
 // Add a position component to the specified entity
-static inline void Entity_setComponentSpriteAnimation(EntityId id, s16 animationId) {
-    SPR_setAnim(g_sprites[id].sgdkSprite, animationId);
+static inline void SpriteComponent_setAnimation(SpriteComponent* sprite, s16 animationId) {
+    SPR_setAnim(sprite->sgdkSprite, animationId);
 }
 
 // Add a position component to the specified entity
+static inline void SpriteComponent_setHFlip(SpriteComponent* sprite, bool hFlip) {
+    SPR_setHFlip(sprite->sgdkSprite, hFlip);
+}
+
+// Add a position component to the specified entity
+static inline void SpriteComponent_setVFlip(SpriteComponent* sprite, bool VFlip) {
+    SPR_setVFlip(sprite->sgdkSprite, VFlip);
+}
+
+// Add a position component to the specified entity
+static inline void SpriteComponent_setDepth(SpriteComponent* sprite, s16 value) {
+    SPR_setDepth(sprite->sgdkSprite, value);
+}
+
+/*---- Entity sprite component manipulation ------*/
+// Add a position component to the specified entity
+static inline void Entity_setComponentSpriteAnimation(EntityId id, s16 animationId) {
+    SpriteComponent_setAnimation(&g_sprites[id], animationId);    
+}
+
 static inline void Entity_setComponentSpriteHFlip(EntityId id, bool hFlip) {
-    g_sprites[id].hFlip = hFlip;
-    g_sprites[id].isHFlipDirty = TRUE;
+    SpriteComponent_setHFlip(&g_sprites[id], hFlip);    
+}
+
+static inline void Entity_setComponentSpriteVFlip(EntityId id, bool vFlip) {
+    SpriteComponent_setVFlip(&g_sprites[id], vFlip);
+}
+
+static inline void Entity_setComponentSpriteDepth(EntityId id, s16 value) {
+    SpriteComponent_setDepth(&g_sprites[id], value);
 }
 
 // To use outsisde of the ecs
