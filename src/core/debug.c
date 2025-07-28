@@ -1,5 +1,7 @@
 #include "debug.h"
 
+#if DEBUG_COLLIDER_BORDERS_ENABLED
+
 const u32 solid_tile_data[8] =
 {
     0xFFFFFFFF,
@@ -159,3 +161,5 @@ void DBG_clearBox(s16 x, s16 y, u16 w, u16 h)
     // Clear the entire rectangular area by filling it with the empty tile (index 0)
     VDP_clearTileMapRect(VDP_BG_A, x_tile, y_tile, w_tile, h_tile);
 }
+
+#endif

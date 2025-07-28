@@ -1,6 +1,10 @@
 #ifndef _ENG_DEBUG_H_
 #define _ENG_DEBUG_H_
 
+#include "config.h"
+
+#if DEBUG_COLLIDER_BORDERS_ENABLED
+
 #include "logger.h"
 
 // SGDK forward declaration
@@ -65,5 +69,12 @@ void DBG_clearBox(s16 x, s16 y, u16 w, u16 h);
         F16_toRoundedInt (position->y) + collider->shape.box.y, \
         collider->shape.box.w, \
         collider->shape.box.h); \
+
+#else // DEBUG_COLLIDER_BORDERS_ENABLED
+
+    // Define empty macros and stubs so the code compiles without logging
+    #define DBG_init(DBG_init)
+
+#endif
 
 #endif // _ENG_DEBUG_H_
