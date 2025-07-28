@@ -166,11 +166,13 @@ static inline void Engine_shutdown() {
     // Potentially destroy current scene if one is active
     SceneManager_shutdown();
     Input_shutdown();
-    Event_shutdown();    
-    //TODO: Create memory shutdown call
+    Event_shutdown();
     //Memory_shutdown();    
     Audio_shutdown();
     Logger_shutdown();
+
+    // End the sprite engine
+    SPR_end();
 
     LOGGER_INFO("Shutting down engine");
 }
