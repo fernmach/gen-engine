@@ -140,11 +140,36 @@ typedef struct {
 } EdgeColliderComponent;
 */
 
+// typedef enum {
+//     SPR_PROPETY_NONE            = 0,        // Represents no components (all bits off)
+//     SPR_PROPETY_ANIM            = 1 << 0,   // Bit 0 (Value: 1)
+//     SPR_PROPETY_DEPTH           = 1 << 1,   // Bit 1 (Value: 2)
+//     SPR_PROPETY_VISIBILITY      = 1 << 2,   // Bit 2 (Value: 2)
+//     SPR_PROPETY_VFLIP           = 1 << 3,   // Bit 3 (Value: 4)
+//     SPR_PROPETY_HFLIP           = 1 << 4,   // Bit 4 (Value: 4)    
+
+//     SPR_PROPETY_COUNT           = 1 << 5
+// } SpritePropertyType;
+
+// typedef u16 SpritePropertyMask;
+
+// typedef struct {    
+//     s16 animationId;        // Animation to be played
+//     s16 depth;              // current sprite depth (Z) position used for Z sorting
+//     u16 visibility;         // visibility information of current frame for each VDP sprite (max = 16)
+//     bool vFlip;             // Set sprite Vertical Flip attribut.
+//     bool hFlip;             // Set sprite Horizontal Flip attribut.
+// } SpriteComponentProperties;
+
 // Sprite component
 typedef struct {
     Sprite* sgdkSprite;         // Pointer to the SGDK sprite object
-                            // Added For collision or other logic    
-                            // Add animation data, palette, etc. here if needed
+                                // Added For collision or other logic    
+                                // Add animation data, palette, etc. here if needed
+    //SpriteComponentProperties properties;
+    //SpritePropertyMask propertiesToUpdate;
+    bool hFlip;
+    bool isHFlipDirty;
 } SpriteComponent;
 //typedef Sprite* SpriteComponent;
 
