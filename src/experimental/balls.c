@@ -127,8 +127,10 @@ void MainGameScene_createBall() {
     // Entity_addComponent(ball, COMPONENT_POSITION, &position);
     // Entity_addComponent(ball, COMPONENT_VELOCITY, &velocity);
     // Entity_addComponent(ball, COMPONENT_COLLIDER, &collider);
-    // Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);
-    Entity_addComponentSprite(ball, &spr_donut, PAL0); // Assuming COMPONENT_SPRITE exists
+    // Entity_addComponent(ball, COMPONENT_SCREEN_CONSTRAINT, &constraint);    
+    PAL_setPalette(PAL2, spr_donut.palette->data, DMA);
+    Entity_addComponentSprite(ball, &spr_donut, PAL2); // Assuming COMPONENT_SPRITE exists
+    Entity_setComponentSpriteAnimation(ball, -1);
 }
 
 void Ball_update(EntityId id, fix16 dx, fix16 dy) {

@@ -377,6 +377,7 @@ static inline void RenderSystem_update() {
         if (Entity_hasAllComponents(i, required_mask)) {
 
             Sprite* const pSprite = g_sprites[i].sgdkSprite;
+            //SpriteComponent* pSpriteComponent = &g_sprites[i];
 
             if (pSprite != NULL) { // Still good to check the actual sprite pointer
 
@@ -393,6 +394,10 @@ static inline void RenderSystem_update() {
                 //DBG_CLEAR_SPRITE_BOX(pSprite);
                 SPR_setPosition(pSprite, screen_x, screen_y);
                 //DBG_DRAW_SPRITE_BOX(pSprite);
+
+                // if(pSpriteComponent->isHFlipDirty) {
+                //     SPR_setHFlip(pSpriteComponent->hFlip);
+                // }
 
                 // ... other sprite updates ...
                 // Update animation, visibility, etc. based on SpriteComponent data
