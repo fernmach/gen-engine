@@ -44,6 +44,17 @@ static inline SpriteComponent* Entity_getComponentSprite(EntityId id) {
     return &g_sprites[id];
 }
 
+// Add a position component to the specified entity
+static inline void Entity_setComponentSpriteAnimation(EntityId id, s16 animationId) {
+    SPR_setAnim(g_sprites[id].sgdkSprite, animationId);
+}
+
+// Add a position component to the specified entity
+static inline void Entity_setComponentSpriteHFlip(EntityId id, bool hFlip) {
+    g_sprites[id].hFlip = hFlip;
+    g_sprites[id].isHFlipDirty = TRUE;
+}
+
 // To use outsisde of the ecs
 #define ACTIVE_ENTITY_COUNT g_active_entity_count
 
