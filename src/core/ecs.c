@@ -133,6 +133,7 @@ void Entity_destroy(EntityId id) {
         g_colliders[id]                     = g_colliders[last_id];
         g_sprites[id]                       = g_sprites[last_id];
         g_screen[id]                        = g_screen[last_id];
+        g_fsm[id]                           = g_fsm[last_id];
         // TODO: Implement tagging?
         // IMPORTANT: If any external system holds a reference to the entity that was at 'last_id',
         // that reference is now invalid. You must have a way to update it.
