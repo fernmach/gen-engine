@@ -378,33 +378,53 @@ static inline void RenderSystem_update() {
 
             //Sprite* const pSprite = g_sprites[i].sgdkSprite;
             SpriteComponent* pSpriteComponent = &g_sprites[i];
+            Sprite* pSprite = pSpriteComponent->sgdkSprite;
 
-            if (pSpriteComponent->sgdkSprite != NULL) { // Still good to check the actual sprite pointer
+            if (pSprite != NULL) { // Still good to check the actual sprite pointer
+                
+                if(pSpriteComponent->visibility != UNDEFINED_S16) {
+                    LOGGER_DEBUG("Render System: Visibility property change detected");
+                    SPR_setVisibility(pSprite, pSpriteComponent->visibility);
+                    pSpriteComponent->visibility = UNDEFINED_S16;
+                }
+
+                if(pSpriteComponent->hFlip != UNDEFINED_BOOL) {
+                    LOGGER_DEBUG("Render System: HFLIP property change detected");
+                    SPR_setHFlip(pSprite, pSpriteComponent->hFlip);
+                    pSpriteComponent->hFlip = UNDEFINED_BOOL;
+                }
+
+                if(pSpriteComponent->vFlip != UNDEFINED_BOOL) {
+                    LOGGER_DEBUG("Render System: VFLIP property change detected");
+                    SPR_setVFlip(pSprite, pSpriteComponent->vFlip);
+                    pSpriteComponent->vFlip = UNDEFINED_BOOL;
+                }
+
+                if(pSpriteComponent->depth != UNDEFINED_S16) {
+                    LOGGER_DEBUG("Render System: DEPTH property change detected");
+                    SPR_setDepth(pSprite, pSpriteComponent->depth);
+                    pSpriteComponent->depth = UNDEFINED_S16;
+                }
+
+                if(pSpriteComponent->animationId != UNDEFINED_S16) {
+                    LOGGER_DEBUG("Render System: ANIMATION property change detected");
+                    SPR_setAnim(pSprite, pSpriteComponent->animationId);
+                    pSpriteComponent->animationId = UNDEFINED_S16;
+                }
 
                 const PositionComponent* pPos = &g_positions[i];
 
                 //LOGGER_DEBUG("Entity %d position {%d, %d}", i, g_positions[i].x, g_positions[i].y);
                 //LOGGER_DEBUG("Entity %d screen {%d, %d}", i, screen_x, screen_y);
 
-                // Using F16_toInt would be the correct way to go but the numbers
-                // are beeing incorrectly retured.
-                s16 screen_x = F16_toInt(pPos->x);
-                s16 screen_y = F16_toInt(pPos->y);
-
                 //DBG_CLEAR_SPRITE_BOX(pSprite);
-                SPR_setPosition(pSpriteComponent->sgdkSprite, screen_x, screen_y);
+                SPR_setPosition(pSprite, F16_toInt(pPos->x), F16_toInt(pPos->y));
                 //DBG_DRAW_SPRITE_BOX(pSprite);
-
-                // if(pSpriteComponent->isHFlipDirty) {
-                //     LOGGER_DEBUG("Render: Sprite HFLIP flag detected, fliping");                    
-                //     SPR_setHFlip(pSpriteComponent->sgdkSprite, pSpriteComponent->hFlip);
-                //     pSpriteComponent->isHFlipDirty = FALSE;                    
-                // }
                 
                 // ... other sprite updates ...
                 // Update animation, visibility, etc. based on SpriteComponent data
                 // SPR_setAnim(g_sprites[i].sgdk_sprite, g_sprites[i].current_anim_frame);
-                // SPR_setVisibility(g_sprites[i].sgdk_sprite, VISIBLE / HIDDEN);                
+                // SPR_setVisibility(g_sprites[i].sgdk_sprite, VISIBLE / HIDDEN);
             }
         }
     }

@@ -30,13 +30,18 @@ bool Entity_hasAllComponents(EntityId id, ComponentMask required_mask); // Check
 
 // Add a position component to the specified entity
 static inline void Entity_addComponentSprite(EntityId id, const SpriteDefinition *spriteDef, u8 palette) {    
-    g_entity_component_masks[id] |= COMPONENT_SPRITE;    
+    g_entity_component_masks[id] |= COMPONENT_SPRITE; 
     g_sprites[id].sgdkSprite = SPR_addSprite(
                              spriteDef,
                              0,                                     
                              0,                                     
                              TILE_ATTR(palette, TRUE, FALSE, FALSE) 
-                         ); // Palette, priority, flip        
+                         ); // Palette, priority, flip
+    g_sprites[id].animationId = UNDEFINED_S16;
+    g_sprites[id].depth = UNDEFINED_S16;
+    g_sprites[id].visibility = UNDEFINED_U16;
+    g_sprites[id].hFlip = UNDEFINED_BOOL;
+    g_sprites[id].vFlip = UNDEFINED_BOOL;
 }
 
 // Add a position component to the specified entity
@@ -46,23 +51,24 @@ static inline SpriteComponent* Entity_getComponentSprite(EntityId id) {
 
 /*---- Direct Sprite component manipulation ------*/
 // Add a position component to the specified entity
-static inline void SpriteComponent_setAnimation(SpriteComponent* sprite, s16 animationId) {
-    SPR_setAnim(sprite->sgdkSprite, animationId);
+static inline void SpriteComponent_setAnimation(SpriteComponent* sprite, s16 animationId) {    
+    sprite->animationId = animationId;
 }
 
-// Add a position component to the specified entity
-static inline void SpriteComponent_setHFlip(SpriteComponent* sprite, bool hFlip) {
-    SPR_setHFlip(sprite->sgdkSprite, hFlip);
+static inline void SpriteComponent_setHFlip(SpriteComponent* sprite, bool hFlip) {    
+    sprite->hFlip = hFlip;
 }
 
-// Add a position component to the specified entity
-static inline void SpriteComponent_setVFlip(SpriteComponent* sprite, bool VFlip) {
-    SPR_setVFlip(sprite->sgdkSprite, VFlip);
+static inline void SpriteComponent_setVFlip(SpriteComponent* sprite, bool vFlip) {    
+    sprite->hFlip = vFlip;
 }
 
-// Add a position component to the specified entity
-static inline void SpriteComponent_setDepth(SpriteComponent* sprite, s16 value) {
-    SPR_setDepth(sprite->sgdkSprite, value);
+static inline void SpriteComponent_setDepth(SpriteComponent* sprite, s16 value) {    
+    sprite->depth = value;
+}
+
+static inline void SpriteComponent_setVisibility(SpriteComponent* sprite, u16 value) {    
+    sprite->visibility = value;
 }
 
 /*---- Entity sprite component manipulation ------*/
@@ -72,7 +78,7 @@ static inline void Entity_setComponentSpriteAnimation(EntityId id, s16 animation
 }
 
 static inline void Entity_setComponentSpriteHFlip(EntityId id, bool hFlip) {
-    SpriteComponent_setHFlip(&g_sprites[id], hFlip);    
+    SpriteComponent_setHFlip(&g_sprites[id], hFlip);
 }
 
 static inline void Entity_setComponentSpriteVFlip(EntityId id, bool vFlip) {
@@ -81,6 +87,10 @@ static inline void Entity_setComponentSpriteVFlip(EntityId id, bool vFlip) {
 
 static inline void Entity_setComponentSpriteDepth(EntityId id, s16 value) {
     SpriteComponent_setDepth(&g_sprites[id], value);
+}
+
+static inline void Entity_setComponentSpriteVisibility(EntityId id, s16 value) {
+    SpriteComponent_setVisibility(&g_sprites[id], value);
 }
 
 // To use outsisde of the ecs

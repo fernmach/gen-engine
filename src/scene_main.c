@@ -81,8 +81,11 @@ void MainScene_update(Scene* scene, fix16 dt) {
         //PAL_setPalette(PAL1, spr->sgdkSprite->definition->palette, DMA);
         //SPR_setAutoAnimation(spr->sgdkSprite, TRUE);
         SpriteComponent* spr = Entity_getComponentSprite(0);
+        SpriteComponent_setVisibility(spr, AUTO_FAST);
         SpriteComponent_setAnimation(spr, 0);
         SpriteComponent_setHFlip(spr, TRUE);
+        SpriteComponent_setVFlip(spr, TRUE);
+        SpriteComponent_setDepth(spr, 10);
 
         //Entity_setComponentSpriteAnimation(0, 0);
         //Entity_setComponentSpriteHFlip(0, TRUE);

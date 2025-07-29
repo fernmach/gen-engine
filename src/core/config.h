@@ -141,4 +141,13 @@
 // #endif
 
 
+// char: 1 byte. This is guaranteed by the C standard.
+// short int: Typically 2 bytes. The standard guarantees it is at least 2 bytes.
+// int: Typically 4 bytes on most modern systems (32-bit or 64-bit). The standard guarantees it is at least as large as short int and at least 2 bytes.
+// long int: Typically 4 or 8 bytes, depending on the system. The standard guarantees it is at least as large as int and at least 4 bytes.
+// long long int: Typically 8 bytes. This type was introduced in C99 and is guaranteed to be at least 8 bytes.
+// float: Typically 4 bytes.
+// double: Typically 8 bytes.
+// long double: Typically 8, 10, or 16 bytes, depending on the system and compiler.
+
 #endif // _ENG_CONFIG_H_
